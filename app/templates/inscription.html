@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>Stockage Chimie</title>
+        {% endblock %}
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
+    </head>
+    
+    <body>
+        <main>
+            <section>
+                <img src="" alt="">
+            </section>
+            <section>
+                <ul>
+                    <li><h1>Inscrivez-vous</h1></li>
+                    <li><input type="text", placeholder="Entrer votre e-mail"></li>
+                    <li><input type="text", placeholder="Prénom"></li>
+                    <li><input type="text", placeholder="Nom"></li>
+                    <li><input type="password", placeholder="Entrer votre mots de passe"></li>
+                    <li><input type="password", placeholder="Confirmez votre mot de passe"></li>
+                    <li><a href="/connection">M'inscire</a></li>
+                    <li><a href="/connection">J'ai déjà un compte</a></li>
+                </ul>
+            </section>
+            <section>
+                <img src="" alt="">
+            </section>
+        </main>
+        <script src="app.js"></script>
+    </body>
+</html>

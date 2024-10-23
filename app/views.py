@@ -16,3 +16,12 @@ def preparation_reservation():
     #TODO remplir reservations avec la liste des reservations ordonné dans un ordre pré définie
     reservations = [] 
     return render_template("reservation-preparation.html", reservations=reservations, current_user=True)
+
+
+@app.route("/connection")
+def connecter():
+    return render_template("connection.html")
+
+@app.route("/inscription")
+def inscrir():
+    return render_template("inscription.html")
