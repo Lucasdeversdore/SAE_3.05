@@ -12,6 +12,7 @@ def home():
 
 @app.route("/preparation/reservations")
 def preparation_reservation():
+    #TODO log pour current_user, supprimer current_user de render templete
     #TODO remplir reservations avec la liste des reservations ordonné dans un ordre pré définie
     reservations = [] 
-    return render_template("reservation-preparation.html", reservations=reservations)
+    return render_template("reservation-preparation.html", reservations=reservations, current_user=True)

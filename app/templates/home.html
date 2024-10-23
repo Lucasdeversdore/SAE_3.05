@@ -24,17 +24,48 @@
             {% for produit in liste_produit %}
                 <li>
                     <div class="produit">
-                        <!-- popup information -->
-                        <div id="popup-overlay">
-                            <div id="popup-content">
-                                <h3>Détail produit</h3>
-                                <p>Fonction :</p>
-                                <p>{{ produit.fonction }}</p>
-                                <p>Lieu de stockage :</p>
-                                <p>{{ produit.stockage }}</p>
-                                <a href="javascript:void(0)">ok</a>
+                        <section class="popup">
+                            <!-- popup information -->
+                            <div id="popup-overlay">
+                                <div id="popup-content">
+                                    <h3>Détail produit</h3>
+                                    <p>Fonction :</p>
+                                    <p>{{ produit.fonction }}</p>
+                                    <p>Lieu de stockage :</p>
+                                    <p>{{ produit.lieu }}</p>
+                                    <a href="javascript:void(0)">ok</a>
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- popup réserver -->
+                            <div id="popup-overlay">
+                                <div id="popup-content">
+                                    <p>Quantité en Stock : {{ produit.stock }}</p>
+                                    <p> Quantité réservé </p>
+                                    <input type="number", placeholder="Quantité">
+                                    <button>+1</button>
+                                    <button>+10</button>
+                                    <button>+100</button>
+                                    <button>+1000</button>
+                                    <button>Réserver</button>
+                                    <a href="javascript:void(0)">Annuler</a>
+                                </div>
+                            </div>
+
+                            <!-- popup supprimer un produit mot de passe -->
+                            <div id="popup-overlay">
+                                <div id="popup-content">
+                                    
+                                </div>
+                            </div>
+
+                            <!-- popup supprimer un produit confirmation -->
+                            <div id="popup-overlay">
+                                <div id="popup-content">
+                                    
+                                </div>
+                            </div>
+                        </section>
 
                         {% if current_user.is_preparateur %}
                             <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
