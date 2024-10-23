@@ -1,6 +1,16 @@
+drop table FAIRE;
+drop table EST_STOCKER;
+drop table COMMANDE;
+drop table LIEU_STOCKAGE;
+drop table HISTORIQUE;
+drop table FOURNISSEUR;
+drop table CHIMISTE;
+drop table PRODUIT;
+drop table UNITE;
+
 create table CHIMISTE (
-    PRIMARY KEY (idChimiste)
-    idChimiste int NOT NULL,
+    PRIMARY KEY (idChimiste),
+    idChimiste int,
     prenom VARCHAR(50),
     nom VARCHAR(50),
     email VARCHAR(50),
@@ -19,14 +29,14 @@ create table COMMANDE (
 );
 
 create table FAIRE (
-    PRIMARY KEY(idCommande, idChimiste)
+    PRIMARY KEY(idCommande, idChimiste),
     idCommande int NOT NULL,
     idChimiste int NOT NULL,
     statutCommande VARCHAR(50)
 );
 
 create table PRODUIT (
-    PRIMARY KEY(idProduit)
+    PRIMARY KEY(idProduit),
     idProduit int NOT NULL,
     nomProduit VARCHAR(50),
     fonctionProduit VARCHAR(50),
