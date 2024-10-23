@@ -22,27 +22,41 @@
     {% block content %}
         <ul>
             {% for produit in liste_produit %}
-                <div class="produit">
-                    {% if current_user.is_preparateur %}
-                        <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
-                    {% endif %}
-                    <img src="{{url_for('static', filename='images/'+produit.img)}}">
-                    <p>{{produit.nom}}</p>
-                    <button id="info_prod"><img src="{{url_for('static', filename='images/'+info_produit.img)}}"></button>
-                    {% if produit.disponible %}
-                        <p>Disponible</p>
+                <li>
+                    <div class="produit">
+                        <!-- popup information -->
+                        <div id="popup-overlay">
+                            <div id="popup-content">
+                                <h3>Détail produit</h3>
+                                <p>Fonction :</p>
+                                <p>{{ produit.fonction }}</p>
+                                <p>Lieu de stockage :</p>
+                                <p>{{ produit.stockage }}</p>
+                                <a href="javascript:void(0)">ok</a>
+                            </div>
+                        </div>
+
                         {% if current_user.is_preparateur %}
-                            <button id="Modifier"> Modifier </button>
+                            <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
                         {% endif %}
-                        <button id="Reserver"> Reserver </button>
-                    {% else %}
-                        <p>Indisponible</p>
-                        {% if current_user.is_preparateur %}
-                            <button id="Modifier"> Modifier </button>
-                        {% endif %}
-                        <a href="#" id="famille"> produits de la meme famille </button>
-                    {% endif %} 
-                </div>
+                        <img src="{{url_for('static', filename='images/'+produit.img)}}">
+                        <p>{{produit.nom}}</p>
+                        <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}"></button>
+                        {% if produit.disponible %}
+                            <p>Disponible</p>
+                            {% if current_user.is_preparateur %}
+                                <button id="Modifier"> Modifier </button>
+                            {% endif %}
+                            <button id="Reserver"> Reserver </button>
+                        {% else %}
+                            <p>Indisponible</p>
+                            {% if current_user.is_preparateur %}
+                                <button id="Modifier"> Modifier </button>
+                            {% endif %}
+                            <a href="#" id="famille"> produits de la meme famille </button>
+                        {% endif %} 
+                    </div>
+                </li>
             {% endfor %}
         </ul>
     {% endblock %}
