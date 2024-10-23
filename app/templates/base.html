@@ -14,11 +14,24 @@
     
     <body>
         <header>
-            <nav class="header_nav"></nav>
+            <nav class="header_nav">
+                {% block header_nav %}
+                {% endblock %}
+            </nav>
         </header>
         <main>
+            <section class="top_main">
+                {% block top_main %}
+                {% endblock %}
+            </section>
+            <section class="content">
+                {% block content %}
+                {% endblock %}
+            </section>
         </main>
         <footer>
+            {% block footer %}
+            {% endblock %}
         </footer>
     </body>
 </html>
