@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block header_nav%}
+    <a href="#">Gérer les stocks</a>
+    <a href="#"> liste des réservations</a>
+    <a href="#">logout</a>
+{% endblock %}
+{% block top_main %}
+    <h1>Liste des réservations</h1>
+    <input class="barre_recherche" type="search" placeholder="Nom produit" aria-label="Search">
+{% endblock %}
+{% block content %}
+<ul>
+{% for reservation in reservations %}
+    <li><a><div>{{reservation.qte}} {{reservation.produit}} réserver par {{reservation.personne}} le {{reservation.date}} {{reservation.etat}}<div></a></li>
+{% endfor%}
+</ul>
+{% endblock %}

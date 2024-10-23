@@ -1,1 +1,49 @@
 {% extends "base.html" %}
+
+    {% block header_nav%}
+        {% if current_user.is_preparateur %}
+            <a href="#">gérer les stocks</a>
+        {% else %}
+            <a href="#">liste des produits</a>
+        {% endif %}
+        <a href="#"> liste des réservations</a>
+        <a href="#">logout</a>
+    {% endblock %}
+
+    {% block top_main %}
+        {% if current_user.is_preparateur %}
+            <buton id="ajouter_prod"> Ajouter un produit </buton>
+        {% else %}
+            <h1>Liste des produits</h1>
+        {% endif %}
+        <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search">
+    {% endblock %}
+
+    {% block content %}
+        <ul>
+            {% for produit in liste_produit %}
+                <div class="produit">
+                    {% if current_user.is_preparateur %}
+                        <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
+                    {% endif %}
+                    <img src="{{url_for('static', filename='images/'+produit.img)}}">
+                    <p>{{produit.nom}}</p>
+                    <button id="info_prod"><img src="{{url_for('static', filename='images/'+info_produit.img)}}"></button>
+                    {% if produit.disponible %}
+                        <p>Disponible</p>
+                        {% if current_user.is_preparateur %}
+                            <button id="Modifier"> Modifier </button>
+                        {% endif %}
+                        <button id="Reserver"> Reserver </button>
+                    {% else %}
+                        <p>Indisponible</p>
+                        {% if current_user.is_preparateur %}
+                            <button id="Modifier"> Modifier </button>
+                        {% endif %}
+                        <a href="#" id="famille"> produits de la meme famille </button>
+                    {% endif %} 
+                </div>
+            {% endfor %}
+        </ul>
+    {% endblock %}
+
