@@ -1,0 +1,57 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    height: 15%;
+    position: sticky;
+}
+
+.header_nav{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+}
+
+.header_nav a{
+    padding-left: 9%;
+    flex-grow :0.2;
+}
+
+
+#lien_reservation{
+    flex-grow: 10;
+    padding-left: 2%;
+}
+
+#lien_logout{
+    margin-right: 3%;
+}
+
+main{
+    padding-left: 9%;
+}
+
+.top_main{
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.top_main h1{
+    width: 84%;
+}
+
+.top_main .barre_recherche{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+
+
