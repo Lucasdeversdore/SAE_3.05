@@ -33,7 +33,7 @@ h1{
 }
 
 #pwd input{
-    width: 99%
+    width: 100%
 }
 
 #email, #pwd{
@@ -76,7 +76,9 @@ h1{
 }
 
 input{
-    padding-right: 0
+    padding-right: 0;
+    padding-top: 3%;
+    padding-bottom: 3%;
 }
 
 #inscire {
