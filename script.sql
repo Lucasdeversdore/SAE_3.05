@@ -10,7 +10,7 @@ drop table UNITE;
 
 create table CHIMISTE (
     PRIMARY KEY (idChimiste),
-    idChimiste int,
+    idChimiste int NOT NULL,
     prenom VARCHAR(50),
     nom VARCHAR(50),
     email VARCHAR(50),

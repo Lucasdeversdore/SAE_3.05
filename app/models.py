@@ -18,7 +18,7 @@ class Chimiste(Base):
 
     __tablename__ = "CHIMISTE"
 
-    idChimiste = Column(Integer, primary_key = True)
+    idChimiste = Column(Integer, primary_key = True, nullable = False)
     prenom = Column(Text)
     nom = Column(Text)
     email = Column(Text)
@@ -51,7 +51,7 @@ class Produit(Base):
 
     __tablename__ = "PRODUIT"
 
-    idProduit = Column(Integer, primary_key = True)
+    idProduit = Column(Integer, primary_key = True, nullable = False)
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
 
@@ -67,11 +67,11 @@ class Commande(Base):
 
     __tablename__ = "COMMANDE"
 
-    idCommande = Column(Integer, primary_key = True)
+    idCommande = Column(Integer, primary_key = True, nullable = False)
     dateCommande = Column(Date)
     qteCommande = Column(Integer)
-    idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"))
-    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"))
+    idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"), nullable = False)
+    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), nullable = False)
 
     def __init__(self, idCommande, dateCommande, qteCommande, idChimiste, idProduit):
         self.idCommande = idCommande
@@ -88,8 +88,8 @@ class Faire(Base):
 
     __tablename__ = "FAIRE"
 
-    idCommande = Column(Integer, ForeignKey("COMMANDE.idCommande"), primary_key = True)
-    idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"), primary_key = True)
+    idCommande = Column(Integer, ForeignKey("COMMANDE.idCommande"), primary_key = True, nullable = False)
+    idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"), primary_key = True, nullable = False)
     statutCommande = Column(Text)
 
     def __init__(self, idCommande, idChimiste, statutCommande):
@@ -104,7 +104,7 @@ class Lieu_Stockage(Base):
     
     __tablename__ = "LIEU_STOCKAGE"
 
-    idLieu = Column(Integer, primary_key = True)
+    idLieu = Column(Integer, primary_key = True, nullable = False)
     nomLieu = Column(Text)
 
     def __init__(self, idLieu, nomLieu):
@@ -119,8 +119,8 @@ class Est_Stocker(Base):
 
     __tablename__ = "EST_STOCKER"
     
-    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True)
-    idLieu = Column(Integer, ForeignKey("LIEU.idLieu"), primary_key = True)
+    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
+    idLieu = Column(Integer, ForeignKey("LIEU.idLieu"), primary_key = True, nullable = False)
     quantiteStocke = Column(Integer)
 
     def __init__(self, idProduit, idLieu, quantiteStocke):
@@ -153,12 +153,12 @@ class Fournisseur(Base):
 
 class Historique(Base):
 
-    idAction = Column(Integer, primary_key = True)
+    idAction = Column(Integer, primary_key = True, nullable = False)
     nomAction = Column(Text)
     dateAction = Column(Date)
     qteFourni = Column(Integer)
-    idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"))
-    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"))
+    idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"), nullable = False)
+    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), nullable = False)
 
     def __init__(self, idAction, nomAction, dateAction, qteFourni, idFou, idProduit):
         self.idAction = idAction
