@@ -6,3 +6,11 @@ run:
 install:
 	virtualenv -p python3 venv
 	bash -c "source venv/bin/activate && pip install -r requirement.txt"
+
+.PHONY: tests
+tests:  
+	python -m unittest -v -b test/test_*.py
+
+.PHONY: pylint
+pylint:
+	pylint app test
