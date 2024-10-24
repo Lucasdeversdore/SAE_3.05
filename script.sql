@@ -39,7 +39,8 @@ create table PRODUIT (
     PRIMARY KEY(idProduit),
     idProduit int NOT NULL,
     nomProduit VARCHAR(50),
-    nomUnite VARCHAR(50)
+    nomUnite VARCHAR(50),
+    afficher boolean default true
 );
 
 create table EST_STOCKER (

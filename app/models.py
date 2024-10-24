@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Text, Date, Float
+from sqlalchemy import Column, Integer, Text, Date, Float, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy import func
@@ -23,6 +23,9 @@ class Chimiste(Base):
     nom = Column(Text)
     email = Column(Text)
     mdp = Column(Text)
+    chimisteCom = relationship("Commande", back_populates="commandeChim")
+    chimisteFaire = relationship("Faire", back_populates="faireChim")
+
 
     def __init__(self, idChimiste, prenom, nom, email, mdp):
         self.idChimiste = idChimiste
@@ -40,6 +43,8 @@ class Unite(Base):
     __tablename__ = "UNITE"
 
     nomUnite = Column(Text, primary_key = True)
+    uniteProd = relationship("Produit", back_populates="produitUnite")
+
 
     def __init__(self, nomUnite):
         self.nomUnite = nomUnite
@@ -54,14 +59,22 @@ class Produit(Base):
     idProduit = Column(Integer, primary_key = True, nullable = False)
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
+    afficher = Column(Boolean)
+    produitUnite = relationship("Unite", back_populates="uniteProd")
+    produitStock = relationship("Est_Stocker", back_populates="stockerProduit")
+    produitHist = relationship("Historique", back_populates="historiqueProd")
+    produitCom = relationship("Commande", back_populates="commandeProd")
+    produitFour = relationship("Fournisseur", back_populates="fournisseurProd")
+
 
     def __init__(self, idProduit, nomProduit, nomUnite):
         self.idProduit = idProduit
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
+        self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + self.nomUnite
+        return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
 
 class Commande(Base):
 
@@ -72,6 +85,9 @@ class Commande(Base):
     qteCommande = Column(Integer)
     idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"), nullable = False)
     idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), nullable = False)
+    commandeChim = relationship("Chimiste", back_populates="chimisteCom")
+    commandeFaire = relationship("Faire", back_populates="faireCom")
+    commandeProd = relationship("Produit", back_populates="produitCom")
 
     def __init__(self, idCommande, dateCommande, qteCommande, idChimiste, idProduit):
         self.idCommande = idCommande
@@ -91,6 +107,8 @@ class Faire(Base):
     idCommande = Column(Integer, ForeignKey("COMMANDE.idCommande"), primary_key = True, nullable = False)
     idChimiste = Column(Integer, ForeignKey("CHIMISTE.idChimiste"), primary_key = True, nullable = False)
     statutCommande = Column(Text)
+    faireCom = relationship("Commande", back_populates="commandeFaire")
+    faireChim = relationship("Chimiste", back_populates="chimisteFaire")
 
     def __init__(self, idCommande, idChimiste, statutCommande):
         self.idCommande = idCommande
@@ -106,6 +124,8 @@ class Lieu_Stockage(Base):
 
     idLieu = Column(Integer, primary_key = True, nullable = False)
     nomLieu = Column(Text)
+    lieuStock = relationship("Est_Stocker", back_populates="stockerLieu")
+
 
     def __init__(self, idLieu, nomLieu):
         self.idLieu = idLieu
@@ -122,6 +142,8 @@ class Est_Stocker(Base):
     idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
     idLieu = Column(Integer, ForeignKey("LIEU.idLieu"), primary_key = True, nullable = False)
     quantiteStocke = Column(Integer)
+    stockerLieu = relationship("Lieu_Stockage", back_populates="lieuStock")
+    stockerProduit = relationship("Produit", back_populates="produitStock")
 
     def __init__(self, idProduit, idLieu, quantiteStocke):
         self.idProduit = idProduit
@@ -139,6 +161,10 @@ class Fournisseur(Base):
     nomFou = Column(Text)
     adresseFou = Column(Text)
     numTelFou = Column(Integer)
+    fournisseurHist = relationship("Historique", back_populates="historiqueFour")
+    fournisseurProd = relationship("Produit", back_populates="produitFour")
+
+
 
     def __init__(self, idFou, nomFou, adresseFou, numTelFou):
 
@@ -159,6 +185,9 @@ class Historique(Base):
     qteFourni = Column(Integer)
     idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"), nullable = False)
     idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), nullable = False)
+    historiqueProd = relationship("Produit", back_populates="produitHist")
+    historiqueFour = relationship("Fournisseur", back_populates="fournisseurHist")
+
 
     def __init__(self, idAction, nomAction, dateAction, qteFourni, idFou, idProduit):
         self.idAction = idAction
