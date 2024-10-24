@@ -15,7 +15,7 @@ create table CHIMISTE (
     nom VARCHAR(50),
     email VARCHAR(50),
     mdp VARCHAR(50),
-    estPreparateur boolean
+    estPreparateur boolean default false
 );
 
 
@@ -39,7 +39,6 @@ create table PRODUIT (
     PRIMARY KEY(idProduit),
     idProduit int NOT NULL,
     nomProduit VARCHAR(50),
-    fonctionProduit VARCHAR(50),
     nomUnite VARCHAR(50)
 );
 
@@ -53,9 +52,7 @@ create table EST_STOCKER (
 create table LIEU_STOCKAGE (
     PRIMARY KEY (idLieu),
     idLieu int NOT NULL,
-    nomLieu VARCHAR(50),
-    quantiteTotale int,
-    quantiteDispo int
+    nomLieu VARCHAR(50)
 );
 
 create table UNITE (
