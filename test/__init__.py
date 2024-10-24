@@ -5,10 +5,7 @@ from sqlalchemy.orm import sessionmaker
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 sys.path.append(os.path.join(ROOT, 'app'))
 
-engine = create_engine('sqlite:///myapp.db', echo=True)
 from models import *
-
-#TODO recréer la base de données de models en dehors de l'application pour pouvoir faire les tests
 
 # Connexion à la base de données myapp
 myapp_engine = create_engine('sqlite:///myapp.db')
@@ -22,6 +19,9 @@ test_metadata = MetaData()
 # Crée les tables dans la base de données cible
 myapp_metadata.create_all(test_engine)
 
+# Pas sûr de faire ça,
+# peut-être juste copier les tables sans le contenu puis charger des données constantes
+
 # Crée une session pour la base de données source
 MyappSession = sessionmaker(bind=myapp_engine)
 myapp_session = MyappSession()
@@ -30,7 +30,6 @@ myapp_session = MyappSession()
 TestSession = sessionmaker(bind=test_engine)
 test_session = TestSession()
 
-# Pas sûr de faire ça, peut-être juste copier les tables sans le contenu puis charger des données constantes
 # Copier les données de chaque table de la base source vers la base cible
 for table in myapp_metadata.sorted_tables:
     data = myapp_session.query(table).all()

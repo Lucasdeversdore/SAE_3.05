@@ -1,5 +1,4 @@
 import unittest
-import os, sys
 
 import test.__init__
 
@@ -11,11 +10,11 @@ class Testing(unittest.TestCase):
         #TODO Terminer le test
         pass
         #TODO Remplir la liste des résultats
-        # self.assertTrue(chercher_produit("Sucre")[0], Produit(id, nomProduit, nomUnite))
+        # Ex: self.assertTrue(chercher_produit("Sucre")[0], Produit(id, nomProduit, nomUnite))
     def test_chercher_famille_produit(self):
         #TODO Terminer le test
         pass
-    def test_réserver_qte_produit(self):
+    def test_reserver_qte_produit(self):
         #TODO Terminer le test
         pass
     def test_modifier_qte_produit(self):
@@ -45,7 +44,6 @@ class Testing(unittest.TestCase):
     def test_connection(self):
         #TODO Terminer le test
         pass
-
 
 if __name__ == "__main__":
     test = Testing()
