@@ -60,6 +60,7 @@ class Produit(Base):
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
     afficher = Column(Boolean)
+    fonctionProduit = Column(Text)
     idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"))
     produitUnite = relationship("Unite", back_populates="uniteProd")
     produitStock = relationship("Est_Stocker", back_populates="stockerProduit")
@@ -68,10 +69,11 @@ class Produit(Base):
     produitFour = relationship("Fournisseur", back_populates="fournisseurProd")
 
 
-    def __init__(self, idProduit, nomProduit, nomUnite, idfou):
+    def __init__(self, idProduit, nomProduit, nomUnite, fonctionProduit, idfou):
         self.idProduit = idProduit
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
+        self.fonctionProduit = fonctionProduit
         self.idFou = idfou
         self.afficher = True
 
