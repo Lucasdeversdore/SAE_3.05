@@ -1,15 +1,9 @@
 #!/usr/bin/python3
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Text, Date, Float, Boolean
+from sqlalchemy import Column, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy import func
-import time
-from datetime import date
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import registry
-from app import *
+from .app import  db
 
 
 
