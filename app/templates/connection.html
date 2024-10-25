@@ -8,28 +8,30 @@
             content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <title>Stockage Chimie</title>
         {% endblock %}
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='position_page_co_ins.css') }}">
         <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
     </head>
     
     <body>
-        <main>
+        <main class="main_co_ins">
             <section>
-                <img src="" alt="">
+                <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
-            <section>
+            <section id="main_section">
                 <ul>
                     <li><h1>Connectez-vous</h1></li>
-                    <li><input type="text", placeholder="Entrer votre e-mail"></li>
-                    <li><input type="password", placeholder="Entrer votre mots de passe"></li>
-                    <li><input type="checkbox"></li>
-                    <li><p>Rester connecté</p></li>
-                    <li><a href="/">Me connecter</a></li>
+                    <li id="email"><input type="text", placeholder="Entrer votre e-mail"></li>
+                    <li id="pwd"><input type="password", placeholder="Entrer votre mots de passe"></li>
+                    <li id="paragraphe">
+                        <input type="checkbox">
+                        <p>Rester connecté</p>
+                        <a href="/">Me connecter</a>
+                    </li>
                     <li><a href="/inscription">Créer un compte</a></li>
                 </ul>
             </section>
             <section>
-                <img src="" alt="">
+                <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
         </main>
         <script src="app.js"></script>

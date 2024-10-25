@@ -23,5 +23,5 @@ def connecter():
     return render_template("connection.html")
 
 @app.route("/inscription")
-def inscrir():
+def inscrire():
     return render_template("inscription.html")
