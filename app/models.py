@@ -68,10 +68,11 @@ class Produit(Base):
     produitFour = relationship("Fournisseur", back_populates="fournisseurProd")
 
 
-    def __init__(self, idProduit, nomProduit, nomUnite):
+    def __init__(self, idProduit, nomProduit, nomUnite, idfou):
         self.idProduit = idProduit
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
+        self.idFou = idfou
         self.afficher = True
 
     def __str__(self):
