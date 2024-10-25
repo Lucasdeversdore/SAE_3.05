@@ -1,96 +1,101 @@
-drop table FAIRE;
-drop table EST_STOCKER;
-drop table COMMANDE;
-drop table LIEU_STOCKAGE;
-drop table HISTORIQUE;
-drop table FOURNISSEUR;
-drop table CHIMISTE;
-drop table PRODUIT;
-drop table UNITE;
+DROP TABLE IF EXISTS FAIRE;
 
-create table CHIMISTE (
-    PRIMARY KEY (idChimiste),
-    idChimiste int,
-    prenom VARCHAR(50),
-    nom VARCHAR(50),
-    email VARCHAR(50),
-    mdp VARCHAR(50),
-    estPreparateur boolean
+DROP TABLE IF EXISTS EST_STOCKER;
+
+DROP TABLE IF EXISTS COMMANDE;
+
+DROP TABLE IF EXISTS LIEU_STOCKAGE;
+
+DROP TABLE IF EXISTS HISTORIQUE;
+
+DROP TABLE IF EXISTS FOURNISSEUR;
+
+DROP TABLE IF EXISTS CHIMISTE;
+
+DROP TABLE IF EXISTS PRODUIT;
+
+DROP TABLE IF EXISTS UNITE;
+
+CREATE TABLE FAIRE (
+    idCommande int NOT NULL,
+    idChimiste int NOT NULL,
+    statutCommande VARCHAR(50),
+    CONSTRAINT PK_Faire PRIMARY KEY (idCommande, idChimiste),
+    CONSTRAINT FK_Faire_Chimiste FOREIGN KEY (idChimiste) REFERENCES CHIMISTE (idChimiste),
+    CONSTRAINT FK_Faire_Commande FOREIGN KEY (idCommande) REFERENCES COMMANDE (idCommande)
 );
 
+CREATE TABLE EST_STOCKER (
+    idProduit int NOT NULL,
+    idLieu int NOT NULL,
+    quantiteStocke int,
+    CONSTRAINT PK_Est_Stocker PRIMARY KEY (idProduit, idLieu),
+    CONSTRAINT FK_Est_Stocker_Produit FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit),
+    CONSTRAINT FK_Est_Stocker_Lieu FOREIGN KEY (idLieu) REFERENCES LIEU_STOCKAGE (idLieu)
+);
 
-create table COMMANDE (
-    PRIMARY KEY (idCommande),
+CREATE TABLE COMMANDE (
     idCommande int NOT NULL,
     dateCommande date,
     qteCommande int,
     idChimiste int NOT NULL,
-    idProduit int NOT NULL
-);
-
-create table FAIRE (
-    PRIMARY KEY(idCommande, idChimiste),
-    idCommande int NOT NULL,
-    idChimiste int NOT NULL,
-    statutCommande VARCHAR(50)
-);
-
-create table PRODUIT (
-    PRIMARY KEY(idProduit),
     idProduit int NOT NULL,
-    nomProduit VARCHAR(50),
-    fonctionProduit VARCHAR(50),
-    nomUnite VARCHAR(50)
+    CONSTRAINT PK_Commande PRIMARY KEY (idCommande),
+    CONSTRAINT FK_Commande_Produit FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit),
+    CONSTRAINT FK_Commande_Chimiste FOREIGN KEY (idChimiste) REFERENCES CHIMISTE (idChimiste)
 );
 
-create table EST_STOCKER (
-    PRIMARY KEY(idProduit, idLieu),
-    idProduit int NOT NULL,
+CREATE TABLE LIEU_STOCKAGE (
     idLieu int NOT NULL,
-    quantiteStocke int
+    nomLieu VARCHAR(50) UNIQUE,
+    CONSTRAINT PK_Lieu_Stockage PRIMARY KEY (idLieu)
 );
 
-create table LIEU_STOCKAGE (
-    PRIMARY KEY (idLieu),
-    idLieu int NOT NULL,
-    nomLieu VARCHAR(50),
-    quantiteTotale int,
-    quantiteDispo int
-);
-
-create table UNITE (
-    PRIMARY KEY (nomUnite),
-    nomUnite VARCHAR(50)
-);
-
-create table FOURNISSEUR (
-    PRIMARY KEY (idFou),
-    idFou int NOT NULL,
-    nomFou VARCHAR(50),
-    adresseFou  VARCHAR(50),
-    numTelFou int (10)
-);
-
-create table HISTORIQUE (
-    PRIMARY KEY (idAction),
+CREATE TABLE HISTORIQUE (
     idAction int NOT NULL,
     nomAction VARCHAR(50),
     dateAction date,
     qteFourni int,
     idFou int NOT NULL,
-    idProduit int NOT NULL
+    idProduit int NOT NULL,
+    CONSTRAINT PK_Historique PRIMARY KEY (idAction),
+    CONSTRAINT FK_Historique_Produit FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit),
+    CONSTRAINT FK_Historique_Fournisseur FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou)
 );
 
-ALTER TABLE COMMANDE ADD FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit);
-ALTER TABLE COMMANDE ADD FOREIGN KEY (idChimiste) REFERENCES CHIMISTE (idChimiste);
+CREATE TABLE FOURNISSEUR (
+    idFou int NOT NULL,
+    nomFou VARCHAR(50) UNIQUE,
+    adresseFou VARCHAR(50),
+    numTelFou int (10),
+    CONSTRAINT PK_Fournisseur PRIMARY KEY (idFou)
+);
 
-ALTER TABLE FAIRE ADD FOREIGN KEY (idChimiste) REFERENCES CHIMISTE (idChimiste);
-ALTER TABLE FAIRE ADD FOREIGN KEY (idCommande) REFERENCES COMMANDE (idCommande);
+CREATE TABLE CHIMISTE (
+    idChimiste int NOT NULL,
+    prenom VARCHAR(50),
+    nom VARCHAR(50),
+    email VARCHAR(50),
+    mdp VARCHAR(50),
+    estPreparateur boolean default false,
+    CONSTRAINT PK_Chimiste PRIMARY KEY (idChimiste)
+);
 
-ALTER TABLE PRODUIT ADD FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite);
+CREATE TABLE PRODUIT (
+    idProduit int NOT NULL,
+    nomProduit VARCHAR(50),
+    nomUnite VARCHAR(50),
+    afficher boolean default true,
+    fonctionProduit VARCHAR(100),
+    idFou int,
+    CONSTRAINT PK_Produit PRIMARY KEY (idProduit),
+    CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite),
+    CONSTRAINT FK_Produit_Fournisseur FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou)
 
-ALTER TABLE EST_STOCKER ADD FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit);
-ALTER TABLE EST_STOCKER ADD FOREIGN KEY (idLieu) REFERENCES LIEU_STOCKAGE (idLieu);
+);
 
-ALTER TABLE HISTORIQUE ADD FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit);
-ALTER TABLE HISTORIQUE ADD FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou);
+CREATE TABLE UNITE (
+    nomUnite VARCHAR(50),
+    CONSTRAINT PK_Unite PRIMARY KEY (nomUnite)
+);
+
