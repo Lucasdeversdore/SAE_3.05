@@ -6,3 +6,8 @@ run:
 install:
 	virtualenv -p python3 venv
 	bash -c "source venv/bin/activate && pip install -r requirement.txt"
+
+.PHONY: loaddb
+loaddb:
+	sqlite3 myapp.db ".read script.sql"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv"

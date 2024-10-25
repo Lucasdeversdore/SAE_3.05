@@ -1,6 +1,5 @@
 import csv, sys
-from models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, get_id_prod
-from app import app
+from .models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, get_id_prod
 
 def get_nombre_unite(quantite):
     nb = ""
@@ -47,5 +46,5 @@ def csv_to_db(filename):
             sys.exit('file {}, line {}: {}'.format(filename, reader.line_num, e))
 
 
-with app.app_context():
-    csv_to_db("/home/iut45/Etudiants/o22300799/Téléchargements/Produits de formulation Chimie Minérale.csv")
+
+    
