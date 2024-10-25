@@ -60,6 +60,7 @@ class Produit(Base):
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
     afficher = Column(Boolean)
+    idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"))
     produitUnite = relationship("Unite", back_populates="uniteProd")
     produitStock = relationship("Est_Stocker", back_populates="stockerProduit")
     produitHist = relationship("Historique", back_populates="historiqueProd")

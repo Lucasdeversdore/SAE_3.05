@@ -86,8 +86,11 @@ CREATE TABLE PRODUIT (
     nomProduit VARCHAR(50),
     nomUnite VARCHAR(50),
     afficher boolean default true,
+    idFou int,
     CONSTRAINT PK_Produit PRIMARY KEY (idProduit),
-    CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite)
+    CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite),
+    CONSTRAINT FK_Produit_Fournisseur FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou)
+
 );
 
 CREATE TABLE UNITE (
@@ -101,17 +104,17 @@ DECLARE
     invalid_password EXCEPTION;
 BEGIN
     -- Vérifie la présence d'une majuscule
-    IF NOT REGEXP_LIKE(:NEW.mdp, '[A-Z]') THEN
+    IF NOT REGEXP_LIKE(new.mdp, '[A-Z]') THEN
         RAISE invalid_password;
     END IF;
 
     -- Vérifie la présence d'un chiffre
-    IF NOT REGEXP_LIKE(:NEW.mdp, '[0-9]') THEN
+    IF NOT REGEXP_LIKE(new.mdp, '[0-9]') THEN
         RAISE invalid_password;
     END IF;
 
     -- Vérifie la présence d'un caractère spécial
-    IF NOT REGEXP_LIKE(:NEW.mdp, '[^a-zA-Z0-9]') THEN
+    IF NOT REGEXP_LIKE(new.mdp, '[^a-zA-Z0-9]') THEN
         RAISE invalid_password;
     END IF;
 
