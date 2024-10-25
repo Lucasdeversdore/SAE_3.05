@@ -9,12 +9,11 @@ from datetime import date
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import registry
-
-mapper_registry = registry()
-Base = mapper_registry.generate_base()
+from app import *
 
 
-class Chimiste(Base):
+
+class Chimiste(db.Model):
 
     __tablename__ = "CHIMISTE"
 
@@ -38,7 +37,7 @@ class Chimiste(Base):
         return str(self.idChimiste) + self.prenom + self.nom + self.email + self.mdp
     
 
-class Unite(Base):
+class Unite(db.Model):
 
     __tablename__ = "UNITE"
 
@@ -52,7 +51,7 @@ class Unite(Base):
     def __str__(self):
         return self.nomUnite
 
-class Produit(Base):
+class Produit(db.Model):
 
     __tablename__ = "PRODUIT"
 
@@ -60,6 +59,7 @@ class Produit(Base):
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
     afficher = Column(Boolean)
+    fonctionProduit = Column(Text)
     idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"))
     produitUnite = relationship("Unite", back_populates="uniteProd")
     produitStock = relationship("Est_Stocker", back_populates="stockerProduit")
@@ -68,16 +68,18 @@ class Produit(Base):
     produitFour = relationship("Fournisseur", back_populates="fournisseurProd")
 
 
-    def __init__(self, idProduit, nomProduit, nomUnite):
+    def __init__(self, idProduit, nomProduit, nomUnite, fonctionProduit, idfou):
         self.idProduit = idProduit
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
+        self.fonctionProduit = fonctionProduit
+        self.idFou = idfou
         self.afficher = True
 
     def __str__(self):
         return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
 
-class Commande(Base):
+class Commande(db.Model):
 
     __tablename__ = "COMMANDE"
 
@@ -101,7 +103,7 @@ class Commande(Base):
         return str(self.idChimiste) + str(self.dateCommande) + str(self.qteCommande)  + str(self.idChimiste) + str(self.idProduit)
 
 
-class Faire(Base):
+class Faire(db.Model):
 
     __tablename__ = "FAIRE"
 
@@ -118,8 +120,29 @@ class Faire(Base):
     
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
+
+
+class Est_Stocker(db.Model):
+
+    __tablename__ = "EST_STOCKER"
     
-class Lieu_Stockage(Base):
+    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
+    idLieu = Column(Integer, ForeignKey("LIEU_STOCKAGE.idLieu"), primary_key = True, nullable = False)
+    quantiteStocke = Column(Integer)
+    stockerLieu = relationship("Lieu_Stockage", back_populates="lieuStock")
+    stockerProduit = relationship("Produit", back_populates="produitStock")
+
+    def __init__(self, idProduit, idLieu, quantiteStocke):
+        self.idProduit = idProduit
+        self.idLieu = idLieu
+        self.quantiteStocke = quantiteStocke
+    
+    def __str__(self):
+        return str(self.idProduit) + str(self.idLieu) + self.quantiteStocke
+
+
+
+class Lieu_Stockage(db.Model):
     
     __tablename__ = "LIEU_STOCKAGE"
 
@@ -136,25 +159,9 @@ class Lieu_Stockage(Base):
         return str(self.idLieu) + self.nomLieu
     
 
-class Est_Stocker(Base):
 
-    __tablename__ = "EST_STOCKER"
-    
-    idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
-    idLieu = Column(Integer, ForeignKey("LIEU.idLieu"), primary_key = True, nullable = False)
-    quantiteStocke = Column(Integer)
-    stockerLieu = relationship("Lieu_Stockage", back_populates="lieuStock")
-    stockerProduit = relationship("Produit", back_populates="produitStock")
 
-    def __init__(self, idProduit, idLieu, quantiteStocke):
-        self.idProduit = idProduit
-        self.idLieu = idLieu
-        self.quantiteStocke = quantiteStocke
-    
-    def __str__(self):
-        return str(self.idProduit) + str(self.idLieu) + self.quantiteStocke
-
-class Fournisseur(Base):
+class Fournisseur(db.Model):
 
     __tablename__ = "FOURNISSEUR"
 
@@ -178,7 +185,8 @@ class Fournisseur(Base):
         return str(self.idFou) + self.nomFou + self.adresseFou + str(self.numTelFou)
 
 
-class Historique(Base):
+class Historique(db.Model):
+    __tablename__ = "HISRORIQUE"
 
     idAction = Column(Integer, primary_key = True, nullable = False)
     nomAction = Column(Text)
@@ -200,3 +208,50 @@ class Historique(Base):
     
     def __str__(self):
         return str(self.idAction) + self.nomAction + str(self.dateAction) + str(self.qteFourni) + str(self.idFou) + str(self.idProduit)
+
+
+def add_unite(nom):
+    try:
+        unit = Unite(nom)
+        db.session.add(unit)
+        db.commit()
+    except:
+        print(nom +" existe déjà")
+
+def next_fou_id():
+    max_id = db.session.query(func.max(Fournisseur.idFou)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+def add_fournisseur(nom):
+    try:
+        id = next_fou_id()
+        fou = Fournisseur(id, nom, None, None)
+        db.session.add(fou)
+        db.session.commit()
+    except:
+        print(nom +" existe déjà")
+
+def get_id_fournisseur(nom):
+    return Fournisseur.query.filter(Fournisseur.nomFou == nom).all()[0].idFou
+
+
+def next_prod_id():
+    max_id = db.session.query(func.max(Produit.idProduit)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+def add_prod(nom, unite, fonctionProd, four):
+    id = next_prod_id()
+    add_unite(unite)
+    add_fournisseur(four)
+    id_fou = get_id_fournisseur(four)
+    prod = Produit(id, nom, unite, fonctionProd, id_fou)
+    db.session.add(prod)
+    db.session.commit()
+
+
+
+
+
+

@@ -65,7 +65,7 @@ CREATE TABLE HISTORIQUE (
 
 CREATE TABLE FOURNISSEUR (
     idFou int NOT NULL,
-    nomFou VARCHAR(50),
+    nomFou VARCHAR(50) UNIQUE,
     adresseFou VARCHAR(50),
     numTelFou int (10),
     CONSTRAINT PK_Fournisseur PRIMARY KEY (idFou)
@@ -86,6 +86,7 @@ CREATE TABLE PRODUIT (
     nomProduit VARCHAR(50),
     nomUnite VARCHAR(50),
     afficher boolean default true,
+    fonctionProduit VARCHAR(100),
     idFou int,
     CONSTRAINT PK_Produit PRIMARY KEY (idProduit),
     CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite),
