@@ -65,7 +65,7 @@ CREATE TABLE HISTORIQUE (
 
 CREATE TABLE FOURNISSEUR (
     idFou int NOT NULL,
-    nomFou VARCHAR(50),
+    nomFou VARCHAR(50) UNIQUE,
     adresseFou VARCHAR(50),
     numTelFou int (10),
     CONSTRAINT PK_Fournisseur PRIMARY KEY (idFou)

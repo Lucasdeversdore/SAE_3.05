@@ -159,7 +159,7 @@ class Fournisseur(Base):
     __tablename__ = "FOURNISSEUR"
 
     idFou = Column(Integer, primary_key = True, nullable = False)
-    nomFou = Column(Text)
+    nomFou = Column(Text, unique=True)
     adresseFou = Column(Text)
     numTelFou = Column(Integer)
     fournisseurHist = relationship("Historique", back_populates="historiqueFour")
