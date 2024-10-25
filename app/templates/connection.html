@@ -15,7 +15,7 @@
     <body>
         <main class="main_co_ins">
             <section>
-                <img src="/home/iut45/Etudiants/o22300799/WEB/2a-web-serveur/TP1/tuto-flask/tuto/static/images/41dtf0H5pIL._SL160_SL150_.jpg" alt="">
+                <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
                 <ul>
@@ -31,7 +31,7 @@
                 </ul>
             </section>
             <section>
-                <img src="/home/iut45/Etudiants/o22300799/WEB/2a-web-serveur/TP1/tuto-flask/tuto/static/images/41dtf0H5pIL._SL160_SL150_.jpg" alt="">
+                <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
         </main>
         <script src="app.js"></script>
