@@ -1,6 +1,7 @@
 import unittest
 
 import test.__init__
+from models import *
 
 class Testing(unittest.TestCase):
     """

@@ -5,8 +5,6 @@ from sqlalchemy.orm import sessionmaker
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 sys.path.append(os.path.join(ROOT, 'app'))
 
-from models import *
-
 # Connexion à la base de données myapp
 myapp_engine = create_engine('sqlite:///myapp.db')
 myapp_metadata = MetaData()  # Utilise l'initialisation par défaut
