@@ -138,7 +138,7 @@ class Est_Stocker(db.Model):
         self.quantiteStocke = quantiteStocke
     
     def __str__(self):
-        return str(self.idProduit) + str(self.idLieu) + self.quantiteStocke
+        return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
 
 
 
@@ -211,12 +211,12 @@ class Historique(db.Model):
 
 
 def add_unite(nom):
-    try:
+    existing_unite = Unite.query.filter_by(nomUnite=nom).first()
+    if not existing_unite and nom is not None:
         unit = Unite(nom)
         db.session.add(unit)
-        db.commit()
-    except:
-        print(nom +" existe déjà")
+        db.session.commit()
+   
 
 def next_fou_id():
     max_id = db.session.query(func.max(Fournisseur.idFou)).scalar()
@@ -224,13 +224,13 @@ def next_fou_id():
     return next_id
 
 def add_fournisseur(nom):
-    try:
+    existing_fou = Fournisseur.query.filter_by(nomFou=nom).first()
+    if not existing_fou:
         id = next_fou_id()
         fou = Fournisseur(id, nom, None, None)
         db.session.add(fou)
         db.session.commit()
-    except:
-        print(nom +" existe déjà")
+
 
 def get_id_fournisseur(nom):
     return Fournisseur.query.filter(Fournisseur.nomFou == nom).all()[0].idFou
@@ -249,8 +249,42 @@ def add_prod(nom, unite, fonctionProd, four):
     prod = Produit(id, nom, unite, fonctionProd, id_fou)
     db.session.add(prod)
     db.session.commit()
+    return id
+
+def get_id_prod(nom_prod):
+    return Produit.query.filter(Produit.nomProduit == nom_prod).all()[0].idProduit
 
 
+def next_lieu_id():
+    max_id = db.session.query(func.max(Lieu_Stockage.idLieu)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+def add_lieu_stock(nom_lieu):
+    existing_lieu = Lieu_Stockage.query.filter_by(nomLieu=nom_lieu).first()
+    if not existing_lieu:
+        id = next_lieu_id()
+        lieu = Lieu_Stockage(id, nom_lieu)
+        db.session.add(lieu)
+        db.session.commit()
+        return id
+
+def get_id_lieu(nom):
+    return Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == nom).all()[0].idLieu
+
+def add_est_stocker(idProduit, idLieu, quantiteStock):
+    existing_stock = Est_Stocker.query.filter((Est_Stocker.idLieu == idLieu) & (Est_Stocker.idProduit == idProduit)).first()
+
+    if existing_stock is None:
+        objet = Est_Stocker(idProduit, idLieu, quantiteStock)
+        db.session.add(objet)
+        db.session.commit()
+    else:
+        if quantiteStock is not None:
+            if existing_stock.quantiteStocke is None:
+                existing_stock.quantiteStocke = quantiteStock
+            else:
+                existing_stock.quantiteStocke += quantiteStock
 
 
 
