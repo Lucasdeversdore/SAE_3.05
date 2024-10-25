@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block header_nav%}
+        <a href="/">
+            {% if current_user.is_preparateur %}
+            gérer les stocks
+            {% else %}
+            liste des produits
+            {% endif %}
+        </a>
+    <a href="#", id="lien_reservation"> liste des réservations</a>
+    <a href="/connection" id="lien_logout">logout</a>
+{% endblock %}
+
+{% block top_main %}
+    <h1>Liste des réservations</h1>
+    {% if current_user.is_preparateur %}
+        <input class="barre_recherche" type="search" placeholder="Nom produit/étudiant" aria-label="Search">
+    {% else %}
+        <input class="barre_recherche" type="search" placeholder="Nom produit" aria-label="Search">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<ul>
+{% for reservation in reservations %}
+    <li>
+        <div>
+            <p>{{reservation.qte}} {{reservation.produit}} réserver par {{reservation.personne}} le {{reservation.date}}</p>
+            {% if current_user.is_preparateur %}
+                <p><a href="#">{{reservation.etat}}</a></p>  <!-- Futur bouton -->
+            { else %}
+                <!-- popup information -->
+                <div id="popup-overlay">
+                    <div id="popup-content">
+                        <h3>Êtes vous sûr de vouloir supprimer cette réservation</h3>
+                        <a href="javascript:void(0)">Annuler</a>
+                        <a href="javascript:void(0)">Supprimer</a> <!-- A remplacer par une méthode pour supprimer la réservation -->
+                    </div>
+                </div>
+                <p>
+                    {% if produit.etat == "non commencé" %}
+                        <a><img src="" alt="Bouton de suppression"></a>
+                    {% endif %}
+                    {{reservation.etat}}
+                </p>
+            {% endif %}
+        <div>
+    </li>
+{% endfor%}
+</ul>
+{% endblock %}
