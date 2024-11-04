@@ -99,3 +99,29 @@ CREATE TABLE UNITE (
     CONSTRAINT PK_Unite PRIMARY KEY (nomUnite)
 );
 
+
+CREATE TRIGGER insert_bon_mdp
+BEFORE INSERT ON CHIMISTE
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+BEGIN
+  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
+END;
+
+
+
+CREATE TRIGGER update_bon_mdp
+BEFORE UPDATE ON CHIMISTE
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+BEGIN
+  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
+END;
+
+CREATE TRIGGER verif_qte_commande
+BEFORE INSERT ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+insert into EST_STOCKER values(1, 1, 10);
+insert into COMMANDE values(1, "18/11/2004", 11, 1, 1);
