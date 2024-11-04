@@ -9,13 +9,13 @@
             <title>Stockage Chimie</title>
         {% endblock %}
         <link rel=" stylesheet " href="{{ url_for ('static', filename='position_page_co_ins.css') }}">
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='style_page_co_ins.css') }}">
     </head>
     
     <body>
         <main class="main_co_ins">
             <section>
-                <img src="" alt="">
+                <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
                 <ul>
@@ -32,7 +32,7 @@
                 </ul>
             </section>
             <section>
-                <img src="" alt="">
+                <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
         </main>
         <script src="app.js"></script>

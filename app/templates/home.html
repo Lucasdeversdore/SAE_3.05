@@ -30,7 +30,7 @@
                                 <div id="popup-content">
                                     <h3>Détail produit</h3>
                                     <p>Fonction :</p>
-                                    <p>{{ produit.fonction }}</p>
+                                    <p>{{ produit.fonctionProduit }}</p>
                                     <p>Lieu de stockage :</p>
                                     <p>{{ produit.lieu }}</p>
                                     <a href="javascript:void(0)">ok</a>
@@ -70,8 +70,8 @@
                         {% if current_user.is_preparateur %}
                             <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
                         {% endif %}
-                        <img src="{{url_for('static', filename='images/'+produit.img)}}">
-                        <p>{{produit.nom}}</p>
+                        <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit">
+                        <p>{{produit.nomProduit}}</p>
                         <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}"></button>
                         {% if produit.disponible %}
                             <p>Disponible</p>

@@ -1,14 +1,14 @@
 main{
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     width : 100%;
     padding-left: 0%;
+    margin-top: 5%;
 }
 
 section{
-    width:50%;
-    margin-top: 5%;
-    
+    flex-basis:3%;
+    flex-grow: 1;
 }
 
 ul li{
@@ -33,7 +33,7 @@ h1{
 }
 
 #pwd input{
-    width: 100%
+    width: 99%
 }
 
 #email, #pwd{
@@ -87,5 +87,6 @@ input{
     margin-bottom: 4%;
 }
 
-
-
+img{
+    padding: 10%;
+}

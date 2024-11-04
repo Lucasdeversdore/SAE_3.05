@@ -292,3 +292,6 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,flask,virtualenv
 
+# Ajout supplémentaires nécessaires
+test.db
+nomDB.py
