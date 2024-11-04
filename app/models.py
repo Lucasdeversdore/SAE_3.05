@@ -281,5 +281,9 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
                 existing_stock.quantiteStocke += quantiteStock
 
 
+def get_sample(nb=20):
+    """Renvoie 20 produits de la base de donnée"""
+    return Produit.query.limit(nb).all()
+
 
 
