@@ -99,3 +99,38 @@ CREATE TABLE UNITE (
     CONSTRAINT PK_Unite PRIMARY KEY (nomUnite)
 );
 
+
+CREATE TRIGGER insert_bon_mdp
+BEFORE INSERT ON CHIMISTE
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+BEGIN
+  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
+END;
+
+CREATE TRIGGER update_bon_mdp
+BEFORE UPDATE ON CHIMISTE
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+BEGIN
+  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
+END;
+
+CREATE TRIGGER insert_verif_qte_commande
+BEFORE INSERT ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+CREATE TRIGGER update_verif_qte_commande
+BEFORE UPDATE ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+CREATE TRIGGER update_commande_statut
+BEFORE UPDATE ON FAIRE
+WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COMMANDE where idCommande = OLD.idCommande) = (SELECT qteCommande from COMMANDE where idCommande = NEW.idCommande))
+BEGIN
+    SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
+END;
