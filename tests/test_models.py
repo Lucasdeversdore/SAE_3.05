@@ -1,10 +1,12 @@
 import unittest
 import os, sys
 
-import test.__init__
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 sys.path.append(os.path.abspath(ROOT))
+import nomDB
+from app.app import app
 from app.models import *
+from app.app import app
 
 class Testing(unittest.TestCase):
     """
