@@ -116,12 +116,23 @@ BEGIN
   SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
 END;
 
-CREATE TRIGGER verif_qte_commande
+CREATE TRIGGER insert_verif_qte_commande
 BEFORE INSERT ON COMMANDE
 WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
 BEGIN
     SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
 END;
 
-insert into EST_STOCKER values(1, 1, 10);
-insert into COMMANDE values(1, "18/11/2004", 11, 1, 1);
+CREATE TRIGGER update_verif_qte_commande
+BEFORE UPDATE ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+CREATE TRIGGER update_commande_statut
+BEFORE UPDATE ON FAIRE
+WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COMMANDE where idCommande = OLD.idCommande) = (SELECT qteCommande from COMMANDE where idCommande = NEW.idCommande))
+BEGIN
+    SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
+END;
