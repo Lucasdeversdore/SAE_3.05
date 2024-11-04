@@ -47,7 +47,7 @@ CREATE TABLE COMMANDE (
 
 CREATE TABLE LIEU_STOCKAGE (
     idLieu int NOT NULL,
-    nomLieu VARCHAR(50),
+    nomLieu VARCHAR(50) UNIQUE,
     CONSTRAINT PK_Lieu_Stockage PRIMARY KEY (idLieu)
 );
 
