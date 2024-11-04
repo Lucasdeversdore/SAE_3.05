@@ -17,10 +17,14 @@ class Testing(unittest.TestCase):
             self.assertEqual(search_filter(""), get_all_prod())
             self.assertEqual(search_filter("make"), [])
             self.assertEqual(search_filter("acide"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
+            self.assertEqual(search_filter("ACIDE"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
 
     def test_chercher_famille_produit(self):
-        #TODO Terminer le test
-        pass
+        with app.app_context():
+            self.assertEqual(search_famille_filter(""), get_all_prod())
+            self.assertEqual(search_famille_filter("make"), [])
+            self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
+
     def test_reserver_qte_produit(self):
         #TODO Terminer le test
         pass

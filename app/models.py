@@ -303,8 +303,18 @@ def search_filter(q):
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             results2.append(prod)
-    results = results2    
+    results = results2  
     return results
 
 
-
+def search_famille_filter(q):
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if prod.fonctionProduit is None:
+            prod.fonctionProduit = ""
+        if q.upper() in prod.fonctionProduit.upper():
+            results2.append(prod)
+    
+    results = results2
+    return results
