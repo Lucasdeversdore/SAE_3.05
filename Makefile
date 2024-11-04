@@ -1,5 +1,6 @@
 .PHONY: run
 run:
+	echo "nomDB = 'myapp.db'" > nomDB.py
 	bash -c "source venv/bin/activate && flask run"
 
 .PHONY: install
@@ -8,8 +9,11 @@ install:
 	bash -c "source venv/bin/activate && pip install -r requirement.txt"
 
 .PHONY: tests
-tests:  
-	python -m unittest -v -b test/test_*.py
+tests:
+	echo "nomDB = 'test.db'" > nomDB.py
+	sqlite3 test.db ".read script.sql"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv"
+	python -m unittest -v -b tests/test_*.py
 
 .PHONY: pylint
 pylint:
@@ -17,6 +21,6 @@ pylint:
 
 .PHONY: loaddb
 loaddb:
+	echo "nomDB = 'myapp.db'" > nomDB.py
 	sqlite3 myapp.db ".read script.sql"
 	bash -c "source venv/bin/activate && flask loaddb bd.csv"
-
