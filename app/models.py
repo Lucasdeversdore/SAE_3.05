@@ -281,9 +281,40 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
                 existing_stock.quantiteStocke += quantiteStock
 
 
+def get_all_prod():
+    return Produit.query.all()
+
 def get_sample(nb=20):
     """Renvoie 20 produits de la base de donnée"""
     return Produit.query.limit(nb).all()
 
 
+def search_filter(q):
+    """renvoie une liste de produit selon une requete q  
 
+    Args:
+        q (str): requete de l'utilisateur
+
+    Returns:
+        list: liste de produit
+    """
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if q.upper() in prod.nomProduit.upper():
+            results2.append(prod)
+    results = results2  
+    return results
+
+
+def search_famille_filter(q):
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if prod.fonctionProduit is None:
+            prod.fonctionProduit = ""
+        if q.upper() in prod.fonctionProduit.upper():
+            results2.append(prod)
+    
+    results = results2
+    return results
