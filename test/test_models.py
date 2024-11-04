@@ -1,7 +1,10 @@
 import unittest
+import os, sys
 
 import test.__init__
-from models import *
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+sys.path.append(os.path.abspath(ROOT))
+from app.models import *
 
 class Testing(unittest.TestCase):
     """

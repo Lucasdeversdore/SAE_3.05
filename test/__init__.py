@@ -3,7 +3,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-sys.path.append(os.path.join(ROOT, 'app'))
+sys.path.append(os.path.abspath(ROOT))
 
 # Connexion à la base de données myapp
 myapp_engine = create_engine('sqlite:///myapp.db')
