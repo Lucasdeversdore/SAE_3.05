@@ -75,7 +75,7 @@ CREATE TABLE CHIMISTE (
     idChimiste int NOT NULL,
     prenom VARCHAR(50),
     nom VARCHAR(50),
-    email VARCHAR(50),
+    email VARCHAR(50) UNIQUE,
     mdp VARCHAR(50),
     estPreparateur boolean default false,
     CONSTRAINT PK_Chimiste PRIMARY KEY (idChimiste)
@@ -134,3 +134,5 @@ WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COM
 BEGIN
     SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
 END;
+
+insert into CHIMISTE values (1, "dev", "dev", "exemple.dev@gmail.com", "A1#45678", true);
