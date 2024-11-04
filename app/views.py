@@ -1,5 +1,6 @@
 from .app import app
 from flask import render_template
+from .models import get_sample
 
 #TODO Mettre un login required sur toutes les pages qui le nécessite
 
@@ -7,7 +8,7 @@ from flask import render_template
 def home():
     #TODO log pour current_user, supprimer current_user de render templete
     #TODO donner une liste de produits à liste_produit dans render
-    liste_produit=[]
+    liste_produit = get_sample()
     return render_template("home.html", liste_produit=liste_produit, current_user=True) 
 
 @app.route("/preparation/reservations")
