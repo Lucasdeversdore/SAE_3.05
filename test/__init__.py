@@ -3,7 +3,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-sys.path.append(os.path.join(ROOT, 'app'))
+sys.path.append(os.path.abspath(ROOT))
 
 # Connexion à la base de données myapp
 myapp_engine = create_engine('sqlite:///myapp.db')
@@ -18,25 +18,25 @@ test_metadata = MetaData()
 myapp_metadata.create_all(test_engine)
 
 # Pas sûr de faire ça,
-# peut-être juste copier les tables sans le contenu puis charger des données constantes
+# # peut-être juste copier les tables sans le contenu puis charger des données constantes
 
-# Crée une session pour la base de données source
-MyappSession = sessionmaker(bind=myapp_engine)
-myapp_session = MyappSession()
+# # Crée une session pour la base de données source
+# MyappSession = sessionmaker(bind=myapp_engine)
+# myapp_session = MyappSession()
 
-# Crée une session pour la base de données cible
-TestSession = sessionmaker(bind=test_engine)
-test_session = TestSession()
+# # Crée une session pour la base de données cible
+# TestSession = sessionmaker(bind=test_engine)
+# test_session = TestSession()
 
-# Copier les données de chaque table de la base source vers la base cible
-for table in myapp_metadata.sorted_tables:
-    data = myapp_session.query(table).all()
-    for row in data:
-        test_session.execute(table.insert(), row._asdict())
+# # Copier les données de chaque table de la base source vers la base cible
+# for table in myapp_metadata.sorted_tables:
+#     data = myapp_session.query(table).all()
+#     for row in data:
+#         test_session.execute(table.insert(), row._asdict())
 
-# Commit les modifications
-test_session.commit()
+# # Commit les modifications
+# test_session.commit()
 
-# Ferme les sessions
-myapp_session.close()
-test_session.close()
+# # Ferme les sessions
+# myapp_session.close()
+# test_session.close()
