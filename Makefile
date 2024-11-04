@@ -14,3 +14,9 @@ tests:
 .PHONY: pylint
 pylint:
 	pylint app test
+
+.PHONY: loaddb
+loaddb:
+	sqlite3 myapp.db ".read script.sql"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv"
+
