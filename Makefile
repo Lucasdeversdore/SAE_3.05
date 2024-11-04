@@ -11,8 +11,6 @@ install:
 .PHONY: tests
 tests:
 	echo "nomDB = 'test.db'" > nomDB.py
-	sqlite3 test.db ".read script.sql"
-	bash -c "source venv/bin/activate && flask loaddb bd.csv"
 	python -m unittest -v -b tests/test_*.py
 
 .PHONY: pylint
@@ -23,4 +21,10 @@ pylint:
 loaddb:
 	echo "nomDB = 'myapp.db'" > nomDB.py
 	sqlite3 myapp.db ".read script.sql"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv"
+
+.PHONY: loaddb-test
+loaddb_test:
+	echo "nomDB = 'test.db'" > nomDB.py
+	sqlite3 test.db ".read script.sql"
 	bash -c "source venv/bin/activate && flask loaddb bd.csv"
