@@ -26,11 +26,10 @@
                     <div class="produit">
                         <section class="popup">
                             <!-- popup information -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     <h3>Détail produit</h3>
-                                    <p>Fonction :</p>
-                                    <p>{{ produit.fonctionProduit }}</p>
+                                    <p>Fonction : {{ produit.fonctionProduit }}</p>
                                     <p>Lieu de stockage :</p>
                                     <p>{{ produit.lieu }}</p>
                                     <a href="javascript:void(0)">ok</a>
@@ -38,7 +37,7 @@
                             </div>
 
                             <!-- popup réserver -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     <p>Quantité en Stock : {{ produit.stock }}</p>
                                     <p> Quantité réservé </p>
@@ -53,14 +52,14 @@
                             </div>
 
                             <!-- popup supprimer un produit mot de passe -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     
                                 </div>
                             </div>
 
                             <!-- popup supprimer un produit confirmation -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     
                                 </div>
@@ -70,9 +69,8 @@
                         {% if current_user.is_preparateur %}
                             <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
                         {% endif %}
-                        <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit">
-                        <p>{{produit.nomProduit}}</p>
-                        <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}"></button>
+                        <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
+                        <p>{{produit.nomProduit}}   <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
                         {% if produit.disponible %}
                             <p>Disponible</p>
                             {% if current_user.is_preparateur %}

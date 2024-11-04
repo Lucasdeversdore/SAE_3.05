@@ -1,7 +1,6 @@
 html, body {
     height: 100%;
     margin: 0;
-    padding: 0;
 }
 
 header{
@@ -19,32 +18,36 @@ header{
 }
 
 .header_nav a{
-    padding-left: 9%;
+    padding-left: 9em;
     flex-grow :0.2;
 }
 
 
 #lien_reservation{
     flex-grow: 10;
-    padding-left: 2%;
+    padding-left: 2em;
 }
 
 #lien_logout{
-    margin-right: 3%;
+    margin-right: 3em;
 }
 
-main{
-    padding-left: 9%;
+.content{
+    margin-top: 3em;
+    margin-left: 10em;
+    margin-right: 10em;
 }
 
 .top_main{
+    margin-top: 2em;
+    padding-left: 9em;
+    padding-right: 9em;
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
 }
 
 .top_main h1{
-    width: 84%;
+    width: 100%;
 }
 
 .top_main .barre_recherche{
@@ -52,6 +55,14 @@ main{
     margin-bottom: 20px;
 }
 
+li{
+    flex-basis: 20%;
+    flex-grow: 1;
+    margin: 1em;
+}
 
-
-
+ul{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0px;
+}
