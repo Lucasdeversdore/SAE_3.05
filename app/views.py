@@ -4,7 +4,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import redirect, render_template, url_for
-from .models import Chimiste, get_sample, search_filter, search_famille_filter
+from .models import Chimiste, get_sample_prduit, get_sample_reservation, search_filter, search_famille_filter
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -37,14 +37,13 @@ class InscriptionForm(FlaskForm):
 @app.route("/")
 @login_required
 def home():
-    liste_produit = get_sample(141)
+    liste_produit = get_sample_prduit(141)
     return render_template("home.html", liste_produit=liste_produit)
 
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
-    #TODO remplir reservations avec la liste des reservations ordonné dans un ordre pré définie
-    reservations = [] 
+    reservations = get_sample_reservation()
     return render_template("reservation-preparation.html", reservations=reservations)
 
 
