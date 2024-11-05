@@ -1,6 +1,7 @@
 from .app import app
 from flask import render_template
-from .models import get_sample
+from .models import get_sample, search_filter, search_famille_filter
+from flask import request
 
 #TODO Mettre un login required sur toutes les pages qui le nécessite
 
@@ -26,3 +27,10 @@ def connecter():
 @app.route("/inscription")
 def inscrire():
     return render_template("inscription.html")
+
+@app.route("/search", methods=('GET',))
+def search():
+    q = request.args.get("search")
+    results = search_filter(q) + search_famille_filter(q)
+    return render_template("home.html", liste_produit=results, current_user=True)
+
