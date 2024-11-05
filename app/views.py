@@ -61,7 +61,7 @@ def inscrire():
             return redirect(url_for('inscription'))
         
         # Créer un nouvel utilisateur Chimiste
-        nouveau_chimiste = Chimiste(prenom=prenom, nom=nom, email=email, mdp=mdp)
+        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=mdp)
         
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
