@@ -135,4 +135,4 @@ BEGIN
     SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
 END;
 
-insert into CHIMISTE values (1, "dev", "dev", "exemple.dev@gmail.com", "A1#45678", true);
+insert into CHIMISTE values (1, 'dev', 'dev', 'exemple.dev@gmail.com', 'A1#45678', 1);

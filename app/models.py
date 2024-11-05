@@ -329,9 +329,8 @@ def cnx_chimiste(email, mdp):
         None : si l'email et le mot de passe sont corrects
         str : un message d'erreur si l'email n'existe pas ou si le mot de passe ne corespond pas.
     """
-
     chimiste = Chimiste.query.filter(Chimiste.email == email).first()
-    if chimiste is None:
+    if not chimiste:
         return "Email incorrect"
     if chimiste.mdp != mdp:
         return "Mot de passe incorrect"
