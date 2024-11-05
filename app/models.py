@@ -299,9 +299,13 @@ def next_chimiste_id():
 def get_all_prod():
     return Produit.query.all()
 
-def get_sample(nb=20):
+def get_sample_prduit(nb=20):
     """Renvoie 20 produits de la base de donnée"""
     return Produit.query.limit(nb).all()
+
+def get_sample_reservation(nb=20):
+    """Renvoie 20 reservations de la base de donnée"""
+    return Commande.query.limit(nb).all()
 
 
 def search_filter(q):
