@@ -53,6 +53,7 @@ def search():
 
 @app.route("/test/connection", methods=('GET', 'POST'))
 def connection():
+    user = None
     f = LoginForm()
     if not f.is_submitted():
         f.next.data = request.args.get("next")
