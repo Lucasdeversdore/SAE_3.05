@@ -75,7 +75,7 @@ CREATE TABLE CHIMISTE (
     idChimiste int NOT NULL,
     prenom VARCHAR(50),
     nom VARCHAR(50),
-    email VARCHAR(50),
+    email VARCHAR(50) UNIQUE,
     mdp VARCHAR(50),
     estPreparateur boolean default false,
     CONSTRAINT PK_Chimiste PRIMARY KEY (idChimiste)
@@ -102,14 +102,14 @@ CREATE TABLE UNITE (
 
 CREATE TRIGGER insert_bon_mdp
 BEFORE INSERT ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
 BEGIN
   SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
 END;
 
 CREATE TRIGGER update_bon_mdp
 BEFORE UPDATE ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
 BEGIN
   SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
 END;
@@ -134,3 +134,5 @@ WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COM
 BEGIN
     SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
 END;
+
+insert into CHIMISTE values (1, "dev", "dev", "exemple.dev@gmail.com", "A1#45678", true);
