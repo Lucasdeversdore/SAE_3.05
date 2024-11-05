@@ -21,19 +21,22 @@
                 {% if msg %}
                     <h1>{{msg}}</h1>
                 {% endif %}
-                <form action="{{ url_for('connection') }}" method="GET">
-                <ul>
-                    <li><h1>Connectez-vous</h1></li>
-                    <li id="email"><input type="text" name="email" placeholder="Entrer votre e-mail" ></li>
-                    <li id="pwd"><input type="password" name="pwd" placeholder="Entrer votre mots de passe" ></li>
-                    <li id="paragraphe">
-                        <input type="checkbox">
-                        <p>Rester connecté</p>
-                        <button type="submit">Me connecter</button>
+                <form role="form" method="POST" action = "{{ url_for ('connection') }}">
+                    {{ form.hidden_tag() }}
+                    <ul>
+                        <li><h1>Connectez-vous</h1></li>
+                        <li id="email">{{ form.email(placeholder ="Entrer votre email") }}</li>
                         
-                    </li>
-                    <li><a href="/inscription">Créer un compte</a></li>
-                </ul>
+                        <li id="pwd">{{ form.password(placeholder ="Entrer votre mot de passe") }}</li>
+                        
+                        <li id="paragraphe">
+                            <input type="checkbox">
+                            <p>Rester connecté</p>
+                            <button type="submit">Se connecter</button>
+                            
+                        </li>
+                        <li><a href="/inscription">Créer un compte</a></li>
+                    </ul>     
                 </form>
             </section>
             <section>
