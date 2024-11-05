@@ -6,8 +6,9 @@ header{
     height: 10em;
     top: 0;
     position: sticky;
-    padding-left: 9em;
-    padding-right: 9em;
+    padding-left: 9%;
+    padding-right: 9%;
+    z-index: 1000;
 }
 
 .header_nav{
@@ -24,7 +25,7 @@ header{
     justify-content: space-between;
 }
 
-header a{
+header a, header button{
     padding: 1em;
     margin: 1em;
     display: block;
@@ -32,22 +33,40 @@ header a{
 
 .content{
     margin-top: 3em;
-    margin-left: 10em;
-    margin-right: 10em;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .top_main{
     margin-top: 2em;
-    padding-left: 9em;
-    padding-right: 9em;
+    padding-left: 9%;
+    padding-right: 9%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: nowrap;
 }
 
+.top_main button{
+    width: 15em;
+    height: 5em;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 1em;
+}
+
+.top_main button img{
+    height: 3em;
+    size: 100%;
+}
+
 .top_main .barre_recherche{
-    margin-top: 20px;
-    margin-bottom: 20px;
+    width: 25em;
+    height: 3em;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 li{
@@ -60,6 +79,7 @@ li{
 .produit{
     padding: 0.5em;
     align-items: center;
+    position: relative;
 }
 
 ul{
@@ -72,10 +92,11 @@ ul{
 
 p{
     text-align: center;
+    vertical-align: middle;
 }
 
 .bouton{
-    height: 5em;
+    height: 6em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -83,6 +104,32 @@ p{
 }
 
 .bouton > button{
+    margin: 0.5em;
     height: 2.5em;
     width: 80%;
+}
+
+.supp_produit{
+    padding: 0px;
+    width: 3em;
+    height: 3em;
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+}
+
+.supp_produit img{
+    width: 100%;
+    height: 100%;
+}
+
+.info_prod{
+    padding: 0px;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.info_prod img{
+    width: 100%;
+    height: 100%;
 }
