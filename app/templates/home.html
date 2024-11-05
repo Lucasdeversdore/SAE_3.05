@@ -13,7 +13,7 @@
 
     {% block top_main %}
         {% if current_user.estPreparateur %}
-            <buton id="ajouter_prod" type="submit"> Ajouter un produit </buton>
+            <button id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
@@ -70,10 +70,10 @@
                         </section>
 
                         {% if current_user.estPreparateur %}
-                            <button id="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
+                            <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}   <button class="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
+                        <p>{{produit.nomProduit}}   <button class="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
                         {% if produit.disponible %}
                             <p>Disponible</p>
                             <div class="bouton">
