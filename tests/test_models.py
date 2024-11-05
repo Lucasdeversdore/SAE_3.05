@@ -1,23 +1,30 @@
 import unittest
 import os, sys
 
-import test.__init__
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 sys.path.append(os.path.abspath(ROOT))
+import nomDB
+from app.app import app
 from app.models import *
+from app.app import app
 
 class Testing(unittest.TestCase):
     """
     On utilsera une base de données test pour effectuer les tests
     """
     def test_chercher_produit(self):
-        #TODO Terminer le test
-        pass
-        #TODO Remplir la liste des résultats
-        # Ex: self.assertTrue(chercher_produit("Sucre")[0], Produit(id, nomProduit, nomUnite))
+        with app.app_context():
+            self.assertEqual(search_filter(""), get_all_prod())
+            self.assertEqual(search_filter("make"), [])
+            self.assertEqual(search_filter("acide"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
+            self.assertEqual(search_filter("ACIDE"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
+
     def test_chercher_famille_produit(self):
-        #TODO Terminer le test
-        pass
+        with app.app_context():
+            self.assertEqual(search_famille_filter(""), get_all_prod())
+            self.assertEqual(search_famille_filter("make"), [])
+            self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
+
     def test_reserver_qte_produit(self):
         #TODO Terminer le test
         pass
@@ -51,3 +58,4 @@ class Testing(unittest.TestCase):
 
 if __name__ == "__main__":
     test = Testing()
+    test.recherche

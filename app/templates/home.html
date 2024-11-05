@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 
     {% block header_nav%}
-        {% if current_user.is_preparateur %}
+        {% if current_user.estPreparateur %}
             <a href="#">gérer les stocks</a>
         {% else %}
-            <a href="#">liste des produits</a>
+            <a href="/">liste des produits</a>
         {% endif %}
         <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
-        <a href="/connection" id="lien_logout">logout</a>
     {% endblock %}
 
     {% block top_main %}
-        {% if current_user.is_preparateur %}
-            <buton id="ajouter_prod"> Ajouter un produit </buton>
+        {% if current_user.estPreparateur %}
+            <buton id="ajouter_prod" type="submit"> Ajouter un produit </buton>
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
-        <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search">
+        <form  action="{{ url_for('search') }}" method="GET">
+            <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search" name="search" id="search">
+        </form>
     {% endblock %}
 
     {% block content %}
@@ -67,21 +68,21 @@
                             </div>
                         </section>
 
-                        {% if current_user.is_preparateur %}
-                            <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
+                        {% if current_user.estPreparateur %}
+                            <button id="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit">
                         <p>{{produit.nomProduit}}</p>
                         <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}"></button>
                         {% if produit.disponible %}
                             <p>Disponible</p>
-                            {% if current_user.is_preparateur %}
+                            {% if current_user.estPreparateur %}
                                 <button id="Modifier"> Modifier </button>
                             {% endif %}
                             <button id="Reserver"> Reserver </button>
                         {% else %}
                             <p>Indisponible</p>
-                            {% if current_user.is_preparateur %}
+                            {% if current_user.estPreparateur %}
                                 <button id="Modifier"> Modifier </button>
                             {% endif %}
                             <a href="#" id="famille"> produits de la meme famille </button>
