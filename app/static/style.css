@@ -3,11 +3,40 @@ header{
 }
 
 li{
-  border-style: solid;
-  border-color: black;
+  background-color: #f0f0f0; 
   list-style: none;
+  border-radius: 15px;
 }
 
 a{
   text-decoration: none;
+  color: black;
+}
+.top_main button{
+  background: linear-gradient(to right, #ff4fa4, #ff8cc4);
+  border-radius: 18px;
+  color: white;
+  font-family: 'Roboto';
+  font-size: 15px;
+}
+
+.supp_produit, .info_prod{
+  border: none;
+}
+
+.Modifier, .Reserver, .famille{
+  background-color: black;
+  color: white;
+  font-family: 'Roboto';
+  border-radius: 18px;
+}
+
+.top_main .barre_recherche{
+  font-family: 'Roboto';
+  border-radius: 20px;
+  border-style: solid;
+  border-color: #f0f0f0;
+}
+.top_main .barre_recherche::placeholder{
+  color: #ff8fc5;
 }
