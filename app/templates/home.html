@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
     {% block header_nav%}
-        {% if current_user.is_preparateur %}
+        <div class="liens_page">
+            {% if current_user.is_preparateur %}
             <a href="#">gérer les stocks</a>
-        {% else %}
+            {% else %}
             <a href="#">liste des produits</a>
-        {% endif %}
-        <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
+            {% endif %}
+            <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
+        </div>
         <a href="/connection" id="lien_logout">logout</a>
     {% endblock %}
 
@@ -70,19 +72,23 @@
                             <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}   <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
+                        <p>{{produit.nomProduit}}   <button class="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
                         {% if produit.disponible %}
                             <p>Disponible</p>
-                            {% if current_user.is_preparateur %}
-                                <button id="Modifier"> Modifier </button>
-                            {% endif %}
-                            <button id="Reserver"> Reserver </button>
+                            <div class="bouton">
+                                {% if current_user.is_preparateur %}
+                                    <button class="Modifier"> Modifier </button>
+                                {% endif %}
+                                    <button class="Reserver"> Reserver </button>
+                            </div>
                         {% else %}
                             <p>Indisponible</p>
-                            {% if current_user.is_preparateur %}
-                                <button id="Modifier"> Modifier </button>
-                            {% endif %}
-                            <a href="#" id="famille"> produits de la meme famille </button>
+                            <div class="bouton">
+                                {% if current_user.is_preparateur %}
+                                <button class="Modifier"> Modifier </button>
+                                {% endif %}
+                                <button href="#" class="famille"> Produits de la même famille </button>
+                            </div>
                         {% endif %} 
                     </div>
                 </li>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block header_nav%}
+    <div class="liens_page">
         <a href="/">
             {% if current_user.is_preparateur %}
             gérer les stocks
@@ -9,6 +10,7 @@
             {% endif %}
         </a>
     <a href="#", id="lien_reservation"> liste des réservations</a>
+    </div>
     <a href="/connection" id="lien_logout">logout</a>
 {% endblock %}
 

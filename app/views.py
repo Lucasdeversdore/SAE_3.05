@@ -8,7 +8,7 @@ from .models import get_sample
 def home():
     #TODO log pour current_user, supprimer current_user de render templete
     #TODO donner une liste de produits à liste_produit dans render
-    liste_produit = get_sample()
+    liste_produit = get_sample(141)
     return render_template("home.html", liste_produit=liste_produit, current_user=True) 
 
 @app.route("/preparation/reservations")
