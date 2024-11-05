@@ -28,16 +28,6 @@
                 <li>
                     <div class="produit">
                         <section class="popup">
-                            <!-- popup information -->
-                            <div id="popup-overlay" style="display: none;">
-                                <div id="popup-content">
-                                    <h3>Détail produit</h3>
-                                    <p>Fonction : {{ produit.fonctionProduit }}</p>
-                                    <p>Lieu de stockage :</p>
-                                    <p>{{ produit.lieu }}</p>
-                                    <a href="javascript:void(0)">ok</a>
-                                </div>
-                            </div>
 
                             <!-- popup réserver -->
                             <div id="popup-overlay" style="display: none;">
@@ -73,7 +63,7 @@
                             <button id="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}   <button class="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
+                        <p>{{produit.nomProduit}}<button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
                         {% if produit.disponible %}
                             <p>Disponible</p>
                             <div class="bouton">
@@ -86,7 +76,7 @@
                             <p>Indisponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
-                                <button class="Modifier"> Modifier </button>
+                                <button class="Modifier" > Modifier </button>
                                 {% endif %}
                                 <button href="#" class="famille"> Produits de la même famille </button>
                             </div>

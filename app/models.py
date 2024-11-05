@@ -77,7 +77,17 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+    
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'nomProduit': self.nomProduit,
+            'nomUnite': self.nomUnite,
+            'afficher': self.afficher,
+            'fonctionProduit' : self.fonctionProduit,
+            'idFou':self.idFou
+        }
 
 class Commande(db.Model):
 
@@ -369,3 +379,7 @@ def check_mdp(mdp):
     if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
         return True
     return False
+
+
+
+

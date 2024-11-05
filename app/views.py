@@ -3,8 +3,8 @@ from flask_login import login_required, login_user, logout_user
 from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
-from flask import redirect, render_template, url_for
-from .models import Chimiste, get_sample_prduit, get_sample_reservation, search_filter, search_famille_filter
+from flask import jsonify, redirect, render_template, url_for
+from .models import Chimiste, Produit, get_sample_prduit, get_sample_reservation, search_filter, search_famille_filter
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -110,3 +110,11 @@ def connection():
 def logout():
     logout_user()
     return redirect(url_for('connection'))
+
+
+@app.route('/get/produit/<int:id_produit>', methods=['GET'])
+def get_produit(id_produit):
+    produit = Produit.query.get(id_produit).to_dict()
+    return jsonify(produit=produit)
+    
+        
