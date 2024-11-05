@@ -1,0 +1,41 @@
+ul{
+    list-style-type: none;
+  }
+  
+  h1 {
+      background: linear-gradient(to right, #ff4fa4, #ff8cc4); /* Dégradé */
+      -webkit-background-clip: text; /* Clip le fond au texte pour les navigateurs Webkit */
+      -webkit-text-fill-color: transparent; /* Rend le texte transparent pour laisser le dégradé apparaître */
+  }
+  
+  
+  input{
+    border-radius: 6px;
+    border: double 1px transparent;
+    background-color: #ffdeee;
+  }
+  
+  
+  
+  #email input {
+    background-origin: border-box;
+    background-clip: padding-box, border-box; 
+    background-image: linear-gradient(white, white), 
+                      linear-gradient(to right, #ff4fa4, #ff8cc4);
+  }
+
+  #prenom-nom input {
+    background-origin: border-box;
+    background-clip: padding-box, border-box; 
+    background-image: linear-gradient(white, white), 
+                      linear-gradient(to right, #ff4fa4, #ff8cc4);
+  }
+  
+  
+  #paragraphe input{
+    background-image: linear-gradient(to right, #ff4fa4, #ff8cc4), linear-gradient(white, white);
+    background-origin: border-box;
+    
+  }
+  
+  
