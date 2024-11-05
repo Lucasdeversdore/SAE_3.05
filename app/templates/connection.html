@@ -18,6 +18,7 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
+                <h1>{{msg}}</h1>
                 <ul>
                     <li><h1>Connectez-vous</h1></li>
                     <li id="email"><input type="text", placeholder="Entrer votre e-mail"></li>
@@ -25,7 +26,9 @@
                     <li id="paragraphe">
                         <input type="checkbox">
                         <p>Rester connecté</p>
-                        <a href="/">Me connecter</a>
+                        <form action="{{ url_for('connection') }}" method="GET">
+                            <button>Me connecter</button>
+                        </form>
                     </li>
                     <li><a href="/inscription">Créer un compte</a></li>
                 </ul>

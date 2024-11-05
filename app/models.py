@@ -318,3 +318,20 @@ def search_famille_filter(q):
     
     results = results2
     return results
+
+def cnx_chimiste(email, mdp):
+    """Fonction qui vérifie si l'email et le mot de passe sont correct
+
+    Args:
+        email (str): l'email du chimiste
+        mdp (str): le mots de passe du chimiste
+    Return
+        None : si l'email et le mot de passe sont corrects
+        str : un message d'erreur si l'email n'existe pas ou si le mot de passe ne corespond pas.
+    """
+
+    chimiste = Chimiste.query.filter(Chimiste.email == email).first()
+    if chimiste is None:
+        return "Email incorrect"
+    if chimiste.mdp != mdp:
+        return "Mot de passe incorrect"

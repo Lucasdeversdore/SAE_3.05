@@ -1,6 +1,6 @@
 from .app import app
-from flask import render_template
-from .models import get_sample, search_filter, search_famille_filter
+from flask import redirect, render_template, url_for
+from .models import get_sample, search_filter, search_famille_filter, cnx_chimiste
 from flask import request
 
 #TODO Mettre un login required sur toutes les pages qui le nécessite
@@ -22,7 +22,7 @@ def preparation_reservation():
 
 @app.route("/connection")
 def connecter():
-    return render_template("connection.html")
+    return render_template("connection.html", msg=None)
 
 @app.route("/inscription")
 def inscrire():
@@ -34,3 +34,14 @@ def search():
     results = search_filter(q) + search_famille_filter(q)
     return render_template("home.html", liste_produit=results, current_user=True)
 
+
+@app.route("/test/connection", methods=('GET', ))
+def connection():
+    email = request.args.get("email")
+    mdp = request.args.get("pwd")
+    msg = cnx_chimiste(email, mdp)
+    print(msg)
+    if msg is None:
+        return redirect(url_for("home"))
+    else:
+        return render_template("connection.html", msg=msg)
