@@ -1,13 +1,15 @@
 #!/usr/bin/python3
+from flask_login import UserMixin
 from sqlalchemy import Column, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
+from .app import login_manager
 from sqlalchemy import func
 from .app import  db
 
 
 
-class Chimiste(db.Model):
+class Chimiste(db.Model, UserMixin):
 
     __tablename__ = "CHIMISTE"
 
@@ -16,20 +18,24 @@ class Chimiste(db.Model):
     nom = Column(Text)
     email = Column(Text)
     mdp = Column(Text)
+    estPreparateur = Column(Boolean)
     chimisteCom = relationship("Commande", back_populates="commandeChim")
     chimisteFaire = relationship("Faire", back_populates="faireChim")
 
 
-    def __init__(self, idChimiste, prenom, nom, email, mdp):
+    def __init__(self, idChimiste, prenom, nom, email, mdp,  estPreparateur=False):
         self.idChimiste = idChimiste
         self.prenom = prenom
         self.nom = nom
         self.email = email
         self.mdp = mdp
+        self.estPreparateur = estPreparateur
         
     def __str__(self):
         return str(self.idChimiste) + self.prenom + self.nom + self.email + self.mdp
     
+    def get_id(self):
+        return self.idChimiste
 
 class Unite(db.Model):
 
@@ -204,6 +210,10 @@ class Historique(db.Model):
         return str(self.idAction) + self.nomAction + str(self.dateAction) + str(self.qteFourni) + str(self.idFou) + str(self.idProduit)
 
 
+@login_manager.user_loader
+def load_user(email):
+    return Chimiste.query.get(email)
+
 def add_unite(nom):
     existing_unite = Unite.query.filter_by(nomUnite=nom).first()
     if not existing_unite and nom is not None:
@@ -280,6 +290,11 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
             else:
                 existing_stock.quantiteStocke += quantiteStock
 
+def next_chimiste_id():
+    max_id = db.session.query(func.max(Chimiste.idChimiste)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
 
 def get_all_prod():
     return Produit.query.all()
@@ -318,3 +333,35 @@ def search_famille_filter(q):
     
     results = results2
     return results
+
+
+def check_mdp(mdp):
+    """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
+
+    Args:
+        mdp (str): mdp a vérifier
+    Return 
+        bool True si le mot de passe est correct, false sinon
+    """
+    def contient_maj(mdp):
+        for c in mdp:
+            if c.isupper():
+                return True
+        return False
+
+    def contient_special(mdp):
+        special_characters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        for c in mdp:
+            if c in special_characters:
+                return True
+        return False
+    
+    def contient_chiffre(mdp):
+        for c in mdp:
+            if c in "0123456789":
+                return True
+        return False
+
+    if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
+        return True
+    return False

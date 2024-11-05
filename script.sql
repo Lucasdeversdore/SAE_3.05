@@ -100,19 +100,6 @@ CREATE TABLE UNITE (
 );
 
 
-CREATE TRIGGER insert_bon_mdp
-BEFORE INSERT ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
-BEGIN
-  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
-END;
-
-CREATE TRIGGER update_bon_mdp
-BEFORE UPDATE ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
-BEGIN
-  SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
-END;
 
 CREATE TRIGGER insert_verif_qte_commande
 BEFORE INSERT ON COMMANDE
@@ -135,4 +122,3 @@ BEGIN
     SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
 END;
 
-insert into CHIMISTE values (1, "dev", "dev", "exemple.dev@gmail.com", "A1#45678", true);

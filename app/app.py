@@ -12,5 +12,5 @@ def mkpath (p):
     return os.path.normpath(os.path.join(os.path.dirname(__file__), p))
 app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///'+mkpath('../'+nomDB.nomDB)) 
 db = SQLAlchemy(app)
-#login_manager = LoginManager(app)
-#login_manager.login_view = "connection"
+login_manager = LoginManager(app)
+login_manager.login_view = "connecter"
