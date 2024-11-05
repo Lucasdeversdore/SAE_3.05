@@ -23,18 +23,15 @@ class LoginForm ( FlaskForm ):
 @app.route("/")
 @login_required
 def home():
-    #TODO log pour current_user, supprimer current_user de render templete
-    #TODO donner une liste de produits à liste_produit dans render
     liste_produit = get_sample()
-    return render_template("home.html", liste_produit=liste_produit, current_user=True) 
+    return render_template("home.html", liste_produit=liste_produit) 
 
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
-    #TODO log pour current_user, supprimer current_user de render templete
     #TODO remplir reservations avec la liste des reservations ordonné dans un ordre pré définie
     reservations = [] 
-    return render_template("reservation-preparation.html", reservations=reservations, current_user=True)
+    return render_template("reservation-preparation.html", reservations=reservations)
 
 
 @app.route("/connection")
@@ -51,7 +48,7 @@ def inscrire():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    return render_template("home.html", liste_produit=results, current_user=True)
+    return render_template("home.html", liste_produit=results)
 
 
 @app.route("/test/connection", methods=('GET', 'POST'))
