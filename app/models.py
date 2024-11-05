@@ -338,6 +338,28 @@ def search_famille_filter(q):
     results = results2
     return results
 
+def edit_qte_commande(id_commande, new_qte):
+    
+    if new_qte >= 0:
+        # Recherche de la commande et du statut de commande
+        commande = Commande.query.get(id_commande)
+        
+
+        if not commande:
+            print("Commande introuvable")
+        
+
+        # Vérifier le statut de la commande dans la table Faire
+        statut = db.session.query(Faire).filter_by(idCommande=id_commande).first()
+        
+        if statut and statut.statutCommande == "Pas Commence":
+            # Mise à jour de la quantité de la commande si le statut est correct
+            commande.qteCommande = new_qte
+            db.session.commit()
+            print("Quantité de commande mise à jour avec succès.")
+        else:
+            print("Mise à jour refusée : le statut de commande ne permet pas la modification.")
+    print("Erreur : qte inferieur à 0")
 
 def check_mdp(mdp):
     """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
