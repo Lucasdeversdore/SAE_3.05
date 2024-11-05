@@ -37,8 +37,8 @@ class InscriptionForm(FlaskForm):
 @app.route("/")
 @login_required
 def home():
-    liste_produit = get_sample()
-    return render_template("home.html", liste_produit=liste_produit) 
+    liste_produit = get_sample(141)
+    return render_template("home.html", liste_produit=liste_produit)
 
 @app.route("/preparation/reservations")
 @login_required
