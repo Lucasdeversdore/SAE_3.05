@@ -14,12 +14,11 @@ class LoginForm ( FlaskForm ):
     def get_authenticated_user(self):
         user = Chimiste.query.filter(Chimiste.email == self.email.data).first()
         if user is None:
-            print("a")
-            return None
+            return "Email incorrect"
         m = sha256()
         m.update(self.password.data.encode())
         passwd = m.hexdigest()
-        return user if passwd == user.mdp else None
+        return user if passwd == user.mdp else "Mot de passe incorrect"
 
 @app.route("/")
 @login_required
@@ -62,13 +61,11 @@ def connection():
         f.next.data = request.args.get("next")
     elif f.validate_on_submit():
         user = f.get_authenticated_user()
-        print(user)
-        if user:
-            
+        if type(user) != str:
             login_user(user)
             next = f.next.data or url_for("home")
             return redirect(next)
-    return render_template("connection.html", form=f)
+    return render_template("connection.html", form=f, msg=user)
 
 @app.route("/logout/")
 def logout():
