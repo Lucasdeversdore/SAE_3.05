@@ -334,3 +334,34 @@ def search_famille_filter(q):
     results = results2
     return results
 
+
+def check_mdp(mdp):
+    """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
+
+    Args:
+        mdp (str): mdp a vérifier
+    Return 
+        bool True si le mot de passe est correct, false sinon
+    """
+    def contient_maj(mdp):
+        for c in mdp:
+            if c.isupper():
+                return True
+        return False
+
+    def contient_special(mdp):
+        special_characters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        for c in mdp:
+            if c in special_characters:
+                return True
+        return False
+    
+    def contient_chiffre(mdp):
+        for c in mdp:
+            if c in "0123456789":
+                return True
+        return False
+
+    if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
+        return True
+    return False
