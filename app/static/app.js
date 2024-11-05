@@ -1,5 +1,5 @@
 // Fonction pour afficher le popup d'info produit
-function handleButtonInfoClick(produit) {
+function handleButtonInfoClick(produit, lieu) {
     // Crée le fond du popup
     const popup_overlay_info = document.createElement("div");
     popup_overlay_info.id = "popup-overlay-info";
@@ -31,7 +31,7 @@ function handleButtonInfoClick(produit) {
     pFonction.textContent = "Fonction: "+produit.fonctionProduit; 
 
     const pLieuStockage = document.createElement("p");
-    pLieuStockage.textContent = "Lieu de stockage: "; 
+    pLieuStockage.textContent = "Lieu de stockage: "+lieu.nomLieu; 
 
     // Bouton OK pour fermer le popup
     const bOk = document.createElement("button");
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/get/produit/${produitId}`)
                 .then(response => response.json())
                 .then(data => {
-                    handleButtonInfoClick(data.produit);
+                    handleButtonInfoClick(data.produit, data.lieu);
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
         });

@@ -4,7 +4,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, get_sample_prduit, get_sample_reservation, search_filter, search_famille_filter
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -115,6 +115,10 @@ def logout():
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
 def get_produit(id_produit):
     produit = Produit.query.get(id_produit).to_dict()
-    return jsonify(produit=produit)
+    
+    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+    id_lieu = est_stocker.idLieu
+    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    return jsonify(produit=produit, lieu=lieu)
     
         

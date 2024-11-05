@@ -168,7 +168,11 @@ class Lieu_Stockage(db.Model):
     def __str__(self):
         return str(self.idLieu) + self.nomLieu
     
-
+    def to_dict(self):
+        return {
+            'idLieu': self.idLieu,
+            'nomLieu': self.nomLieu
+        }
 
 
 class Fournisseur(db.Model):
