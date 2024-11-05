@@ -1,7 +1,6 @@
 import unittest
 import os, sys
 
-import test.__init__
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 sys.path.append(os.path.abspath(ROOT))
 from app.csv_to_db import get_nombre_unite

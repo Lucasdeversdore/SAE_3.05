@@ -294,3 +294,5 @@ pip-selfcheck.json
 
 # Ajout supplémentaires nécessaires
 test.db
+nomDB.py
+myapp.db
