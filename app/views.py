@@ -1,5 +1,5 @@
 from hashlib import sha256
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user, logout_user
 from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
@@ -69,3 +69,8 @@ def connection():
             next = f.next.data or url_for("home")
             return redirect(next)
     return render_template("connection.html", form=f)
+
+@app.route("/logout/")
+def logout():
+    logout_user()
+    return redirect(url_for('connection'))
