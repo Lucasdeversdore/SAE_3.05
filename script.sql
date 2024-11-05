@@ -102,14 +102,14 @@ CREATE TABLE UNITE (
 
 CREATE TRIGGER insert_bon_mdp
 BEFORE INSERT ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
 BEGIN
   SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
 END;
 
 CREATE TRIGGER update_bon_mdp
 BEFORE UPDATE ON CHIMISTE
-WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*')
+WHEN NOT (NEW.mdp GLOB '*[A-Z]*' AND NEW.mdp GLOB '*[0-9]*' AND NEW.mdp GLOB '*[!@#$%^&*()_+=<>?]*' AND LENGTH(NEW.mdp) >= 8)
 BEGIN
   SELECT RAISE(FAIL, 'Le mot de passe doit inclure : une lettre majuscule, un nombre et un caractere special');
 END;
