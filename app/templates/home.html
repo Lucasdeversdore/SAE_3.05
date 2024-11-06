@@ -25,7 +25,7 @@
         {% endif %}
         <form  action="{{ url_for('search') }}" method="GET" class="barre_recherche">
             <input class="barre_recherche" type="search" placeholder="  Nom produit/famille " aria-label="Search" name="search" id="search">
-            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="i"></button>
+            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="search"></button>
         </form>
     {% endblock %}
 
