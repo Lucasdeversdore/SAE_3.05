@@ -54,7 +54,7 @@ def connecter():
 
 
 from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db
+from .models import Chimiste, db, next_chimiste_id
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -64,7 +64,11 @@ def inscrire():
         prenom = form.prenom.data
         nom = form.nom.data
         email = form.email.data
-        mdp = form.mdp.data  # Hashage du mot de passe
+        mdp = form.mdp.data
+        
+        m = sha256()
+        m.update(mdp.encode())
+        passwd = m.hexdigest()
 
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
@@ -73,14 +77,14 @@ def inscrire():
             return redirect(url_for('inscription'))
         
         # Créer un nouvel utilisateur Chimiste
-        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=mdp)
+        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
         
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
 
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
-        return redirect(url_for('connexion'))
+        return redirect(url_for('connection'))
 
     return render_template('inscription.html', form=form)
 
@@ -89,6 +93,7 @@ def inscrire():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
+    print(results)
     return render_template("home.html", liste_produit=results)
 
 

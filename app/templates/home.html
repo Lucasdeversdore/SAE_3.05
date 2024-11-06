@@ -3,11 +3,17 @@
     {% block header_nav%}
         <div class="liens_page">
             {% if current_user.estPreparateur %}
-            <a href="#">gérer les stocks</a>
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>gérer les stocks</button>
+            </form>
             {% else %}
-            <a href="/">liste des produits</a>
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>liste des produits</button>
+            </form>
             {% endif %}
-            <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
+            <form  action="{{ url_for('preparation_reservation') }}" method="GET">
+                <button id="lien_reservation"> liste des réservations</button>
+            </form>
         </div>
     {% endblock %}
 
@@ -17,8 +23,9 @@
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
-        <form  action="{{ url_for('search') }}" method="GET">
-            <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search" name="search" id="search">
+        <form  action="{{ url_for('search') }}" method="GET" class="barre_recherche">
+            <input class="barre_recherche" type="search" placeholder="  Nom produit/famille " aria-label="Search" name="search" id="search">
+            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="search"></button>
         </form>
     {% endblock %}
 
@@ -52,20 +59,20 @@
                             <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}<button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
+                        <p>{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
                         {% if qte > 0 %}
-                            <p>Disponible</p>
+                            <p class="dispo">Disponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
-                                    <button class="Modifier"> Modifier </button>
+                                    <button class="Modifier"><img src="{{url_for('static', filename='images/modifier.png')}}" alt ="i"> Modifier </button>
                                 {% endif %}
-                                    <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver </button>
+                                <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver </button>
                             </div>
                         {% else %}
-                            <p>Indisponible</p>
+                            <p class="dispo">Indisponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
-                                <button class="Modifier" > Modifier </button>
+                                <button class="Modifier"> Modifier </button>
                                 {% endif %}
                                 <button href="#" class="famille"> Produits de la même famille </button>
                             </div>

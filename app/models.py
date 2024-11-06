@@ -351,7 +351,7 @@ def search_filter(q):
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             results2.append(prod)
-    results = results2  
+    results = results2
     return results
 
 
