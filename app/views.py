@@ -55,7 +55,7 @@ def connecter():
 
 
 from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db
+from .models import Chimiste, db, next_chimiste_id
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -67,6 +67,10 @@ def inscrire():
         email = form.email.data
         mdp = form.mdp.data  # Hashage du mot de passe
 
+        m = sha256()
+        m.update(mdp.encode())
+        passwd = m.hexdigest()
+
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
@@ -74,7 +78,7 @@ def inscrire():
             return redirect(url_for('inscription'))
         
         # Créer un nouvel utilisateur Chimiste
-        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=mdp)
+        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
         
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
