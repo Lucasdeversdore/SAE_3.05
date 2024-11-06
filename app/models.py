@@ -102,7 +102,7 @@ class Commande(db.Model):
     commandeFaire = relationship("Faire", back_populates="faireCom")
     commandeProd = relationship("Produit", back_populates="produitCom")
 
-    def __init__(self, idCommande, dateCommande, qteCommande, idChimiste, idProduit):
+    def __init__(self, idCommande, qteCommande, idChimiste, idProduit, dateCommande=func.now()):
         self.idCommande = idCommande
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
@@ -150,6 +150,12 @@ class Est_Stocker(db.Model):
     def __str__(self):
         return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
 
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'idLieu': self.idLieu,
+            'quantiteStocke': self.quantiteStocke
+        }
 
 
 class Lieu_Stockage(db.Model):
@@ -416,5 +422,33 @@ def check_mdp(mdp):
     return False
 
 
+def next_commande_id():
+    max_id = db.session.query(func.max(Commande.idCommande)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
 
+def reserver_prod(id_produit, qte, user):
+    """Fonction qui permet de réserver une quantité d'un produit
 
+    Args:
+        id_produit (int): l'id du produit
+        qte (int): la quantité reservé
+        user (_int): l'id du chimiste qui a réservé
+    """
+    prod = Produit.query.get(id_produit)
+    if prod:
+        est_stocker =  Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+        if est_stocker is None:
+            qte_dispo = 0
+        else:
+            qte_dispo = est_stocker.quantiteStocke
+        if qte <= qte_dispo and qte > 0:
+            id = next_commande_id()
+            commande = Commande(id, qte, user,id_produit)
+            db.session.add(commande)
+            qte_restante = qte_dispo-qte
+            est_stocker.quantiteStocke = qte_restante
+            db.session.commit()
+            return True
+
+        

@@ -1,10 +1,10 @@
 from hashlib import sha256
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, reserver_prod
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -118,11 +118,35 @@ def logout():
 
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
+@login_required
 def get_produit(id_produit):
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
     id_lieu = est_stocker.idLieu
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
     return jsonify(produit=produit, lieu=lieu)
+
+@app.route('/reserver/<int:id_produit>', methods=['GET'])
+@login_required
+def popup_reserver_produit(id_produit, erreur=None):
+    produit=Produit.query.get(id_produit).to_dict()
+    stock=Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+    return jsonify(produit=produit, stock=stock, erreur=erreur)
     
-        
+@app.route('/reservation/<int:id_produit>', methods=('GET',))
+@login_required
+def reserver_produit(id_produit):
+    
+    qte = request.args.get("inputQte")
+    print(qte)
+    if qte == "":
+        qte = 0
+    else:
+        qte = int(qte)
+    res = reserver_prod(id_produit, qte, current_user.idChimiste)
+    if res:
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
+        return jsonify(success=False, message="Quantité non valide"), 400
+
+

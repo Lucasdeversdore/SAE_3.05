@@ -103,9 +103,9 @@ CREATE TABLE UNITE (
 
 CREATE TRIGGER insert_verif_qte_commande
 BEFORE INSERT ON COMMANDE
-WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+WHEN NOT (NEW.qteCommande) <= (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
 BEGIN
-    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur ou égale à la quantité stocké');
 END;
 
 CREATE TRIGGER update_verif_qte_commande
