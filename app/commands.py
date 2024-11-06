@@ -20,6 +20,12 @@ def edit_commande(id_commande, new_qte):
     edit_qte_commande(id_commande, new_qte)
 
 @app.cli.command()
+@click.argument('id_commande')
+def cancel_commande(id_commande):
+    from .models import cancel_commande
+    cancel_commande(id_commande)
+
+@app.cli.command()
 @click.argument('email')
 @click.argument('password')
 @click.argument('prenom')

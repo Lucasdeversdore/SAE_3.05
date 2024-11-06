@@ -18,18 +18,21 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
-                <ul>
-                    <li><h1>Inscrivez-vous</h1></li>
-                    <li id="email"><input type="text", placeholder="Entrer votre e-mail"></li>
-                    <li id="prenom-nom">
-                        <input type="text", placeholder="Prénom" id="prenom">
-                        <input type="text", placeholder="Nom">
-                    </li>
-                    <li id="pwd"><input type="password", placeholder="Entrer votre mots de passe"></li>
-                    <li id="pwd"><input type="password", placeholder="Confirmez votre mot de passe"></li>
-                    <li id="inscire"><a href="/connection">M'inscire</a></li>
-                    <li id="compte_existant"><a href="/connection">J'ai déjà un compte</a></li>
-                </ul>
+                <form role="form" method="POST" action = "{{ url_for ('inscrire') }}">
+                    {{ form.hidden_tag() }}
+                    <ul>
+                        <li><h1>Inscrivez-vous</h1></li>
+                        <li id="email">{{ form.email(placeholder ="Entrez votre email") }}</li>
+                        <li id="prenom-nom">
+                            {{ form.prenom(placeholder ="Prenom") }}
+                            {{ form.nom(placeholder ="Nom") }}
+                        </li>
+                        <li id="pwd">{{ form.mdp(placeholder ="Entrez votre mot de passe") }}</li>
+                        <li id="pwd">{{ form.confirm_mdp(placeholder ="Confirmez votre mot de passe") }}</li>
+                        <li id="inscrire"><button type="submit">M'inscrire</button></li>
+                        <li id="compte_existant"><a href="/connection">J'ai déjà un compte</a></li>
+                    </ul>
+                </form>
             </section>
             <section>
                 <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">

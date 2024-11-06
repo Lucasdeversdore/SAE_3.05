@@ -3,11 +3,17 @@
     {% block header_nav%}
         <div class="liens_page">
             {% if current_user.estPreparateur %}
-            <a href="#">gérer les stocks</a>
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>gérer les stocks</button>
+            </form>
             {% else %}
-            <a href="/">liste des produits</a>
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>liste des produits</button>
+            </form>
             {% endif %}
-            <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
+            <form  action="{{ url_for('preparation_reservation') }}" method="GET">
+                <button id="lien_reservation"> liste des réservations</button>
+            </form>
         </div>
     {% endblock %}
 
@@ -17,32 +23,22 @@
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
-        <form  action="{{ url_for('search') }}" method="GET">
-            <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search" name="search" id="search">
+        <form  action="{{ url_for('search') }}" method="GET" class="barre_recherche">
+            <input class="barre_recherche" type="search" placeholder="  Nom produit/famille " aria-label="Search" name="search" id="search">
+            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="search"></button>
         </form>
     {% endblock %}
 
     {% block content %}
-        <ul>
-            {% for produit in liste_produit %}
-                <li>
+        <ul class="produits">
+            {% for produit_qte in liste_produit_qte %}
+                {% set produit = produit_qte[0] %}
+                {% set qte = produit_qte[1] %}
+                <li class="objet_produit">
                     <div class="produit">
                         <section class="popup">
-
-                            <!-- popup réserver -->
-                            <div id="popup-overlay" style="display: none;">
-                                <div id="popup-content">
-                                    <p>Quantité en Stock : {{ produit.stock }}</p>
-                                    <p> Quantité réservé </p>
-                                    <input type="number", placeholder="Quantité">
-                                    <button>+1</button>
-                                    <button>+10</button>
-                                    <button>+100</button>
-                                    <button>+1000</button>
-                                    <button>Réserver</button>
-                                    <a href="javascript:void(0)">Annuler</a>
-                                </div>
-                            </div>
+                            
+                            
 
                             <!-- popup supprimer un produit mot de passe -->
                             <div id="popup-overlay" style="display: none;">
@@ -63,17 +59,17 @@
                             <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}<button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
-                        {% if produit.disponible %}
-                            <p>Disponible</p>
+                        <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
+                        {% if qte > 0 %}
+                            <p class="dispo">Disponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
                                     <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier </button>
                                 {% endif %}
-                                    <button class="Reserver"> Reserver </button>
+                                <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver </button>
                             </div>
                         {% else %}
-                            <p>Indisponible</p>
+                            <p class="dispo">Indisponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
                                 <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier </button>

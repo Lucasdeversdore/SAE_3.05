@@ -102,7 +102,7 @@ class Commande(db.Model):
     commandeFaire = relationship("Faire", back_populates="faireCom")
     commandeProd = relationship("Produit", back_populates="produitCom")
 
-    def __init__(self, idCommande, dateCommande, qteCommande, idChimiste, idProduit):
+    def __init__(self, idCommande, qteCommande, idChimiste, idProduit, dateCommande=func.current_date()):
         self.idCommande = idCommande
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
@@ -123,7 +123,7 @@ class Faire(db.Model):
     faireCom = relationship("Commande", back_populates="commandeFaire")
     faireChim = relationship("Chimiste", back_populates="chimisteFaire")
 
-    def __init__(self, idCommande, idChimiste, statutCommande):
+    def __init__(self, idCommande, idChimiste, statutCommande= 'non commencé'):
         self.idCommande = idCommande
         self.idChimiste = idChimiste
         self.statutCommande = statutCommande
@@ -326,13 +326,31 @@ def next_chimiste_id():
 def get_all_prod():
     return Produit.query.all()
 
-def get_sample_prduit(nb=20):
-    """Renvoie 20 produits de la base de donnée"""
-    return Produit.query.limit(nb).all()
+def get_sample_prduit_qte(nb=20):
+    """Renvoie 20 produits et sa quantité de la base de donnée"""
+    liste_prod_qte = []
+    liste_prod = Produit.query.limit(nb).all()
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
 
 def get_sample_reservation(nb=20):
-    """Renvoie 20 reservations de la base de donnée"""
-    return Commande.query.limit(nb).all()
+    """Renvoie 20 reservations, ses états, chimistes et produits de la base de donnée"""
+    liste_reserv_etat = []
+    liste_reserv = Commande.query.limit(nb).all()
+    for reservation in liste_reserv:
+        faire = Faire.query.filter(Faire.idCommande == reservation.idCommande).first()
+        chimiste = Chimiste.query.filter(Chimiste.idChimiste == reservation.idChimiste).first()
+        produit = Produit.query.filter(Produit.idProduit == reservation.idProduit).first()
+        if faire and chimiste and produit:
+            etat = faire.statutCommande
+            liste_reserv_etat.append((reservation, etat, chimiste, produit))
+    return liste_reserv_etat
 
 
 def search_filter(q):
@@ -349,7 +367,7 @@ def search_filter(q):
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             results2.append(prod)
-    results = results2  
+    results = results2
     return results
 
 
@@ -475,3 +493,67 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     db.session.commit()
     print("Commande mise à jour")
     return True
+
+def cancel_commande(id_commande):
+    commande = Commande.query.get(id_commande)
+    db.session.delete(commande)
+    db.session.commit()
+    print("Commande annulé avec succès !!!")
+
+def check_mdp_validator(form, field):
+    """
+    Validateur WTForms pour le champ mot de passe, utilisant la fonction `check_mdp`.
+
+    Args:
+        form (FlaskForm): L'instance du formulaire contenant le champ.
+        field (Field): Le champ PasswordField à valider.
+
+    Raises:
+        ValidationError: Si le mot de passe est invalide selon les règles de `check_mdp`.
+
+    Returns:
+        None, lève une ValidationError si la validation échoue.
+    """
+    
+    from .models import check_mdp
+    from wtforms import ValidationError
+    result = check_mdp(field.data)
+    if isinstance(result, bool):
+        is_valid, error_message = result, ""
+    else:
+        is_valid, error_message = result
+    if not is_valid:
+        raise ValidationError(error_message)
+
+
+def next_commande_id():
+    max_id = db.session.query(func.max(Commande.idCommande)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+def reserver_prod(id_produit, qte, user):
+    """Fonction qui permet de réserver une quantité d'un produit
+
+    Args:
+        id_produit (int): l'id du produit
+        qte (int): la quantité reservé
+        user (_int): l'id du chimiste qui a réservé
+    """
+    prod = Produit.query.get(id_produit)
+    if prod:
+        est_stocker =  Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+        if est_stocker is None:
+            qte_dispo = 0
+        else:
+            qte_dispo = est_stocker.quantiteStocke
+        if qte <= qte_dispo and qte > 0:
+            id = next_commande_id()
+            commande = Commande(id, qte, user,id_produit)
+            db.session.add(commande)
+            faire = Faire(commande.idCommande, user)
+            db.session.add(faire)
+            qte_restante = qte_dispo-qte
+            est_stocker.quantiteStocke = qte_restante
+            db.session.commit()
+            return True
+

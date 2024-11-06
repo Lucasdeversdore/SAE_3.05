@@ -9,32 +9,38 @@ header{
     padding-left: 9%;
     padding-right: 9%;
     z-index: 1000;
+    min-height:fit-content;
 }
 
 .header_nav{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     height: 100%;
 }
 
 .liens_page{
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+header button{
+    padding: 1em;
+    margin: 1em;
+}
+
+#lien_logout{
+    min-width: 8em;
+    display: flex;
+    align-items: center;
     flex-wrap: nowrap;
     justify-content: space-between;
 }
 
-header a, header button{
-    padding: 1em;
-    margin: 1em;
-    display: block;
-}
-
-.content{
-    margin-top: 3em;
-    margin-left: 10%;
-    margin-right: 10%;
+#lien_logout img{
+    height: 1.5em;
 }
 
 .top_main{
@@ -44,36 +50,77 @@ header a, header button{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    vertical-align: middle;
 }
 
-.top_main button{
-    width: 15em;
+.top_main h1{
+    margin: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#ajouter_prod{
+    min-width: 15em;
     height: 5em;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
     justify-content: space-between;
     padding: 1em;
+    margin-top: auto;
+    margin-bottom: 1em;
 }
 
-.top_main button img{
+#ajouter_prod img{
     height: 3em;
-    size: 100%;
 }
 
 .top_main .barre_recherche{
-    width: 25em;
     height: 3em;
-    margin-top: auto;
-    margin-bottom: auto;
+    width: 23em;
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
 }
 
-li{
-    flex-basis: 20%;
+.top_main .barre_recherche input{
+    margin-bottom: 0em;
+    margin-left: 1em;
+    width: 100%;
+}
+
+.top_main .barre_recherche button{
+    height: 2em;
+    margin: 1em;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+.top_main .barre_recherche img{
+    height: 100%;
+}
+
+.content{
+    margin-top: 3em;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.produits{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0px;
+}
+
+.objet_produit{
+    width: fit-content;
     margin: 1em;
     margin-left: 2em;
     margin-right: 2em;
+    min-width: 14em;
 }
 
 .produit{
@@ -82,17 +129,50 @@ li{
     position: relative;
 }
 
-ul{
-    justify-content: space-between;
-    display: flex;
-    flex-flow: row wrap;
+.supp_produit{
     padding: 0px;
-    align-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+    right: 0.3em;
+    top: 0.3em;
 }
 
-p{
+.supp_produit img{
+    width: 100%;
+    height: 100%;
+}
+
+.nomProduit, .dispo{
     text-align: center;
-    vertical-align: middle;
+    margin-bottom: 0px;
+}
+
+.info_prod{
+    padding: 0px;
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 0.5em;
+}
+
+.info_prod img{
+    width: 100%;
+    height: 100%;
+}
+
+.dispo{
+  margin-top: 0px;
+  margin-bottom: 1em;
+}
+
+.bouton > button{
+    margin: 0.5em;
+    padding: 3%;
+    width: 100%;
+}
+
+.bouton > button img{
+    height: 1em;
 }
 
 .bouton{
@@ -101,35 +181,23 @@ p{
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+    margin: 0.2em;
 }
 
-.bouton > button{
-    margin: 0.5em;
-    height: 2.5em;
-    width: 80%;
-}
-
-.supp_produit{
-    padding: 0px;
-    width: 3em;
-    height: 3em;
-    position: absolute;
-    right: 0.5em;
-    top: 0.5em;
-}
-
-.supp_produit img{
+#popup-overlay-info{
+    position: fixed;
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.info_prod{
-    padding: 0px;
-    width: 1.5em;
-    height: 1.5em;
-}
-
-.info_prod img{
-    width: 100%;
-    height: 100%;
+#popup-overlay-info > div{
+    padding: 20px;
+    width: 300px;
+    text-align: center;
 }
