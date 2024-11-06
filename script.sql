@@ -75,7 +75,7 @@ CREATE TABLE CHIMISTE (
     idChimiste int NOT NULL,
     prenom VARCHAR(50),
     nom VARCHAR(50),
-    email VARCHAR(50),
+    email VARCHAR(50) UNIQUE,
     mdp VARCHAR(50),
     estPreparateur boolean default false,
     CONSTRAINT PK_Chimiste PRIMARY KEY (idChimiste)
@@ -98,4 +98,27 @@ CREATE TABLE UNITE (
     nomUnite VARCHAR(50),
     CONSTRAINT PK_Unite PRIMARY KEY (nomUnite)
 );
+
+
+
+CREATE TRIGGER insert_verif_qte_commande
+BEFORE INSERT ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+CREATE TRIGGER update_verif_qte_commande
+BEFORE UPDATE ON COMMANDE
+WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+BEGIN
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+END;
+
+CREATE TRIGGER update_commande_statut
+BEFORE UPDATE ON FAIRE
+WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COMMANDE where idCommande = OLD.idCommande) = (SELECT qteCommande from COMMANDE where idCommande = NEW.idCommande))
+BEGIN
+    SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
+END;
 

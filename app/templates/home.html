@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 
     {% block header_nav%}
-        {% if current_user.is_preparateur %}
+        <div class="liens_page">
+            {% if current_user.estPreparateur %}
             <a href="#">gérer les stocks</a>
-        {% else %}
-            <a href="#">liste des produits</a>
-        {% endif %}
-        <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
-        <a href="/connection" id="lien_logout">logout</a>
+            {% else %}
+            <a href="/">liste des produits</a>
+            {% endif %}
+            <a href="/preparation/reservations" id="lien_reservation"> liste des réservations</a>
+        </div>
     {% endblock %}
 
     {% block top_main %}
-        {% if current_user.is_preparateur %}
-            <buton id="ajouter_prod"> Ajouter un produit </buton>
+        {% if current_user.estPreparateur %}
+            <button id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
-        <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search">
+        <form  action="{{ url_for('search') }}" method="GET">
+            <input class="barre_recherche" type="search" placeholder="Nom produit/famille" aria-label="Search" name="search" id="search">
+        </form>
     {% endblock %}
 
     {% block content %}
@@ -25,20 +28,9 @@
                 <li>
                     <div class="produit">
                         <section class="popup">
-                            <!-- popup information -->
-                            <div id="popup-overlay">
-                                <div id="popup-content">
-                                    <h3>Détail produit</h3>
-                                    <p>Fonction :</p>
-                                    <p>{{ produit.fonctionProduit }}</p>
-                                    <p>Lieu de stockage :</p>
-                                    <p>{{ produit.lieu }}</p>
-                                    <a href="javascript:void(0)">ok</a>
-                                </div>
-                            </div>
 
                             <!-- popup réserver -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     <p>Quantité en Stock : {{ produit.stock }}</p>
                                     <p> Quantité réservé </p>
@@ -53,38 +45,42 @@
                             </div>
 
                             <!-- popup supprimer un produit mot de passe -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     
                                 </div>
                             </div>
 
                             <!-- popup supprimer un produit confirmation -->
-                            <div id="popup-overlay">
+                            <div id="popup-overlay" style="display: none;">
                                 <div id="popup-content">
                                     
                                 </div>
                             </div>
                         </section>
 
-                        {% if current_user.is_preparateur %}
-                            <button id="supp_produit"><img src="{{url_for('static', filename='images/'+supp_produit.img)}}"></button>
+                        {% if current_user.estPreparateur %}
+                            <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
-                        <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit">
-                        <p>{{produit.nomProduit}}</p>
-                        <button id="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}"></button>
+                        <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
+                        <p>{{produit.nomProduit}}<button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
                         {% if produit.disponible %}
                             <p>Disponible</p>
-                            {% if current_user.is_preparateur %}
-                                <button id="Modifier"> Modifier </button>
-                            {% endif %}
-                            <button id="Reserver"> Reserver </button>
+                            <div class="bouton">
+                                {% if current_user.estPreparateur %}
+                                    <button class="Modifier"> Modifier </button>
+                                {% endif %}
+                                    <button class="Reserver"> Reserver </button>
+                            </div>
                         {% else %}
                             <p>Indisponible</p>
-                            {% if current_user.is_preparateur %}
-                                <button id="Modifier"> Modifier </button>
-                            {% endif %}
-                            <a href="#" id="famille"> produits de la meme famille </button>
+                            <div class="bouton">
+                                {% if current_user.estPreparateur %}
+                                <button class="Modifier" > Modifier </button>
+                                {% endif %}
+                                <button href="#" class="famille"> Produits de la même famille </button>
+                            </div>
+
                         {% endif %} 
                     </div>
                 </li>

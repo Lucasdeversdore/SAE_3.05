@@ -21,7 +21,8 @@ pylint:
 loaddb:
 	echo "nomDB = 'myapp.db'" > nomDB.py
 	sqlite3 myapp.db ".read script.sql"
-	bash -c "source venv/bin/activate && flask loaddb bd.csv"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev"
+	
 
 .PHONY: loaddb-test
 loaddb_test:

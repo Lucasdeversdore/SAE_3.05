@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 
 {% block header_nav%}
+    <div class="liens_page">
         <a href="/">
-            {% if current_user.is_preparateur %}
+            {% if current_user.estPreparateur %}
             gérer les stocks
             {% else %}
             liste des produits
             {% endif %}
         </a>
     <a href="#", id="lien_reservation"> liste des réservations</a>
-    <a href="/connection" id="lien_logout">logout</a>
+    </div>
 {% endblock %}
 
 {% block top_main %}
     <h1>Liste des réservations</h1>
-    {% if current_user.is_preparateur %}
+    {% if current_user.estPreparateur %}
         <input class="barre_recherche" type="search" placeholder="Nom produit/étudiant" aria-label="Search">
     {% else %}
         <input class="barre_recherche" type="search" placeholder="Nom produit" aria-label="Search">
@@ -27,7 +28,7 @@
     <li>
         <div>
             <p>{{reservation.qte}} {{reservation.produit}} réserver par {{reservation.personne}} le {{reservation.date}}</p>
-            {% if current_user.is_preparateur %}
+            {% if current_user.estPreparateur %}
                 <p><a href="#">{{reservation.etat}}</a></p>  <!-- Futur bouton -->
             { else %}
                 <!-- popup information -->

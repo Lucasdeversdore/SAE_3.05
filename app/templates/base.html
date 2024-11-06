@@ -17,6 +17,9 @@
             <nav class="header_nav">
                 {% block header_nav %}
                 {% endblock %}
+                <form  action="{{ url_for('logout') }}" method="GET">
+                    <button id="lien_logout">logout</button>
+                </form>
             </nav>
         </header>
         <main>
@@ -33,6 +36,6 @@
             {% block footer %}
             {% endblock %}
         </footer>
-        <script src="app.js"></script>
+        <script src="./static/app.js"></script>
     </body>
 </html>
