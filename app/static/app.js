@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Fonction pour afficher la popup de reservation
-function handleButtonReservation(produit, stock) {
+function handleButtonReservation(produit, stock, erreur) {
     // Crée le fond du popup
     const popup_overlay = document.createElement("div");
     popup_overlay.id = "popup-overlay-resrev";
@@ -109,24 +109,20 @@ function handleButtonReservation(produit, stock) {
     const h3 = document.createElement("h3");
     h3.textContent = `${produit.nomProduit}`;
 
+    const perreur = document.createElement("p")
+    perreur.textContent = erreur
     const pQte = document.createElement("p");
     pQte.textContent = "Quantite en stock : "+stock.quantiteStocke+produit.nomUnite
     
     const pQteReserv = document.createElement("p")
     pQteReserv.textContent = "Quantite réservée :"
 
-    const inputQte = document.createElement("input")
-    
 
-    // bouton ajout quantite
-    const btn1 = document.createElement("button")
-    btn1.textContent = "+1"
-    const btn10 = document.createElement("button")
-    btn10.textContent = "+10"
-    const btn100 = document.createElement("button")
-    btn100.textContent = "+100"
-    const btn1000 = document.createElement("button")
-    btn1000.textContent = "+1000"
+    const inputQte = document.createElement("input")
+    inputQte.id = "inputQte"
+    inputQte.name = "inputQte"
+    inputQte.type = "number"
+    
 
     // Bouton Annuler pour fermer le popup
     const bAnnuler = document.createElement("button");
@@ -134,24 +130,26 @@ function handleButtonReservation(produit, stock) {
     bAnnuler.id = "annuler"; 
     bAnnuler.addEventListener("click", handleButtonAnnulerClick);
 
-    // Bouton Annuler pour fermer le popup
     const bResrever = document.createElement("button");
     bResrever.textContent = "Réserver";
-    bResrever.id = "reserver"; 
-    //TODO créer une fonction pour gérer la réservation
-    bResrever.addEventListener("click", handleButtonAnnulerClick); 
+    bResrever.id = produit.idProduit; 
+    bResrever.addEventListener("click", function () {
+        const quantite = inputQte.value;
+        reserverProduit(produit.idProduit, quantite);
+    });
+    
+    
 
     // Assemble les éléments dans le popup
     popup_content.appendChild(h3);
+    if (erreur){
+        popup_content.appendChild(perreur)
+    }
     popup_content.appendChild(pQte);
     popup_content.appendChild(pQteReserv);
     popup_content.appendChild(inputQte);
-    popup_content.appendChild(btn1);
-    popup_content.appendChild(btn10);
-    popup_content.appendChild(btn100);
-    popup_content.appendChild(btn1000);
-    popup_content.appendChild(bAnnuler);
     popup_content.appendChild(bResrever);
+    popup_content.appendChild(bAnnuler);
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }
@@ -163,6 +161,8 @@ function handleButtonAnnulerClick() {
         popup.remove(); 
     }
 }
+
+
 
 // Ajoute un gestionnaire d'événements aux boutons 'info_prod'
 document.addEventListener('DOMContentLoaded', function() {
@@ -182,3 +182,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); 
+
+function reserverProduit(produitId, quantite) {
+    fetch(`/reservation/${produitId}?inputQte=${quantite}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirigez ou mettez à jour l'interface si la réservation est réussie
+                alert(data.message);  // Affiche la confirmation
+                window.location.href = '/';  
+            } else {
+                // Affiche une alerte en cas d'erreur
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
