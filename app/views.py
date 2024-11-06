@@ -43,8 +43,8 @@ def home():
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
-    reservations = get_sample_reservation()
-    return render_template("reservation-preparation.html", reservations=reservations)
+    reservations_etats = get_sample_reservation()
+    return render_template("reservation-preparation.html", reservations_etats=reservations_etats)
 
 
 @app.route("/connection")

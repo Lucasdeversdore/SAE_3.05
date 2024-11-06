@@ -102,7 +102,7 @@ class Commande(db.Model):
     commandeFaire = relationship("Faire", back_populates="faireCom")
     commandeProd = relationship("Produit", back_populates="produitCom")
 
-    def __init__(self, idCommande, qteCommande, idChimiste, idProduit, dateCommande=func.now()):
+    def __init__(self, idCommande, qteCommande, idChimiste, idProduit, dateCommande=func.current_date()):
         self.idCommande = idCommande
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
@@ -123,7 +123,7 @@ class Faire(db.Model):
     faireCom = relationship("Commande", back_populates="commandeFaire")
     faireChim = relationship("Chimiste", back_populates="chimisteFaire")
 
-    def __init__(self, idCommande, idChimiste, statutCommande):
+    def __init__(self, idCommande, idChimiste, statutCommande= 'non commencé'):
         self.idCommande = idCommande
         self.idChimiste = idChimiste
         self.statutCommande = statutCommande
@@ -333,8 +333,17 @@ def get_sample_prduit_qte(nb=20):
     return liste_prod_qte
 
 def get_sample_reservation(nb=20):
-    """Renvoie 20 reservations de la base de donnée"""
-    return Commande.query.limit(nb).all()
+    """Renvoie 20 reservations, ses états, chimistes et produits de la base de donnée"""
+    liste_reserv_etat = []
+    liste_reserv = Commande.query.limit(nb).all()
+    for reservation in liste_reserv:
+        faire = Faire.query.filter(Faire.idCommande == reservation.idCommande).first()
+        chimiste = Chimiste.query.filter(Chimiste.idChimiste == reservation.idChimiste).first()
+        produit = Produit.query.filter(Produit.idProduit == reservation.idProduit).first()
+        if faire and chimiste and produit:
+            etat = faire.statutCommande
+            liste_reserv_etat.append((reservation, etat, chimiste, produit))
+    return liste_reserv_etat
 
 
 def search_filter(q):
@@ -446,6 +455,8 @@ def reserver_prod(id_produit, qte, user):
             id = next_commande_id()
             commande = Commande(id, qte, user,id_produit)
             db.session.add(commande)
+            faire = Faire(commande.idCommande, user)
+            db.session.add(faire)
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
             db.session.commit()
