@@ -24,7 +24,9 @@
 
     {% block content %}
         <ul>
-            {% for produit in liste_produit %}
+            {% for produit_qte in liste_produit_qte %}
+                {% set produit = produit_qte[0] %}
+                {% set qte = produit_qte[1] %}
                 <li>
                     <div class="produit">
                         <section class="popup">
@@ -64,7 +66,7 @@
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
                         <p>{{produit.nomProduit}}<button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="info produit"></button></p>
-                        {% if produit.disponible %}
+                        {% if qte > 0 %}
                             <p>Disponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
