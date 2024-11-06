@@ -21,15 +21,16 @@ class LoginForm ( FlaskForm ):
         return user if passwd == user.mdp else "Mot de passe incorrect"
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 class InscriptionForm(FlaskForm):
+    from .models import check_mdp_validator
     prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
     nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    mdp = PasswordField('Mot de passe', validators=[DataRequired(), Length(min=6)])
-    confirm_mdp = PasswordField('Confirmer mot de passe', 
+    mdp = PasswordField('Mot de passe', validators=[DataRequired(), check_mdp_validator])
+    confirm_mdp = PasswordField('Confirmer mot de passe',
                                 validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
     submit = SubmitField("S'inscrire")
 
