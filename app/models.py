@@ -77,7 +77,17 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+    
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'nomProduit': self.nomProduit,
+            'nomUnite': self.nomUnite,
+            'afficher': self.afficher,
+            'fonctionProduit' : self.fonctionProduit,
+            'idFou':self.idFou
+        }
 
 class Commande(db.Model):
 
@@ -92,7 +102,7 @@ class Commande(db.Model):
     commandeFaire = relationship("Faire", back_populates="faireCom")
     commandeProd = relationship("Produit", back_populates="produitCom")
 
-    def __init__(self, idCommande, dateCommande, qteCommande, idChimiste, idProduit):
+    def __init__(self, idCommande, qteCommande, idChimiste, idProduit, dateCommande=func.now()):
         self.idCommande = idCommande
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
@@ -140,6 +150,12 @@ class Est_Stocker(db.Model):
     def __str__(self):
         return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
 
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'idLieu': self.idLieu,
+            'quantiteStocke': self.quantiteStocke
+        }
 
 
 class Lieu_Stockage(db.Model):
@@ -158,7 +174,11 @@ class Lieu_Stockage(db.Model):
     def __str__(self):
         return str(self.idLieu) + self.nomLieu
     
-
+    def to_dict(self):
+        return {
+            'idLieu': self.idLieu,
+            'nomLieu': self.nomLieu
+        }
 
 
 class Fournisseur(db.Model):
@@ -299,9 +319,22 @@ def next_chimiste_id():
 def get_all_prod():
     return Produit.query.all()
 
-def get_sample(nb=20):
-    """Renvoie 20 produits de la base de donnée"""
-    return Produit.query.limit(nb).all()
+def get_sample_prduit_qte(nb=20):
+    """Renvoie 20 produits et sa quantité de la base de donnée"""
+    liste_prod_qte = []
+    liste_prod = Produit.query.limit(nb).all()
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
+
+def get_sample_reservation(nb=20):
+    """Renvoie 20 reservations de la base de donnée"""
+    return Commande.query.limit(nb).all()
 
 
 def search_filter(q):
@@ -318,7 +351,7 @@ def search_filter(q):
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             results2.append(prod)
-    results = results2  
+    results = results2
     return results
 
 
@@ -334,6 +367,28 @@ def search_famille_filter(q):
     results = results2
     return results
 
+def edit_qte_commande(id_commande, new_qte):
+    
+    if new_qte >= 0:
+        # Recherche de la commande et du statut de commande
+        commande = Commande.query.get(id_commande)
+        
+
+        if not commande:
+            print("Commande introuvable")
+        
+
+        # Vérifier le statut de la commande dans la table Faire
+        statut = db.session.query(Faire).filter_by(idCommande=id_commande).first()
+        
+        if statut and statut.statutCommande == "Pas Commence":
+            # Mise à jour de la quantité de la commande si le statut est correct
+            commande.qteCommande = new_qte
+            db.session.commit()
+            print("Quantité de commande mise à jour avec succès.")
+        else:
+            print("Mise à jour refusée : le statut de commande ne permet pas la modification.")
+    print("Erreur : qte inferieur à 0")
 
 def check_mdp(mdp):
     """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
@@ -366,6 +421,7 @@ def check_mdp(mdp):
         return True
     return False
 
+
 def check_mdp_validator(form, field):
     """
     Validateur WTForms pour le champ mot de passe, utilisant la fonction `check_mdp`.
@@ -390,3 +446,35 @@ def check_mdp_validator(form, field):
         is_valid, error_message = result
     if not is_valid:
         raise ValidationError(error_message)
+
+
+def next_commande_id():
+    max_id = db.session.query(func.max(Commande.idCommande)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+def reserver_prod(id_produit, qte, user):
+    """Fonction qui permet de réserver une quantité d'un produit
+
+    Args:
+        id_produit (int): l'id du produit
+        qte (int): la quantité reservé
+        user (_int): l'id du chimiste qui a réservé
+    """
+    prod = Produit.query.get(id_produit)
+    if prod:
+        est_stocker =  Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+        if est_stocker is None:
+            qte_dispo = 0
+        else:
+            qte_dispo = est_stocker.quantiteStocke
+        if qte <= qte_dispo and qte > 0:
+            id = next_commande_id()
+            commande = Commande(id, qte, user,id_produit)
+            db.session.add(commande)
+            qte_restante = qte_dispo-qte
+            est_stocker.quantiteStocke = qte_restante
+            db.session.commit()
+            return True
+
+        

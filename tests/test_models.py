@@ -8,6 +8,7 @@ from app.app import app
 from app.models import *
 from app.app import app
 
+
 class Testing(unittest.TestCase):
     """
     On utilsera une base de données test pour effectuer les tests
@@ -52,9 +53,27 @@ class Testing(unittest.TestCase):
     def test_inscription(self):
         #TODO Terminer le test
         pass
-    def test_connection(self):
-        #TODO Terminer le test
-        pass
+    def test_check_mdp(self):
+        mdp1 = ""
+        mdp2 = "abcdefer"
+        mdp3 = "Abd"
+        mdp4 = "A/45"
+        mdp5 = "Abdgfh45"
+        mdp6 = "A*jkfsksjjbfsb"
+        mdp7 = "klfneefn45*\\"
+        mdp10 = "AERTS4/M"
+        mdp11 = "ADjf45@f"
+        self.assertEqual(check_mdp(mdp1), False)
+        self.assertEqual(check_mdp(mdp2), False)
+        self.assertEqual(check_mdp(mdp3), False)
+        self.assertEqual(check_mdp(mdp4), False)
+        self.assertEqual(check_mdp(mdp5), False)
+        self.assertEqual(check_mdp(mdp6), False)
+        self.assertEqual(check_mdp(mdp7), False)
+        self.assertEqual(check_mdp(mdp10), True)
+        self.assertEqual(check_mdp(mdp11), True)
+
+
 
 if __name__ == "__main__":
     test = Testing()
