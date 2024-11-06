@@ -36,7 +36,7 @@ input:focus{
   outline: none;
 }
 
-li{
+.objet_produit{
   background-color: #f0f0f0; 
   list-style: none;
   border-radius: 15px;
