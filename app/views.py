@@ -3,8 +3,8 @@ from flask_login import login_required, login_user, logout_user
 from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
-from flask import redirect, render_template, url_for
-from .models import Chimiste, get_sample_prduit, get_sample_reservation, search_filter, search_famille_filter
+from flask import jsonify, redirect, render_template, url_for
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -37,8 +37,8 @@ class InscriptionForm(FlaskForm):
 @app.route("/")
 @login_required
 def home():
-    liste_produit = get_sample_prduit(141)
-    return render_template("home.html", liste_produit=liste_produit)
+    liste_produit_qte = get_sample_prduit_qte(141)
+    return render_template("home.html", liste_produit_qte=liste_produit_qte)
 
 @app.route("/preparation/reservations")
 @login_required
@@ -54,7 +54,7 @@ def connecter():
 
 
 from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db
+from .models import Chimiste, db, next_chimiste_id
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -64,7 +64,11 @@ def inscrire():
         prenom = form.prenom.data
         nom = form.nom.data
         email = form.email.data
-        mdp = form.mdp.data  # Hashage du mot de passe
+        mdp = form.mdp.data
+        
+        m = sha256()
+        m.update(mdp.encode())
+        passwd = m.hexdigest()
 
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
@@ -73,14 +77,14 @@ def inscrire():
             return redirect(url_for('inscription'))
         
         # Créer un nouvel utilisateur Chimiste
-        nouveau_chimiste = Chimiste(prenom=prenom, nom=nom, email=email, mdp=mdp)
+        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
         
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
 
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
-        return redirect(url_for('connexion'))
+        return redirect(url_for('connection'))
 
     return render_template('inscription.html', form=form)
 
@@ -110,3 +114,14 @@ def connection():
 def logout():
     logout_user()
     return redirect(url_for('connection'))
+
+
+@app.route('/get/produit/<int:id_produit>', methods=['GET'])
+def get_produit(id_produit):
+    produit = Produit.query.get(id_produit).to_dict()
+    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+    id_lieu = est_stocker.idLieu
+    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    return jsonify(produit=produit, lieu=lieu)
+    
+        

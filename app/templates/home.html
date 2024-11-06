@@ -31,20 +31,12 @@
 
     {% block content %}
         <ul>
-            {% for produit in liste_produit %}
+            {% for produit_qte in liste_produit_qte %}
+                {% set produit = produit_qte[0] %}
+                {% set qte = produit_qte[1] %}
                 <li>
                     <div class="produit">
                         <section class="popup">
-                            <!-- popup information -->
-                            <div id="popup-overlay" style="display: none;">
-                                <div id="popup-content">
-                                    <h3>Détail produit</h3>
-                                    <p>Fonction : {{ produit.fonctionProduit }}</p>
-                                    <p>Lieu de stockage :</p>
-                                    <p>{{ produit.lieu }}</p>
-                                    <a href="javascript:void(0)">ok</a>
-                                </div>
-                            </div>
 
                             <!-- popup réserver -->
                             <div id="popup-overlay" style="display: none;">
@@ -80,8 +72,8 @@
                             <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
                         {% endif %}
                         <!-- <img src="{{url_for('static', filename='images/'+produit.nomProduit)}}" alt="img du produit"> -->
-                        <p>{{produit.nomProduit}}<button class="info_prod"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
-                        {% if produit.disponible %}
+                        <p>{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
+                        {% if qte > 0 %}
                             <p class="dispo">Disponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
@@ -93,7 +85,7 @@
                             <p class="dispo">Indisponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
-                                <button class="Modifier"><img src="{{url_for('static', filename='images/modifier.png')}}" alt ="i"> Modifier </button>
+                                <button class="Modifier"> Modifier </button>
                                 {% endif %}
                                 <button href="#" class="famille"> Produits de la même famille </button>
                             </div>
