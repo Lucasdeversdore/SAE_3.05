@@ -77,7 +77,17 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+    
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'nomProduit': self.nomProduit,
+            'nomUnite': self.nomUnite,
+            'afficher': self.afficher,
+            'fonctionProduit' : self.fonctionProduit,
+            'idFou':self.idFou
+        }
 
 class Commande(db.Model):
 
@@ -158,7 +168,11 @@ class Lieu_Stockage(db.Model):
     def __str__(self):
         return str(self.idLieu) + self.nomLieu
     
-
+    def to_dict(self):
+        return {
+            'idLieu': self.idLieu,
+            'nomLieu': self.nomLieu
+        }
 
 
 class Fournisseur(db.Model):
@@ -299,9 +313,13 @@ def next_chimiste_id():
 def get_all_prod():
     return Produit.query.all()
 
-def get_sample(nb=20):
+def get_sample_prduit(nb=20):
     """Renvoie 20 produits de la base de donnée"""
     return Produit.query.limit(nb).all()
+
+def get_sample_reservation(nb=20):
+    """Renvoie 20 reservations de la base de donnée"""
+    return Commande.query.limit(nb).all()
 
 
 def search_filter(q):
@@ -334,6 +352,28 @@ def search_famille_filter(q):
     results = results2
     return results
 
+def edit_qte_commande(id_commande, new_qte):
+    
+    if new_qte >= 0:
+        # Recherche de la commande et du statut de commande
+        commande = Commande.query.get(id_commande)
+        
+
+        if not commande:
+            print("Commande introuvable")
+        
+
+        # Vérifier le statut de la commande dans la table Faire
+        statut = db.session.query(Faire).filter_by(idCommande=id_commande).first()
+        
+        if statut and statut.statutCommande == "Pas Commence":
+            # Mise à jour de la quantité de la commande si le statut est correct
+            commande.qteCommande = new_qte
+            db.session.commit()
+            print("Quantité de commande mise à jour avec succès.")
+        else:
+            print("Mise à jour refusée : le statut de commande ne permet pas la modification.")
+    print("Erreur : qte inferieur à 0")
 
 def check_mdp(mdp):
     """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
@@ -365,3 +405,7 @@ def check_mdp(mdp):
     if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
         return True
     return False
+
+
+
+
