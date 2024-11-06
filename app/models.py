@@ -150,6 +150,12 @@ class Est_Stocker(db.Model):
     def __str__(self):
         return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
 
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'idLieu': self.idLieu,
+            'quantiteStocke': self.quantiteStocke
+        }
 
 
 class Lieu_Stockage(db.Model):

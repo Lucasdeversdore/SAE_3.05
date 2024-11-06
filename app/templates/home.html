@@ -72,7 +72,7 @@
                                 {% if current_user.estPreparateur %}
                                     <button class="Modifier"> Modifier </button>
                                 {% endif %}
-                                    <button class="Reserver"> Reserver </button>
+                                    <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver </button>
                             </div>
                         {% else %}
                             <p>Indisponible</p>

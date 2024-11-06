@@ -119,5 +119,11 @@ def get_produit(id_produit):
     id_lieu = est_stocker.idLieu
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
     return jsonify(produit=produit, lieu=lieu)
+
+@app.route('/reserver/<int:id_produit>', methods=['GET'])
+def reserver_produit(id_produit):
+    produit=Produit.query.get(id_produit).to_dict()
+    stock=Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+    return jsonify(produit=produit, stock=stock)
     
         
