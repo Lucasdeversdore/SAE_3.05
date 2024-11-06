@@ -3,40 +3,24 @@ function handleButtonInfoClick(produit, lieu) {
     // Crée le fond du popup
     const popup_overlay_info = document.createElement("div");
     popup_overlay_info.id = "popup-overlay-info";
-    popup_overlay_info.style.position = "fixed";
-    popup_overlay_info.style.top = "0";
-    popup_overlay_info.style.left = "0";
-    popup_overlay_info.style.width = "100%";
-    popup_overlay_info.style.height = "100%";
-    popup_overlay_info.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_info.style.display = "flex";
-    popup_overlay_info.style.justifyContent = "center";
-    popup_overlay_info.style.alignItems = "center";
-    popup_overlay_info.style.zIndex = "1000"; 
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
 
     // Titre du popup
     const h3 = document.createElement("h3");
-    h3.textContent = `Informations sur le produit: ${produit.nomProduit}`;
+    h3.textContent = produit.nomProduit;
 
     // Informations du produit
     const pFonction = document.createElement("p");
     if (produit.fonctionProduit != null){
-        
         pFonction.textContent = "Fonction: "+produit.fonctionProduit; 
     }
     else{
         pFonction.textContent = "Ce produit n'a pas de fonction assignée.";
     }
     const pLieuStockage = document.createElement("p");
-    pLieuStockage.textContent = "Lieu de stockage: "+lieu.nomLieu; 
+    pLieuStockage.textContent = "Lieu de stockage: "+lieu.nomLieu;
 
     // Bouton OK pour fermer le popup
     const bOk = document.createElement("button");
