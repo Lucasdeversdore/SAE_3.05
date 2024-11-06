@@ -15,7 +15,7 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     height: 100%;
 }
 
@@ -25,10 +25,9 @@ header{
     justify-content: space-between;
 }
 
-header a, header button{
+header button{
     padding: 1em;
     margin: 1em;
-    display: block;
 }
 
 .content{
@@ -44,20 +43,21 @@ header a, header button{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
-.top_main button{
-    width: 15em;
+#ajouter_prod{
+    min-width: 15em;
     height: 5em;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
     justify-content: space-between;
     padding: 1em;
+    margin-bottom: 1em;
 }
 
-.top_main button img{
+#ajouter_prod img{
     height: 3em;
     size: 100%;
 }
@@ -65,12 +65,10 @@ header a, header button{
 .top_main .barre_recherche{
     width: 25em;
     height: 3em;
-    margin-top: auto;
-    margin-bottom: auto;
 }
 
 li{
-    flex-basis: 20%;
+    width: fit-content;
     margin: 1em;
     margin-left: 2em;
     margin-right: 2em;
@@ -83,15 +81,21 @@ li{
 }
 
 ul{
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     display: flex;
     flex-flow: row wrap;
     padding: 0px;
-    align-items: center;
 }
 
 p{
     text-align: center;
+    margin-bottom: 0px;
+}
+
+.dispo{
+  margin-top: 0px;
+  margin-bottom: 1em;
 }
 
 .bouton{
@@ -100,12 +104,13 @@ p{
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+    margin: 0.2em;
 }
 
 .bouton > button{
     margin: 0.5em;
-    height: 2.5em;
-    width: 80%;
+    padding: 3%;
+    width: 100%;
 }
 
 .supp_produit{
@@ -126,7 +131,7 @@ p{
     padding: 0px;
     width: 1.5em;
     height: 1.5em;
-    margin-left: 1em;
+    margin-left: 0.1em;
 }
 
 .info_prod img{
@@ -137,4 +142,16 @@ p{
 .Modifier img, .Reserver img{
     height: 1em;
     size: 1em;
+}
+
+#lien_logout{
+    min-width: 8em;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+#lien_logout img{
+    height: 1.5em;
+    size: 100%;
 }

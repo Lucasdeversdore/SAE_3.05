@@ -1,3 +1,7 @@
+body{
+  font-family: 'Roboto';
+}
+
 header{
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
@@ -16,8 +20,6 @@ a{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
   color: white;
-  font-family: 'Roboto';
-  font-size: 15px;
 }
 
 .supp_produit, .info_prod{
@@ -27,16 +29,34 @@ a{
 .Modifier, .Reserver, .famille{
   background-color: black;
   color: white;
-  font-family: 'Roboto';
-  border-radius: 18px;
+  border-radius: 8px;
 }
 
 .top_main .barre_recherche{
-  font-family: 'Roboto';
   border-radius: 20px;
   border-style: solid;
   border-color: #f0f0f0;
 }
+
 .top_main .barre_recherche::placeholder{
   color: #ff8fc5;
+}
+
+.dispo{
+  font-size: 0.8em;
+  color: grey;
+}
+
+header button{
+  background-color: white;
+  border-radius: 15px;
+}
+
+button{
+  transition: transform 0.1s ease, background-color 0.3s ease;
+  border: solid lightgrey 0.2em;
+}
+
+button:active {
+    transform: scale(0.95);
 }
