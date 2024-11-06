@@ -422,6 +422,32 @@ def check_mdp(mdp):
     return False
 
 
+def check_mdp_validator(form, field):
+    """
+    Validateur WTForms pour le champ mot de passe, utilisant la fonction `check_mdp`.
+
+    Args:
+        form (FlaskForm): L'instance du formulaire contenant le champ.
+        field (Field): Le champ PasswordField à valider.
+
+    Raises:
+        ValidationError: Si le mot de passe est invalide selon les règles de `check_mdp`.
+
+    Returns:
+        None, lève une ValidationError si la validation échoue.
+    """
+    
+    from .models import check_mdp
+    from wtforms import ValidationError
+    result = check_mdp(field.data)
+    if isinstance(result, bool):
+        is_valid, error_message = result, ""
+    else:
+        is_valid, error_message = result
+    if not is_valid:
+        raise ValidationError(error_message)
+
+
 def next_commande_id():
     max_id = db.session.query(func.max(Commande.idCommande)).scalar()
     next_id = (max_id or 0) + 1
