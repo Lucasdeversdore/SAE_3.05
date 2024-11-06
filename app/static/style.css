@@ -1,13 +1,85 @@
+body{
+  font-family: 'Roboto';
+}
+
 header{
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
 
 li{
-  border-style: solid;
-  border-color: black;
+  background-color: #f0f0f0; 
   list-style: none;
+  border-radius: 15px;
 }
 
 a{
   text-decoration: none;
+  color: black;
+}
+#ajouter_prod{
+  background: linear-gradient(to right, #ff4fa4, #ff8cc4);
+  border-radius: 18px;
+  color: white;
+}
+
+.supp_produit, .info_prod, #search{
+  background: none;
+  border: none;
+  border-radius: 15px;
+}
+
+.Modifier, .Reserver, .famille{
+  background-color: black;
+  color: white;
+  border-radius: 8px;
+}
+
+.top_main .barre_recherche{
+  border-radius: 20px;
+  border-style: solid;
+  border-color: #f0f0f0;
+}
+.top_main .barre_recherche input{
+  border: none;
+}
+.top_main .barre_recherche input::placeholder{
+  color: #ff8fc5;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.top_main .barre_recherche input{
+  font-size: 16px;
+}
+
+.dispo{
+  font-size: 0.8em;
+  color: grey;
+  user-select: none;
+}
+
+header button{
+  background-color: white;
+  border-radius: 15px;
+}
+
+button{
+  transition: transform 0.1s ease, background-color 0.3s ease;
+  border: solid lightgrey 0.2em;
+}
+
+button:active {
+    transform: scale(0.9);
+}
+
+button:hover{
+  outline: 2px solid #007BFF;
+}
+
+img{
+  pointer-events: none;
+}
+
+input:focus{
+    outline: none;
 }

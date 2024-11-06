@@ -93,6 +93,7 @@ def inscrire():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
+    print(results)
     return render_template("home.html", liste_produit=results)
 
 
