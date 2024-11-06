@@ -422,6 +422,12 @@ def check_mdp(mdp):
     return False
 
 
+def cancel_commande(id_commande):
+    commande = Commande.query.get(id_commande)
+    db.session.delete(commande)
+    db.session.commit()
+    print("Commande annulé avec succès !!!")
+
 def check_mdp_validator(form, field):
     """
     Validateur WTForms pour le champ mot de passe, utilisant la fonction `check_mdp`.
@@ -476,5 +482,3 @@ def reserver_prod(id_produit, qte, user):
             est_stocker.quantiteStocke = qte_restante
             db.session.commit()
             return True
-
-        
