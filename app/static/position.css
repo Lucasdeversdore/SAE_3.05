@@ -9,6 +9,7 @@ header{
     padding-left: 9%;
     padding-right: 9%;
     z-index: 1000;
+    min-height:fit-content;
 }
 
 .header_nav{
@@ -21,7 +22,7 @@ header{
 
 .liens_page{
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: space-between;
 }
 
@@ -30,10 +31,16 @@ header button{
     margin: 1em;
 }
 
-.content{
-    margin-top: 3em;
-    margin-left: 10%;
-    margin-right: 10%;
+#lien_logout{
+    min-width: 8em;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+#lien_logout img{
+    height: 1.5em;
 }
 
 .top_main{
@@ -67,13 +74,6 @@ header button{
 
 #ajouter_prod img{
     height: 3em;
-    size: 100%;
-}
-
-.top_main .barre_recherche input{
-    margin-bottom: 0em;
-    margin-left: 1em;
-    width: 100%;
 }
 
 .top_main .barre_recherche{
@@ -82,6 +82,12 @@ header button{
     margin-bottom: 1em;
     display: flex;
     align-items: center;
+}
+
+.top_main .barre_recherche input{
+    margin-bottom: 0em;
+    margin-left: 1em;
+    width: 100%;
 }
 
 .top_main .barre_recherche button{
@@ -93,7 +99,20 @@ header button{
 
 .top_main .barre_recherche img{
     height: 100%;
-    size: 100%;
+}
+
+.content{
+    margin-top: 3em;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+ul{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0px;
 }
 
 li{
@@ -110,39 +129,6 @@ li{
     position: relative;
 }
 
-ul{
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-flow: row wrap;
-    padding: 0px;
-}
-
-p{
-    text-align: center;
-    margin-bottom: 0px;
-}
-
-.dispo{
-  margin-top: 0px;
-  margin-bottom: 1em;
-}
-
-.bouton{
-    height: 6em;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    margin: 0.2em;
-}
-
-.bouton > button{
-    margin: 0.5em;
-    padding: 3%;
-    width: 100%;
-}
-
 .supp_produit{
     padding: 0px;
     width: 1.5em;
@@ -157,6 +143,11 @@ p{
     height: 100%;
 }
 
+.nomProduit, .dispo{
+    text-align: center;
+    margin-bottom: 0px;
+}
+
 .info_prod{
     padding: 0px;
     width: 1.5em;
@@ -169,19 +160,44 @@ p{
     height: 100%;
 }
 
-.Modifier img, .Reserver img{
-    height: 1em;
-    size: 1em;
+.dispo{
+  margin-top: 0px;
+  margin-bottom: 1em;
 }
 
-#lien_logout{
-    min-width: 8em;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+.bouton > button{
+    margin: 0.5em;
+    padding: 3%;
+    width: 100%;
 }
-#lien_logout img{
-    height: 1.5em;
-    size: 100%;
+
+.bouton > button img{
+    height: 1em;
+}
+
+.bouton{
+    height: 6em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0.2em;
+}
+
+#popup-overlay-info{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#popup-overlay-info > div{
+    padding: 20px;
+    width: 300px;
+    text-align: center;
 }

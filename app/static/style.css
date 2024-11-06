@@ -6,32 +6,15 @@ header{
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
 
-li{
-  background-color: #f0f0f0; 
-  list-style: none;
+header button{
+  background-color: white;
   border-radius: 15px;
 }
 
-a{
-  text-decoration: none;
-  color: black;
-}
 #ajouter_prod{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
   color: white;
-}
-
-.supp_produit, .info_prod, #search{
-  background: none;
-  border: none;
-  border-radius: 15px;
-}
-
-.Modifier, .Reserver, .famille{
-  background-color: black;
-  color: white;
-  border-radius: 8px;
 }
 
 .top_main .barre_recherche{
@@ -41,6 +24,7 @@ a{
 }
 .top_main .barre_recherche input{
   border: none;
+  font-size: 16px;
 }
 .top_main .barre_recherche input::placeholder{
   color: #ff8fc5;
@@ -48,8 +32,20 @@ a{
   font-style: italic;
 }
 
-.top_main .barre_recherche input{
-  font-size: 16px;
+input:focus{
+  outline: none;
+}
+
+li{
+  background-color: #f0f0f0; 
+  list-style: none;
+  border-radius: 15px;
+}
+
+.supp_produit, .info_prod, #search{
+  background: none;
+  border: none;
+  border-radius: 15px;
 }
 
 .dispo{
@@ -58,9 +54,10 @@ a{
   user-select: none;
 }
 
-header button{
-  background-color: white;
-  border-radius: 15px;
+.Modifier, .Reserver, .famille{
+  background-color: black;
+  color: white;
+  border-radius: 8px;
 }
 
 button{
@@ -76,10 +73,20 @@ button:hover{
   outline: 2px solid #007BFF;
 }
 
+a{
+  text-decoration: none;
+  color: black;
+}
+
 img{
   pointer-events: none;
 }
 
-input:focus{
-    outline: none;
+#popup-overlay-info{
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+#popup-overlay-info > div{
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
 }
