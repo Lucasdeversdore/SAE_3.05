@@ -30,11 +30,11 @@
     {% endblock %}
 
     {% block content %}
-        <ul>
+        <ul class="produits">
             {% for produit_qte in liste_produit_qte %}
                 {% set produit = produit_qte[0] %}
                 {% set qte = produit_qte[1] %}
-                <li>
+                <li class="objet_produit">
                     <div class="produit">
                         <section class="popup">
                             
