@@ -13,7 +13,7 @@ def get_nombre_unite(quantite):
         except:
             if quantite[i] == "":
                 res = get_nombre_unite(quantite[i+1:])
-                return (int(nb) res[0], res[1])
+                return (int(nb), res[0], res[1])
             else:
                 return (int(nb), quantite[i:].strip())
     return (int(quantite), None)
