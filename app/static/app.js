@@ -28,8 +28,13 @@ function handleButtonInfoClick(produit, lieu) {
 
     // Informations du produit
     const pFonction = document.createElement("p");
-    pFonction.textContent = "Fonction: "+produit.fonctionProduit; 
-
+    if (produit.fonctionProduit != null){
+        
+        pFonction.textContent = "Fonction: "+produit.fonctionProduit; 
+    }
+    else{
+        pFonction.textContent = "Ce produit n'a pas de fonction assignée.";
+    }
     const pLieuStockage = document.createElement("p");
     pLieuStockage.textContent = "Lieu de stockage: "+lieu.nomLieu; 
 
