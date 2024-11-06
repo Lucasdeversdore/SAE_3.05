@@ -21,3 +21,4 @@ class Testing(unittest.TestCase):
 
 if __name__ == "__main__":
     test = Testing()
+    print(get_nombre_unite("3*250"))
