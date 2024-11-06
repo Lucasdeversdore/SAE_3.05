@@ -31,13 +31,17 @@
 
 {% block content %}
 <ul>
-{% for reservation in reservations %}
+{% for reservation_etat in reservations_etats %}
+    {% set reservation = reservation_etat[0] %}
+    {% set etat = reservation_etat[1] %}
+    {% set chimiste = reservation_etat[2] %}
+    {% set produit = reservation_etat[3] %}
     <li>
         <div>
-            <p>{{reservation.qte}} {{reservation.produit}} réserver par {{reservation.personne}} le {{reservation.date}}</p>
+            <p>{{reservation.qteCommande}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
             {% if current_user.estPreparateur %}
                 <p><a href="#">{{reservation.etat}}</a></p>  <!-- Futur bouton -->
-            { else %}
+            {% else %}
                 <!-- popup information -->
                 <div id="popup-overlay">
                     <div id="popup-content">
@@ -47,7 +51,7 @@
                     </div>
                 </div>
                 <p>
-                    {% if produit.etat == "non commencé" %}
+                    {% if reservation.etat == "non commencé" %}
                         <a><img src="" alt="Bouton de suppression"></a>
                     {% endif %}
                     {{reservation.etat}}
