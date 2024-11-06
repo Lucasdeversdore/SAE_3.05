@@ -64,8 +64,8 @@ def inscrire():
         prenom = form.prenom.data
         nom = form.nom.data
         email = form.email.data
-        mdp = form.mdp.data  # Hashage du mot de passe
-
+        mdp = form.mdp.data
+        
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
@@ -84,7 +84,7 @@ def inscrire():
         db.session.commit()
 
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
-        return redirect(url_for('connexion'))
+        return redirect(url_for('connection'))
 
     return render_template('inscription.html', form=form)
 
