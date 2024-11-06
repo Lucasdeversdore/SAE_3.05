@@ -1,19 +1,15 @@
 #!/usr/bin/python3
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Text, Date, Float, Boolean
+from flask_login import UserMixin
+from sqlalchemy import Column, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
+from .app import login_manager
 from sqlalchemy import func
-import time
-from datetime import date
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import registry
-from app import *
+from .app import  db
 
 
 
-class Chimiste(db.Model):
+class Chimiste(db.Model, UserMixin):
 
     __tablename__ = "CHIMISTE"
 
@@ -22,20 +18,24 @@ class Chimiste(db.Model):
     nom = Column(Text)
     email = Column(Text)
     mdp = Column(Text)
+    estPreparateur = Column(Boolean)
     chimisteCom = relationship("Commande", back_populates="commandeChim")
     chimisteFaire = relationship("Faire", back_populates="faireChim")
 
 
-    def __init__(self, idChimiste, prenom, nom, email, mdp):
+    def __init__(self, idChimiste, prenom, nom, email, mdp,  estPreparateur=False):
         self.idChimiste = idChimiste
         self.prenom = prenom
         self.nom = nom
         self.email = email
         self.mdp = mdp
+        self.estPreparateur = estPreparateur
         
     def __str__(self):
         return str(self.idChimiste) + self.prenom + self.nom + self.email + self.mdp
     
+    def get_id(self):
+        return self.idChimiste
 
 class Unite(db.Model):
 
@@ -77,7 +77,17 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + self.nomUnite + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+    
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'nomProduit': self.nomProduit,
+            'nomUnite': self.nomUnite,
+            'afficher': self.afficher,
+            'fonctionProduit' : self.fonctionProduit,
+            'idFou':self.idFou
+        }
 
 class Commande(db.Model):
 
@@ -158,7 +168,11 @@ class Lieu_Stockage(db.Model):
     def __str__(self):
         return str(self.idLieu) + self.nomLieu
     
-
+    def to_dict(self):
+        return {
+            'idLieu': self.idLieu,
+            'nomLieu': self.nomLieu
+        }
 
 
 class Fournisseur(db.Model):
@@ -166,7 +180,7 @@ class Fournisseur(db.Model):
     __tablename__ = "FOURNISSEUR"
 
     idFou = Column(Integer, primary_key = True, nullable = False)
-    nomFou = Column(Text)
+    nomFou = Column(Text, unique=True)
     adresseFou = Column(Text)
     numTelFou = Column(Integer)
     fournisseurHist = relationship("Historique", back_populates="historiqueFour")
@@ -209,6 +223,10 @@ class Historique(db.Model):
     def __str__(self):
         return str(self.idAction) + self.nomAction + str(self.dateAction) + str(self.qteFourni) + str(self.idFou) + str(self.idProduit)
 
+
+@login_manager.user_loader
+def load_user(email):
+    return Chimiste.query.get(email)
 
 def add_unite(nom):
     existing_unite = Unite.query.filter_by(nomUnite=nom).first()
@@ -285,6 +303,108 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
                 existing_stock.quantiteStocke = quantiteStock
             else:
                 existing_stock.quantiteStocke += quantiteStock
+
+def next_chimiste_id():
+    max_id = db.session.query(func.max(Chimiste.idChimiste)).scalar()
+    next_id = (max_id or 0) + 1
+    return next_id
+
+
+def get_all_prod():
+    return Produit.query.all()
+
+def get_sample_prduit(nb=20):
+    """Renvoie 20 produits de la base de donnée"""
+    return Produit.query.limit(nb).all()
+
+def get_sample_reservation(nb=20):
+    """Renvoie 20 reservations de la base de donnée"""
+    return Commande.query.limit(nb).all()
+
+
+def search_filter(q):
+    """renvoie une liste de produit selon une requete q  
+
+    Args:
+        q (str): requete de l'utilisateur
+
+    Returns:
+        list: liste de produit
+    """
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if q.upper() in prod.nomProduit.upper():
+            results2.append(prod)
+    results = results2  
+    return results
+
+
+def search_famille_filter(q):
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if prod.fonctionProduit is None:
+            prod.fonctionProduit = ""
+        if q.upper() in prod.fonctionProduit.upper():
+            results2.append(prod)
+    
+    results = results2
+    return results
+
+def edit_qte_commande(id_commande, new_qte):
+    
+    if new_qte >= 0:
+        # Recherche de la commande et du statut de commande
+        commande = Commande.query.get(id_commande)
+        
+
+        if not commande:
+            print("Commande introuvable")
+        
+
+        # Vérifier le statut de la commande dans la table Faire
+        statut = db.session.query(Faire).filter_by(idCommande=id_commande).first()
+        
+        if statut and statut.statutCommande == "Pas Commence":
+            # Mise à jour de la quantité de la commande si le statut est correct
+            commande.qteCommande = new_qte
+            db.session.commit()
+            print("Quantité de commande mise à jour avec succès.")
+        else:
+            print("Mise à jour refusée : le statut de commande ne permet pas la modification.")
+    print("Erreur : qte inferieur à 0")
+
+def check_mdp(mdp):
+    """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
+
+    Args:
+        mdp (str): mdp a vérifier
+    Return 
+        bool True si le mot de passe est correct, false sinon
+    """
+    def contient_maj(mdp):
+        for c in mdp:
+            if c.isupper():
+                return True
+        return False
+
+    def contient_special(mdp):
+        special_characters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        for c in mdp:
+            if c in special_characters:
+                return True
+        return False
+    
+    def contient_chiffre(mdp):
+        for c in mdp:
+            if c in "0123456789":
+                return True
+        return False
+
+    if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
+        return True
+    return False
 
 
 
