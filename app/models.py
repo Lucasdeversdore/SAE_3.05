@@ -415,6 +415,8 @@ def check_mdp(mdp):
         return True
     return False
 
-
-
-
+def cancel_commande(id_commande):
+    commande = Commande.query.get(id_commande)
+    db.session.delete(commande)
+    db.session.commit()
+    print("Commande annulé avec succès !!!")
