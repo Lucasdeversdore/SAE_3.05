@@ -457,7 +457,8 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
             produit.idFou = res.idFou
 
     if quantite != "":
-        stock.quantiteStock = quantite
+        print(quantite)
+        stock.quantiteStocke = quantite
     
     if fonction != "":
        produit.fonctionProduit = fonction

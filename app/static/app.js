@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// Fonction pour afficher le popup de modifications de produit
 
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     const popup_overlay_modif = document.createElement("div");
@@ -122,11 +123,11 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     selectFournisseur.value = fournisseur.nomFou;
 
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantite}):`;
+    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0}):`;  // Définit 0 si la quantité est undefined
     const textQuantite = document.createElement("input");
     textQuantite.type = "text";
     textQuantite.name = "textQuantite";
-    textQuantite.value = est_stocker.quantite;
+    textQuantite.value = est_stocker.quantiteStocke || 0;
 
     const pFonction = document.createElement("p");
     pFonction.textContent = "Fonction du produit:";
@@ -151,7 +152,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     bSauv.textContent = "Sauvegarder";
     bSauv.id = "sauvModif";
     bSauv.addEventListener("click", function () {
-        if (!textNom.value || !textQuantite.value) {
+        if (!textNom.value || !textQuantite.value || !selectLieuStock.value) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
@@ -175,6 +176,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     popup_overlay_modif.appendChild(popup_content);
     document.body.appendChild(popup_overlay_modif);
 }
+
 
 function handleButtonOKModifClick() {
     const popup = document.getElementById("popup-overlay-modif");
