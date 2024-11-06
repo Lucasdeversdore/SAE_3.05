@@ -4,7 +4,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, modif_sauvegarde
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -120,4 +120,28 @@ def get_produit(id_produit):
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
     return jsonify(produit=produit, lieu=lieu)
     
-        
+
+@app.route('/modifier/<int:id_produit>', methods=['GET'])
+def get_modif_produit(id_produit):
+    produit = Produit.query.get(id_produit).to_dict()
+    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+    id_lieu = est_stocker["idLieu"]
+    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    id_fou = produit["idFou"]
+    fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
+
+@app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
+def sauvegarder_modif(id_produit):
+   
+    nom = request.args.get("textNom")
+    four = request.args.get("textFournisseur")
+    quantite = request.args.get("textQuantite")
+    fonction = request.args.get("textFonction")
+    lieu = request.args.get("textLieu")
+
+    res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
+    if res:
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
+        return jsonify(success=False, message="Quantité non valide"), 400

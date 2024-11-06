@@ -77,7 +77,7 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher) 
     
     def to_dict(self):
         return {
@@ -149,7 +149,13 @@ class Est_Stocker(db.Model):
     
     def __str__(self):
         return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
-
+    
+    def to_dict(self):
+        return {
+            'idProduit': self.idProduit,
+            'idLieu': self.idLieu,
+            'quantiteStocke': self.quantiteStocke
+        }
 
 
 class Lieu_Stockage(db.Model):
@@ -192,13 +198,20 @@ class Fournisseur(db.Model):
 
         self.idFou = idFou
         self.nomFou = nomFou
-        self.adresseFouFou = adresseFou
+        self.adresseFou = adresseFou
         self.numTelFou = numTelFou
     
     def __str__(self):
         return str(self.idFou) + self.nomFou + self.adresseFou + str(self.numTelFou)
 
-
+    def to_dict(self):
+        return {
+            'idFou': self.idFou,
+            'nomFou': self.nomFou,
+            'adresseFou': self.adresseFou,
+            'numTelFou': self.numTelFou
+        }
+    
 class Historique(db.Model):
     __tablename__ = "HISRORIQUE"
 
@@ -406,6 +419,58 @@ def check_mdp(mdp):
         return True
     return False
 
+def verif_fourn_existe(fournisseur):
+    les_fours = Fournisseur.query.all()
+
+    for fourn in les_fours:
+        if fourn.nomFou == fournisseur:
+            return True
+    return False
+
+def verif_lieu_existe(lieu):
+    les_lieux = Lieu_Stockage.query.all()
+
+    for endroit in les_lieux:
+        if endroit.nomLieu == lieu:
+            return True
+    return False
 
 
+def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
+    produit = Produit.query.get(idProduit)
+    four = Fournisseur.query.get(produit.idFou)
+    stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
+    le_lieu = Lieu_Stockage.query.get(stock.idLieu)
 
+    if nom != "":
+        produit.nomProduit = nom
+    
+    
+    if nom_fournisseur != four.nomFou:
+        if nom_fournisseur == "":
+            produit.idFou = "null"
+        elif verif_fourn_existe(nom_fournisseur):
+            produit.idFou = four.idFou
+        else:
+            add_fournisseur(nom_fournisseur)
+            res = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+            produit.idFou = res.idFou
+
+    if quantite != "":
+        stock.quantiteStock = quantite
+    
+    if fonction != "":
+       produit.fonctionProduit = fonction
+
+    if  lieu != le_lieu.nomLieu:
+
+        if verif_lieu_existe(lieu):
+            stock.idLieu = le_lieu.idLieu
+        else:
+            add_lieu_stock(lieu)
+            res = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+            stock.idLieu = res.idLieu
+    
+    db.session.commit()
+    print("Commande mise à jour")
+    return True
