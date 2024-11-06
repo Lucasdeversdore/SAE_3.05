@@ -2,15 +2,19 @@
 
 {% block header_nav%}
     <div class="liens_page">
-        <a href="/">
             {% if current_user.estPreparateur %}
-            gérer les stocks
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>gérer les stocks</button>
+            </form>
             {% else %}
-            liste des produits
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button>liste des produits</button>
+            </form>
             {% endif %}
-        </a>
-    <a href="#", id="lien_reservation"> liste des réservations</a>
-    </div>
+            <form  action="{{ url_for('preparation_reservation') }}" method="GET">
+                <button id="lien_reservation"> liste des réservations</button>
+            </form>
+        </div>
 {% endblock %}
 
 {% block top_main %}

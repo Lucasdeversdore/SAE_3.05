@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-<form  action="{{ url_for('logout') }}" method="GET">
 
-</form>
     {% block header_nav%}
         <div class="liens_page">
             {% if current_user.estPreparateur %}
-            <form  action="" method="GET">
+            <form  action="{{ url_for('home') }}" method="GET">
                 <button>gérer les stocks</button>
             </form>
             {% else %}
@@ -25,8 +23,9 @@
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
-        <form  action="{{ url_for('search') }}" method="GET">
+        <form  action="{{ url_for('search') }}" method="GET" class="barre_recherche">
             <input class="barre_recherche" type="search" placeholder="  Nom produit/famille " aria-label="Search" name="search" id="search">
+            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="i"></button>
         </form>
     {% endblock %}
 
