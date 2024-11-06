@@ -5,8 +5,8 @@ from app import app
 def get_nombre_unite(quantite):
     nb = ""
     quantite = quantite.strip()
-    if quantite == "" :
-        return (0,None)
+    if quantite == "":
+        return (0, None)
     for i in range(len(quantite)):
         try:
             a = int(quantite[i])
@@ -14,10 +14,12 @@ def get_nombre_unite(quantite):
         except:
             if quantite[i] == "":
                 res = get_nombre_unite(quantite[i+1:])
-                return (int(nb)*res[0], res[1])
+                return (int(nb) res[0], res[1])
             else:
                 return (int(nb), quantite[i:].strip())
     return (int(quantite), None)
+
+
 
 def csv_to_db(filename):
     with open(filename, newline='') as f:
