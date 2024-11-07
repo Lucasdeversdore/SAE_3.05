@@ -286,10 +286,13 @@ function handleButtonAjoutProdfClick() {
     bSauv.textContent = "Sauvegarder";
     bSauv.id = "sauvAjout";
     bSauv.addEventListener("click", function () {
-        if (!textNom.value || !textQuantite.value || !selectLieuStock.value) {
+        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
+        sauvegarderAjoutProduit(textNom.value, 
+            selectFournisseur.value, textUnite.value, textQuantite.value, 
+            textFonction.value, selectLieuStock.value)
         
     });
     
@@ -321,6 +324,33 @@ function handleButtonAnnulerAjoutClick() {
     if (popup) {
         popup.remove();
     }
+}
+
+function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction, lieu) {
+    fetch('/ajout/sauvegarder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            textNom: nom,
+            textFournisseur: nom_fournisseur,
+            textUnite: unite,
+            textQuantite: quantite,
+            textFonction: fonction,
+            textLieu: lieu
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);  // Message de succès
+            window.location.href = '/';  // Redirection si ajout réussi
+        } else {
+            alert(data.message);  // Message d'erreur si ajout échoue
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
 }
 
 document.addEventListener('DOMContentLoaded', function() {

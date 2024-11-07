@@ -4,7 +4,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -188,3 +188,24 @@ def searchByButton(id_produit):
     print(results)
     return render_template("home.html", liste_produit_qte=results)
 
+
+
+
+@app.route('/ajout/sauvegarder/', methods=['POST'])
+def sauvegarder_ajout():
+   
+    data = request.get_json()
+    nom = data.get("textNom")
+    four = data.get("textFournisseur")
+    unite = data.get("textUnite")
+    quantite = data.get("textQuantite")
+    fonction = data.get("textFonction")
+    lieu = data.get("textLieu")
+
+    res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
+    if res:
+        print("test")
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
+        print("test2")
+        return jsonify(success=False, message="Quantité non valide"), 400
