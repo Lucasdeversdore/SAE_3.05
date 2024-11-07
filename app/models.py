@@ -570,3 +570,20 @@ def reserver_prod(id_produit, qte, user):
             db.session.commit()
             return True
 
+
+def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+    add_prod(nom, unite, fonction, nom_fournisseur)
+    prod = Produit.query.get(next_prod_id()-1)
+    id_prod = prod.idProduit
+    le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+    if not le_lieu:
+        add_lieu_stock(lieu)
+        le_lieu = next_lieu_id()-1
+    else:
+        le_lieu = le_lieu.idLieu  
+    print(le_lieu)
+    
+    stock = Est_Stocker(id_prod, le_lieu, quantite)
+    db.session.add(stock)
+    db.session.commit()
+    return True

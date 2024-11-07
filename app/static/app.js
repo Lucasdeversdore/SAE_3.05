@@ -227,6 +227,154 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Fonction pour afficher la popup de ajouter produit
+function handleButtonAjoutProdfClick() {
+    const popup_overlay_modif = document.createElement("div");
+    popup_overlay_modif.id = "popup-overlay-Ajout";
+    popup_overlay_modif.style.position = "fixed";
+    popup_overlay_modif.style.top = "0";
+    popup_overlay_modif.style.left = "0";
+    popup_overlay_modif.style.width = "100%";
+    popup_overlay_modif.style.height = "100%";
+    popup_overlay_modif.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay_modif.style.display = "flex";
+    popup_overlay_modif.style.justifyContent = "center";
+    popup_overlay_modif.style.alignItems = "center";
+    popup_overlay_modif.style.zIndex = "1000";
+
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = `Ajout d'un produit`;
+
+    const pNom = document.createElement("p");
+    pNom.textContent = "Nom du produit:";
+    const textNom = document.createElement("input");
+    textNom.type = "text";
+    textNom.name = "textNewNom";
+
+    const pFournisseur = document.createElement("p");
+    pFournisseur.textContent = "Fournisseur:";
+    const selectFournisseur = document.createElement("input");
+    selectFournisseur.type = "text";
+    selectFournisseur.name = "textNewFournisseur";
+
+    const pUnite = document.createElement("p");
+    pUnite.textContent = "Unité"
+    const textUnite = document.createElement("input");
+    textUnite.type = "text";
+    textUnite.name = "textNewUnite";
+
+    const pQuantite = document.createElement("p");
+    pQuantite.textContent = "Quantiter disponible"
+    const textQuantite = document.createElement("input");
+    textQuantite.type = "number";
+    textQuantite.name = "textNewQuantite";
+    
+
+    const pFonction = document.createElement("p");
+    pFonction.textContent = "Fonction du produit:";
+    const textFonction = document.createElement("input");
+    textFonction.type = "text";
+    textFonction.name = "textNewFonction";
+    
+
+    const pLieuStock = document.createElement("p");
+    pLieuStock.textContent = "Lieu de stockage:";
+    const selectLieuStock = document.createElement("input");
+    selectLieuStock.type = "text";
+    selectLieuStock.name = "textNewLieu";
+
+    const bAnnuler = document.createElement("button");
+    bAnnuler.textContent = "Annuler";
+    bAnnuler.id = "AnnulerAjout";
+    bAnnuler.addEventListener("click", handleButtonAnnulerAjoutClick);
+
+    const bSauv = document.createElement("button");
+    bSauv.textContent = "Sauvegarder";
+    bSauv.id = "sauvAjout";
+    bSauv.addEventListener("click", function () {
+        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value) {
+            alert("Veuillez remplir tous les champs requis.");
+            return;
+        }
+        sauvegarderAjoutProduit(textNom.value, 
+            selectFournisseur.value, textUnite.value, textQuantite.value, 
+            textFonction.value, selectLieuStock.value)
+        
+    });
+    
+    
+    
+
+    popup_content.appendChild(h3);
+    popup_content.appendChild(pNom);
+    popup_content.appendChild(textNom);
+    popup_content.appendChild(pFournisseur);
+    popup_content.appendChild(selectFournisseur);
+    popup_content.appendChild(pUnite);
+    popup_content.appendChild(textUnite);
+    popup_content.appendChild(pQuantite);
+    popup_content.appendChild(textQuantite);
+    popup_content.appendChild(pFonction);
+    popup_content.appendChild(textFonction);
+    popup_content.appendChild(pLieuStock);
+    popup_content.appendChild(selectLieuStock);
+    popup_content.appendChild(bAnnuler);
+    popup_content.appendChild(bSauv);
+    popup_overlay_modif.appendChild(popup_content);
+    document.body.appendChild(popup_overlay_modif);
+}
+
+
+function handleButtonAnnulerAjoutClick() {
+    const popup = document.getElementById("popup-overlay-Ajout");
+    if (popup) {
+        popup.remove();
+    }
+}
+
+function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction, lieu) {
+    fetch('/ajout/sauvegarder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            textNom: nom,
+            textFournisseur: nom_fournisseur,
+            textUnite: unite,
+            textQuantite: quantite,
+            textFonction: fonction,
+            textLieu: lieu
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);  // Message de succès
+            window.location.href = '/';  // Redirection si ajout réussi
+        } else {
+            alert(data.message);  // Message d'erreur si ajout échoue
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const le_button = document.getElementById('ajouter_prod');
+    le_button.addEventListener('click', handleButtonAjoutProdfClick)
+});
+
+
+
+
+
 // Fonction pour afficher la popup de reservation
 function handleButtonReservation(produit, stock, erreur) {
     // Crée le fond du popup
