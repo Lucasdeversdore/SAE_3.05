@@ -187,3 +187,4 @@ def searchByButton(id_produit):
     results = search_famille_filter(q)
     print(results)
     return render_template("home.html", liste_produit_qte=results)
+
