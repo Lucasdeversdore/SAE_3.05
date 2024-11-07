@@ -74,9 +74,15 @@
                                 {% if current_user.estPreparateur %}
                                 <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier </button>
                                 {% endif %}
-                                <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
-                                    Produits de la même famille
-                                </button>
+                                {% if produit.fonctionProduit == None %}
+                                    <button class="famille bdisabled" disabled>
+                                        Produits de la même famille
+                                    </button>
+                                {% else %}
+                                    <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                        Produits de la même famille
+                                    </button>
+                                {% endif %}
                                 
                             </div>
                                                                                                         
