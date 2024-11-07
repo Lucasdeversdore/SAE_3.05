@@ -211,24 +211,23 @@ header button{
 table{
     justify-content: center;
     display: flex;
-    border-collapse: collapse;
 }
 
 tr{
-    background-color: #f4f4f4;
-}
-
-tr:nth-of-type(even) {
-    background-color: #d9d9d9;
+    min-width: 80rem;
 }
 
 th{
     padding: 1em;
     display: flex;
+    flex-direction: column;
 }
 
 th button{
-    border-radius: 15px;
-    margin-top: 1em;
     padding: 0.5em;
+}
+
+tbody{
+    display: flex;
+    flex-direction: column;
 }

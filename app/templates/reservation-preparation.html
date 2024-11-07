@@ -21,7 +21,7 @@
     <h1>Liste des réservations</h1>
     <form action="{{ url_for('search') }}" method="GET" class="barre_recherche">
         {% if current_user.estPreparateur %}
-            <input class="barre_recherche" type="search" placeholder="  Nom produit/étudiant" aria-label="Search" name="search" id="search">
+            <input class="barre_recherche" type="search" placeholder="  Nom produit / étudiant" aria-label="Search" name="search" id="search">
         {% else %}
             <input class="barre_recherche" type="search" placeholder="  Nom produit" aria-label="Search" name="search" id="search">
         {% endif %}
@@ -38,11 +38,11 @@
         {% set produit = reservation_etat[3] %}
         <tr>
             <th scope="row">
-                <p>{{reservation.qteCommande}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
+                <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
                 {% if current_user.estPreparateur %}
-                    <form><button type="submit">{{etat}}</button></form>
+                    <form><button type="submit" id="BoutonEtat{{produit.idProduit}}">{{etat}}</button></form>
                 {% else %}
-                <p>{% if etat == "non commencé" %}<form><button type="submit"><img src="" alt="Bouton de suppression"></button>{% endif %} {{etat}}</form></p>
+                    {% if etat == "non commencé" %}<form><button type="submit" id="BoutonSupp{{produit.idProduit}}"><img src="" alt="Bouton de suppression"></button>{% endif %} {{etat}}</form>
                 {% endif %}
             </th>
         </tr>
