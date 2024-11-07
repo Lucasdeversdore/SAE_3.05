@@ -182,4 +182,5 @@ def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
     results = search_famille_filter(q)
-    return render_template("home.html", liste_produit=results)
+    print(results)
+    return render_template("home.html", liste_produit_qte=results)
