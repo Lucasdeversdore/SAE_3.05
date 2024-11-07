@@ -77,7 +77,7 @@ class Produit(db.Model):
         self.afficher = True
 
     def __str__(self):
-        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher)
+        return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher) 
     
     def to_dict(self):
         return {
@@ -149,7 +149,7 @@ class Est_Stocker(db.Model):
     
     def __str__(self):
         return str(self.idProduit) + " "+ str(self.idLieu) +" "+ str(self.quantiteStocke)
-
+    
     def to_dict(self):
         return {
             'idProduit': self.idProduit,
@@ -198,13 +198,20 @@ class Fournisseur(db.Model):
 
         self.idFou = idFou
         self.nomFou = nomFou
-        self.adresseFouFou = adresseFou
+        self.adresseFou = adresseFou
         self.numTelFou = numTelFou
     
     def __str__(self):
         return str(self.idFou) + self.nomFou + self.adresseFou + str(self.numTelFou)
 
-
+    def to_dict(self):
+        return {
+            'idFou': self.idFou,
+            'nomFou': self.nomFou,
+            'adresseFou': self.adresseFou,
+            'numTelFou': self.numTelFou
+        }
+    
 class Historique(db.Model):
     __tablename__ = "HISRORIQUE"
 
@@ -268,8 +275,11 @@ def next_prod_id():
 def add_prod(nom, unite, fonctionProd, four):
     id = next_prod_id()
     add_unite(unite)
-    add_fournisseur(four)
-    id_fou = get_id_fournisseur(four)
+    if four:
+        add_fournisseur(four)
+        id_fou = get_id_fournisseur(four)
+    else:
+        id_fou = None
     prod = Produit(id, nom, unite, fonctionProd, id_fou)
     db.session.add(prod)
     db.session.commit()
@@ -347,19 +357,24 @@ def get_sample_reservation(nb=20):
 
 
 def search_filter(q):
-    """renvoie une liste de produit selon une requete q  
+    """renvoie une liste de produit_qte selon une requete q  
 
     Args:
         q (str): requete de l'utilisateur
 
     Returns:
-        list: liste de produit
+        list: liste de produit_qte
     """
     results = get_all_prod()
     results2 = []
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
-            results2.append(prod)
+            est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+            if est_stocker is None:
+                qte = 0
+            else:
+                qte = est_stocker.quantiteStocke
+            results2.append((prod,qte))
     results = results2
     return results
 
@@ -371,7 +386,12 @@ def search_famille_filter(q):
         if prod.fonctionProduit is None:
             prod.fonctionProduit = ""
         if q.upper() in prod.fonctionProduit.upper():
-            results2.append(prod)
+            est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+            if est_stocker is None:
+                qte = 0
+            else:
+                qte = est_stocker.quantiteStocke
+            results2.append((prod,qte))
     
     results = results2
     return results
@@ -430,6 +450,94 @@ def check_mdp(mdp):
         return True
     return False
 
+def verif_fourn_existe(fournisseur):
+    les_fours = Fournisseur.query.all()
+
+    for fourn in les_fours:
+        if fourn.nomFou == fournisseur:
+            return True
+    return False
+
+def verif_lieu_existe(lieu):
+    les_lieux = Lieu_Stockage.query.all()
+
+    for endroit in les_lieux:
+        if endroit.nomLieu == lieu:
+            return True
+    return False
+
+
+def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
+    produit = Produit.query.get(idProduit)
+    four = Fournisseur.query.get(produit.idFou)
+    stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
+    le_lieu = Lieu_Stockage.query.get(stock.idLieu)
+
+    if nom != "":
+        produit.nomProduit = nom
+    
+    
+    if nom_fournisseur != four.nomFou:
+        if nom_fournisseur == "":
+            produit.idFou = "null"
+        elif verif_fourn_existe(nom_fournisseur):
+            produit.idFou = four.idFou
+        else:
+            add_fournisseur(nom_fournisseur)
+            res = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+            produit.idFou = res.idFou
+
+    if quantite != "":
+        print(quantite)
+        stock.quantiteStocke = quantite
+    
+    if fonction != "":
+       produit.fonctionProduit = fonction
+
+    if  lieu != le_lieu.nomLieu:
+
+        if verif_lieu_existe(lieu):
+            stock.idLieu = le_lieu.idLieu
+        else:
+            add_lieu_stock(lieu)
+            res = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+            stock.idLieu = res.idLieu
+    
+    db.session.commit()
+    print("Commande mise à jour")
+    return True
+
+def cancel_commande(id_commande):
+    commande = Commande.query.get(id_commande)
+    db.session.delete(commande)
+    db.session.commit()
+    print("Commande annulé avec succès !!!")
+
+def check_mdp_validator(form, field):
+    """
+    Validateur WTForms pour le champ mot de passe, utilisant la fonction `check_mdp`.
+
+    Args:
+        form (FlaskForm): L'instance du formulaire contenant le champ.
+        field (Field): Le champ PasswordField à valider.
+
+    Raises:
+        ValidationError: Si le mot de passe est invalide selon les règles de `check_mdp`.
+
+    Returns:
+        None, lève une ValidationError si la validation échoue.
+    """
+    
+    from .models import check_mdp
+    from wtforms import ValidationError
+    result = check_mdp(field.data)
+    if isinstance(result, bool):
+        is_valid, error_message = result, ""
+    else:
+        is_valid, error_message = result
+    if not is_valid:
+        raise ValidationError(error_message)
+
 
 def next_commande_id():
     max_id = db.session.query(func.max(Commande.idCommande)).scalar()
@@ -462,4 +570,3 @@ def reserver_prod(id_produit, qte, user):
             db.session.commit()
             return True
 
-        

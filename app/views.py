@@ -4,7 +4,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from .app import app
 from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, reserver_prod
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde
 from flask import request
 
 class LoginForm ( FlaskForm ):
@@ -21,15 +21,16 @@ class LoginForm ( FlaskForm ):
         return user if passwd == user.mdp else "Mot de passe incorrect"
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 class InscriptionForm(FlaskForm):
+    from .models import check_mdp_validator
     prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
     nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    mdp = PasswordField('Mot de passe', validators=[DataRequired(), Length(min=6)])
-    confirm_mdp = PasswordField('Confirmer mot de passe', 
+    mdp = PasswordField('Mot de passe', validators=[DataRequired(), check_mdp_validator])
+    confirm_mdp = PasswordField('Confirmer mot de passe',
                                 validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
     submit = SubmitField("S'inscrire")
 
@@ -93,8 +94,7 @@ def inscrire():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    print(results)
-    return render_template("home.html", liste_produit=results)
+    return render_template("home.html", liste_produit_qte=results)
 
 
 @app.route("/test/connection", methods=('GET', 'POST'))
@@ -122,9 +122,13 @@ def logout():
 def get_produit(id_produit):
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
-    id_lieu = est_stocker.idLieu
-    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    if est_stocker:
+        id_lieu = est_stocker.idLieu
+        lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    else:
+        lieu = None
     return jsonify(produit=produit, lieu=lieu)
+
 
 @app.route('/reserver/<int:id_produit>', methods=['GET'])
 @login_required
@@ -147,6 +151,39 @@ def reserver_produit(id_produit):
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
+        return jsonify(success=False, message="Quantité non valide"), 400   
+
+@app.route('/modifier/<int:id_produit>', methods=['GET'])
+def get_modif_produit(id_produit):
+    produit = Produit.query.get(id_produit).to_dict()
+    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+    id_lieu = est_stocker["idLieu"]
+    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    id_fou = produit["idFou"]
+    fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
+
+@app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
+def sauvegarder_modif(id_produit):
+   
+    nom = request.args.get("textNom")
+    four = request.args.get("textFournisseur")
+    quantite = request.args.get("textQuantite")
+    fonction = request.args.get("textFonction")
+    lieu = request.args.get("textLieu")
+
+    res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
+    if res:
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
         return jsonify(success=False, message="Quantité non valide"), 400
+    
 
-
+@app.route("/search/famille/<int:id_produit>", methods=('GET',))
+@login_required
+def searchByButton(id_produit):
+    prod = Produit.query.get(id_produit)
+    q = str(prod.fonctionProduit)
+    results = search_famille_filter(q)
+    print(results)
+    return render_template("home.html", liste_produit_qte=results)

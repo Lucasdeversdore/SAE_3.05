@@ -26,7 +26,7 @@ CREATE TABLE FAIRE (
 );
 
 CREATE TABLE EST_STOCKER (
-    idProduit int NOT NULL,
+    idProduit int NOT NULL UNIQUE,
     idLieu int NOT NULL,
     quantiteStocke int,
     CONSTRAINT PK_Est_Stocker PRIMARY KEY (idProduit, idLieu),
@@ -110,9 +110,9 @@ END;
 
 CREATE TRIGGER update_verif_qte_commande
 BEFORE UPDATE ON COMMANDE
-WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+WHEN NOT (NEW.qteCommande) <= (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
 BEGIN
-    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur ou égale à la quantité stocké');
 END;
 
 CREATE TRIGGER update_commande_statut
