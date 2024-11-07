@@ -275,8 +275,11 @@ def next_prod_id():
 def add_prod(nom, unite, fonctionProd, four):
     id = next_prod_id()
     add_unite(unite)
-    add_fournisseur(four)
-    id_fou = get_id_fournisseur(four)
+    if four:
+        add_fournisseur(four)
+        id_fou = get_id_fournisseur(four)
+    else:
+        id_fou = None
     prod = Produit(id, nom, unite, fonctionProd, id_fou)
     db.session.add(prod)
     db.session.commit()

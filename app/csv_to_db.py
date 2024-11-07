@@ -28,7 +28,10 @@ def csv_to_db(filename):
             for row in reader:
                 if demarer:
                     nom_prod = row[0]
-                    nom_fou = row[1]
+                    if row[1]=="" or row[1]=="-" or row[1]=="\"":
+                        nom_fou = None
+                    else:
+                        nom_fou = row[1]
                     qte_unite = get_nombre_unite(row[2])
                     qte = qte_unite[0]
                     unite = qte_unite[1]
