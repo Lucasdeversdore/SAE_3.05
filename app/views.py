@@ -173,3 +173,13 @@ def sauvegarder_modif(id_produit):
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
+    
+
+@app.route("/search/famille/<int:id_produit>", methods=('GET',))
+@login_required
+def searchByButton(id_produit):
+    prod = Produit.query.get(id_produit)
+    q = str(prod.fonctionProduit)
+    results = search_famille_filter(q)
+    print(results)
+    return render_template("home.html", liste_produit=results)
