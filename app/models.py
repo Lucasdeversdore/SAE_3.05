@@ -354,19 +354,24 @@ def get_sample_reservation(nb=20):
 
 
 def search_filter(q):
-    """renvoie une liste de produit selon une requete q  
+    """renvoie une liste de produit_qte selon une requete q  
 
     Args:
         q (str): requete de l'utilisateur
 
     Returns:
-        list: liste de produit
+        list: liste de produit_qte
     """
     results = get_all_prod()
     results2 = []
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
-            results2.append(prod)
+            est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+            if est_stocker is None:
+                qte = 0
+            else:
+                qte = est_stocker.quantiteStocke
+            results2.append((prod,qte))
     results = results2
     return results
 
@@ -378,7 +383,12 @@ def search_famille_filter(q):
         if prod.fonctionProduit is None:
             prod.fonctionProduit = ""
         if q.upper() in prod.fonctionProduit.upper():
-            results2.append(prod)
+            est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+            if est_stocker is None:
+                qte = 0
+            else:
+                qte = est_stocker.quantiteStocke
+            results2.append((prod,qte))
     
     results = results2
     return results

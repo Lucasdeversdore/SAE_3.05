@@ -74,9 +74,12 @@
                                 {% if current_user.estPreparateur %}
                                 <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier </button>
                                 {% endif %}
-                                <button href="#" class="famille"> Produits de la même famille </button>
+                                <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                    Produits de la même famille
+                                </button>
+                                
                             </div>
-
+                                                                                                        
                         {% endif %} 
                     </div>
                 </li>
