@@ -205,4 +205,30 @@ header button{
 #lien_logout img{
     height: 1.5em;
     size: 100%;
+
+}
+
+table{
+    justify-content: center;
+    display: flex;
+    border-collapse: collapse;
+}
+
+tr{
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th{
+    padding: 1em;
+    display: flex;
+}
+
+th button{
+    border-radius: 15px;
+    margin-top: 1em;
+    padding: 0.5em;
 }

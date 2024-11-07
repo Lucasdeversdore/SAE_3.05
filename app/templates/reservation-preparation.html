@@ -30,35 +30,22 @@
 {% endblock %}
 
 {% block content %}
-<ul>
-{% for reservation_etat in reservations_etats %}
-    {% set reservation = reservation_etat[0] %}
-    {% set etat = reservation_etat[1] %}
-    {% set chimiste = reservation_etat[2] %}
-    {% set produit = reservation_etat[3] %}
-    <li>
-        <div>
-            <p>{{reservation.qteCommande}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
-            {% if current_user.estPreparateur %}
-                <p><a href="#">{{reservation.etat}}</a></p>  <!-- Futur bouton -->
-            {% else %}
-                <!-- popup information -->
-                <div id="popup-overlay">
-                    <div id="popup-content">
-                        <h3>Êtes vous sûr de vouloir supprimer cette réservation</h3>
-                        <a href="javascript:void(0)">Annuler</a>
-                        <a href="javascript:void(0)">Supprimer</a> <!-- A remplacer par une méthode pour supprimer la réservation -->
-                    </div>
-                </div>
-                <p>
-                    {% if reservation.etat == "non commencé" %}
-                        <a><img src="" alt="Bouton de suppression"></a>
-                    {% endif %}
-                    {{reservation.etat}}
-                </p>
-            {% endif %}
-        <div>
-    </li>
-{% endfor%}
-</ul>
+<table>
+    {% for reservation_etat in reservations_etats %}
+        {% set reservation = reservation_etat[0] %}
+        {% set etat = reservation_etat[1] %}
+        {% set chimiste = reservation_etat[2] %}
+        {% set produit = reservation_etat[3] %}
+        <tr>
+            <th scope="row">
+                <p>{{reservation.qteCommande}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
+                {% if current_user.estPreparateur %}
+                    <form><button type="submit">{{etat}}</button></form>
+                {% else %}
+                <p>{% if etat == "non commencé" %}<form><button type="submit"><img src="" alt="Bouton de suppression"></button>{% endif %} {{etat}}</form></p>
+                {% endif %}
+            </th>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
