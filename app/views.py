@@ -94,8 +94,7 @@ def inscrire():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    print(results)
-    return render_template("home.html", liste_produit=results)
+    return render_template("home.html", liste_produit_qte=results)
 
 
 @app.route("/test/connection", methods=('GET', 'POST'))
@@ -126,6 +125,8 @@ def get_produit(id_produit):
     id_lieu = est_stocker.idLieu
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
     return jsonify(produit=produit, lieu=lieu)
+
+
 @app.route('/reserver/<int:id_produit>', methods=['GET'])
 @login_required
 def popup_reserver_produit(id_produit, erreur=None):
@@ -181,5 +182,4 @@ def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
     results = search_famille_filter(q)
-    print(results)
     return render_template("home.html", liste_produit=results)
