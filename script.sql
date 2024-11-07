@@ -26,7 +26,7 @@ CREATE TABLE FAIRE (
 );
 
 CREATE TABLE EST_STOCKER (
-    idProduit int NOT NULL,
+    idProduit int NOT NULL UNIQUE,
     idLieu int NOT NULL,
     quantiteStocke int,
     CONSTRAINT PK_Est_Stocker PRIMARY KEY (idProduit, idLieu),

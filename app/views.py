@@ -122,8 +122,11 @@ def logout():
 def get_produit(id_produit):
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
-    id_lieu = est_stocker.idLieu
-    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    if est_stocker:
+        id_lieu = est_stocker.idLieu
+        lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    else:
+        lieu = None
     return jsonify(produit=produit, lieu=lieu)
 
 

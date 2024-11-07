@@ -1,5 +1,5 @@
 import csv, sys
-from .models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, get_id_prod
+from .models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, get_id_prod, next_prod_id
 
 def get_nombre_unite(quantite):
     nb = ""
@@ -39,7 +39,7 @@ def csv_to_db(filename):
                     lieu = row[4]
                     add_prod(nom_prod, unite, prod_fonction, nom_fou)
                     add_lieu_stock(lieu)
-                    id_prod= get_id_prod(nom_prod)
+                    id_prod = next_prod_id() -1
                     id_lieu= get_id_lieu(lieu)
                     add_est_stocker(id_prod, id_lieu, qte)
                 if row == ['Produits', 'Fournisseur', 'Quantité', 'Fonction', 'Lieu de stockage']:
