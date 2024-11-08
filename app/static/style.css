@@ -91,6 +91,35 @@ img{
   background-color: rgb(255, 255, 255);
 }
 
+<<<<<<< HEAD
+tr{
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th button{
+    border-radius: 15px;
+  font-size: 1em;
+}
+
+th p{
+  font-size: 1.5em;
+}
+
+.non-commence{
+  background-color: red;
+}
+
+.en-cours{
+  background-color: orange;
+}
+
+.termine{
+  background-color: green;
+=======
 .popup-content {
   background-color: #fff;
   padding: 20px;
@@ -101,4 +130,5 @@ img{
 
 .popup-content > div > input {
   background-color: #ff8cc4;
+>>>>>>> develop
 }

@@ -202,6 +202,48 @@ header button{
     text-align: center;
 }
 
+#lien_logout img{
+    height: 1.5em;
+    size: 100%;
+
+}
+
+table{
+    justify-content: center;
+    display: flex;
+}
+
+tr{
+    width: 80em;
+}
+
+th{
+    padding: 1em;
+    display: flex;
+    flex-direction:column;
+}
+
+th p{
+    margin-bottom: 0px;
+}
+
+th form{
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+th button{
+    padding: 0.5em;
+    margin-left: auto;
+}
+
+tbody{
+    min-width:fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
 #popup-overlay-modif {
     position: fixed;
     top: 0;
