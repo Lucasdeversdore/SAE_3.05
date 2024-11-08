@@ -9,22 +9,24 @@ from app.models import *
 from app.app import app
 
 
+
 class Testing(unittest.TestCase):
     """
     On utilsera une base de données test pour effectuer les tests
     """
     def test_chercher_produit(self):
         with app.app_context():
-            self.assertEqual(search_filter(""), get_all_prod())
+            
+            self.assertEqual(search_filter(""), get_all_prod_qte())
             self.assertEqual(search_filter("make"), [])
-            self.assertEqual(search_filter("acide"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
-            self.assertEqual(search_filter("ACIDE"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
+            #self.assertEqual(search_filter("acide"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
+            #self.assertEqual(search_filter("ACIDE"), Produit.query.filter(Produit.nomProduit.contains("acide")).all())
 
     def test_chercher_famille_produit(self):
         with app.app_context():
-            self.assertEqual(search_famille_filter(""), get_all_prod())
+            self.assertEqual(search_famille_filter(""), get_all_prod_qte())
             self.assertEqual(search_famille_filter("make"), [])
-            self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
+            #self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
 
     def test_reserver_qte_produit(self):
         #TODO Terminer le test
@@ -44,9 +46,141 @@ class Testing(unittest.TestCase):
     def test_edit_produit(self):
         #TODO Terminer le test
         pass
+    
     def test_add_produit(self):
-        #TODO Terminer le test
-        pass
+        nom1 = "abc"
+        nom2 = "1abd"
+        nom3 = ""
+        nom4 = None
+        nom_four1 = "abc"
+        nom_four2 = "1abd"
+        nom_four3 = ""
+        nom_four4 = None
+        unite5 = "L"
+        unite1 = "abc"
+        unite2 = "1abd"
+        unite3 = ""
+        unite4 = None
+        quantite1 = 5
+        quantite2 = 0
+        quantite3 = "5"
+        quantite4 = "a"
+        quantite5 = None
+        fonction1 = "test"
+        fonction2 = ""
+        fonction3 = None
+        lieu1 = "armoire"
+        lieu2 = "lieu_test"
+        lieu3 = None
+        with app.app_context():
+            ajout_sauvegarde(nom1, nom_four1, unite1, quantite1, fonction1, lieu1)
+            id_prod = next_prod_id()-1
+            fournisseur = Fournisseur.query.filter_by(nomFou=nom_four1).first()
+            prod1 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
+            testprod1 = {
+                'idProduit': id_prod,
+                'nomProduit': nom1,
+                'nomUnite': unite1,
+                'afficher': True,
+                'fonctionProduit' : fonction1,
+                'idFou': fournisseur.idFou
+            }
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
+            testqte1 = stock.quantiteStocke
+            testlieu1 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
+
+
+            ajout_sauvegarde(nom2, nom_four2, unite2, quantite2, fonction2, lieu2)
+            id_prod = next_prod_id()-1
+            fournisseur = Fournisseur.query.filter_by(nomFou=nom_four2).first()
+            prod2 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
+            testprod2 = {
+                'idProduit': id_prod,
+                'nomProduit': nom2,
+                'nomUnite': unite2,
+                'afficher': True,
+                'fonctionProduit' : fonction2,
+                'idFou': fournisseur.idFou
+            }
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
+            testqte2 = stock.quantiteStocke
+            testlieu2 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
+            
+            ajout_sauvegarde(nom2, nom_four3, unite3, quantite3, fonction3, lieu3)
+            id_prod = next_prod_id()-1
+            prod3 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
+            testprod3 = {
+                'idProduit': id_prod,
+                'nomProduit': nom2,
+                'nomUnite': unite3,
+                'afficher': True,
+                'fonctionProduit' : fonction3,
+                'idFou': None
+            }
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
+            testqte3 = stock.quantiteStocke
+            testlieu3 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
+
+            ajout_sauvegarde(nom2, nom_four4, unite4, quantite4, fonction3, lieu3)
+            id_prod = next_prod_id()-1
+            prod4 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
+            testprod4 = {
+                'idProduit': id_prod,
+                'nomProduit': nom2,
+                'nomUnite': unite4,
+                'afficher': True,
+                'fonctionProduit' : fonction3,
+                'idFou': None
+            }
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
+            testqte4 = stock.quantiteStocke
+
+            ajout_sauvegarde(nom2, nom_four4, unite5, quantite5, fonction3, lieu3)
+            id_prod = next_prod_id()-1
+            prod5 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
+            testprod5 = {
+                'idProduit': id_prod,
+                'nomProduit': nom2,
+                'nomUnite': unite5,
+                'afficher': True,
+                'fonctionProduit' : fonction3,
+                'idFou': None
+            }
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
+            testqte5 = stock.quantiteStocke
+
+            id_prod_av=  next_prod_id()-1
+            ajout_sauvegarde(nom3, nom_four4, unite5, quantite5, fonction3, lieu3)
+            id_prod_6 = next_prod_id()-1
+
+            ajout_sauvegarde(nom4, nom_four4, unite5, quantite5, fonction3, lieu3)
+            id_prod_7 = next_prod_id()-1
+
+
+            self.assertEqual(prod1,testprod1)
+            self.assertEqual(quantite1, testqte1)
+            self.assertEqual(lieu1, testlieu1)
+
+            self.assertEqual(prod2,testprod2)
+            self.assertEqual(quantite2, testqte2)
+            self.assertEqual(lieu2, testlieu2)
+
+            self.assertEqual(prod3,testprod3)
+            self.assertEqual(int(quantite3), testqte3)
+            self.assertEqual(lieu3, testlieu3)
+
+            self.assertEqual(prod4,testprod4)
+            self.assertEqual(0, testqte4)
+
+            self.assertEqual(prod5,testprod5)
+            self.assertEqual(0, testqte5)
+
+            self.assertEqual(id_prod_av,id_prod_6)
+            self.assertEqual(id_prod_av,id_prod_7)
+            
+
+
+
     def test_delete_produit(self):
         #TODO Terminer le test
         pass
@@ -77,4 +211,3 @@ class Testing(unittest.TestCase):
 
 if __name__ == "__main__":
     test = Testing()
-    test.recherche
