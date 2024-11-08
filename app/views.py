@@ -159,8 +159,13 @@ def get_modif_produit(id_produit):
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
     id_lieu = est_stocker["idLieu"]
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+
     id_fou = produit["idFou"]
-    fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+    print(id_fou)
+    if id_fou is None:
+        fournisseur = ""
+    else:
+        fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
     return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
