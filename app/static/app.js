@@ -96,7 +96,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     h3.textContent = `Modification du produit: ${produit.nomProduit}`;
 
     const pNom = document.createElement("p");
-    pNom.textContent = "Nom du produit:";
+    pNom.textContent = "Nom du produit : *";
     const textNom = document.createElement("input");
     textNom.type = "text";
     textNom.name = "textNom";
@@ -108,11 +108,16 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     ligne_nom.appendChild(textNom)
 
     const pFournisseur = document.createElement("p");
-    pFournisseur.textContent = "Fournisseur:";
+    pFournisseur.textContent = "Fournisseur :";
     const selectFournisseur = document.createElement("input");
     selectFournisseur.type = "text";
     selectFournisseur.name = "textFournisseur";
-    selectFournisseur.value = fournisseur.nomFou;
+    if (fournisseur == "") {
+        selectFournisseur.value = ""
+    }
+    else {
+        selectFournisseur.value = fournisseur.nomFou;
+    }
     selectFournisseur.className = "form-control"
 
     const ligne_fournisseur = document.createElement("div");
@@ -120,7 +125,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     ligne_fournisseur.appendChild(selectFournisseur)
 
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}):`;
+    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}) : *`;
     const textQuantite = document.createElement("input");
     textQuantite.type = "text";
     textQuantite.name = "textQuantite";
@@ -132,7 +137,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     ligne_quantite.appendChild(textQuantite)
 
     const pFonction = document.createElement("p");
-    pFonction.textContent = "Fonction du produit:";
+    pFonction.textContent = "Fonction du produit :";
     const textFonction = document.createElement("input");
     textFonction.type = "text";
     textFonction.name = "textFonction";
@@ -144,7 +149,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     ligne_fonction.appendChild(textFonction)
 
     const pLieuStock = document.createElement("p");
-    pLieuStock.textContent = "Lieu de stockage:";
+    pLieuStock.textContent = "Lieu de stockage : *";
     const selectLieuStock = document.createElement("input");
     selectLieuStock.type = "text";
     selectLieuStock.name = "textLieu";

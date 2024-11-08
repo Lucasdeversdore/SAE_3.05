@@ -489,11 +489,11 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     if nom != "":
         produit.nomProduit = nom
     
-    
-    if nom_fournisseur != four.nomFou:
-        if nom_fournisseur == "":
-            produit.idFou = "null"
-        elif verif_fourn_existe(nom_fournisseur):
+    if nom_fournisseur == "":
+        produit.idFou = None
+    elif four is None or nom_fournisseur != four.nomFou:
+
+        if verif_fourn_existe(nom_fournisseur) and four is not None:
             produit.idFou = four.idFou
         else:
             add_fournisseur(nom_fournisseur)
