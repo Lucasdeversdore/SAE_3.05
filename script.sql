@@ -83,7 +83,7 @@ CREATE TABLE CHIMISTE (
 
 CREATE TABLE PRODUIT (
     idProduit int NOT NULL,
-    nomProduit VARCHAR(50),
+    nomProduit VARCHAR(50) NOT NULL,
     nomUnite VARCHAR(50),
     afficher boolean default true,
     fonctionProduit VARCHAR(100),
