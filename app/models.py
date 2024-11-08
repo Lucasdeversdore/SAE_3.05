@@ -501,7 +501,6 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
             produit.idFou = res.idFou
 
     if quantite != "":
-        print(quantite)
         stock.quantiteStocke = quantite
     
     if fonction != "":
@@ -563,7 +562,7 @@ def reserver_prod(id_produit, qte, user):
     Args:
         id_produit (int): l'id du produit
         qte (int): la quantité reservé
-        user (_int): l'id du chimiste qui a réservé
+        user (int): l'id du chimiste qui a réservé
     """
     prod = Produit.query.get(id_produit)
     if prod:
@@ -572,7 +571,7 @@ def reserver_prod(id_produit, qte, user):
             qte_dispo = 0
         else:
             qte_dispo = est_stocker.quantiteStocke
-        if qte <= qte_dispo and qte > 0:
+        if qte is not None and qte <= qte_dispo and qte > 0:
             id = next_commande_id()
             commande = Commande(id, qte, user,id_produit)
             db.session.add(commande)
@@ -585,6 +584,19 @@ def reserver_prod(id_produit, qte, user):
 
 
 def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+    """Fonction qui permet d'ajouter un produit à la bd
+
+    Args:
+        nom (String): nom du produit
+        nom_fournisseur (String): nom du fournisseur
+        unite (String): nom de l'unite (L, g, mL ...)
+        quantite (String, int): quantité deisponible du produit 
+        fonction (String): famille du produit 
+        lieu (String): nom du lieu de stockage
+
+    Returns:
+        bool: True si l'ajout du produit se passe bien
+    """
     if add_prod(nom, unite, fonction, nom_fournisseur):
         prod = Produit.query.get(next_prod_id()-1)
         id_prod = prod.idProduit
