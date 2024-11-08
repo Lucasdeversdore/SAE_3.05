@@ -73,6 +73,18 @@ button:hover{
   outline: 2px solid #007BFF;
 }
 
+.bdisabled{
+  background-color: grey;
+}
+
+.bdisabled:active{
+  transform: none;
+}
+
+.bdisabled:hover{
+  outline: none;
+}
+
 a{
   text-decoration: none;
   color: black;
@@ -91,7 +103,6 @@ img{
   background-color: rgb(255, 255, 255);
 }
 
-<<<<<<< HEAD
 tr{
     background-color: #f4f4f4;
 }
@@ -119,7 +130,8 @@ th p{
 
 .termine{
   background-color: green;
-=======
+}
+
 .popup-content {
   background-color: #fff;
   padding: 20px;
@@ -130,5 +142,4 @@ th p{
 
 .popup-content > div > input {
   background-color: #ff8cc4;
->>>>>>> develop
 }
