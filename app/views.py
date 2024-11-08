@@ -2,7 +2,7 @@ from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
 from .app import app
 from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde
 from flask import request
 from .form import *
 
@@ -15,7 +15,10 @@ def home():
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
-    reservations_etats = get_sample_reservation()
+    if current_user.estPreparateur:
+        reservations_etats = get_sample_reservation()
+    else:
+        reservations_etats = get_sample_reservation_chimiste(current_user)
     return render_template("reservation-preparation.html", reservations_etats=reservations_etats)
 
 
