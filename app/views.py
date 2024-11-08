@@ -1,39 +1,10 @@
 from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
-from wtforms import HiddenField, PasswordField, StringField
 from .app import app
-from flask_wtf import FlaskForm
 from flask import jsonify, redirect, render_template, url_for
 from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde
 from flask import request
-
-class LoginForm ( FlaskForm ):
-    email = StringField('email')
-    password = PasswordField('Password')
-    next = HiddenField()
-    def get_authenticated_user(self):
-        user = Chimiste.query.filter(Chimiste.email == self.email.data).first()
-        if user is None:
-            return "Email incorrect"
-        m = sha256()
-        m.update(self.password.data.encode())
-        passwd = m.hexdigest()
-        return user if passwd == user.mdp else "Mot de passe incorrect"
-
-from flask_wtf import FlaskForm
-from wtforms import SubmitField, ValidationError
-from wtforms.validators import DataRequired, Email, Length, EqualTo
-
-class InscriptionForm(FlaskForm):
-    from .models import check_mdp_validator
-    prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
-    nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    mdp = PasswordField('Mot de passe', validators=[DataRequired(), check_mdp_validator])
-    confirm_mdp = PasswordField('Confirmer mot de passe',
-                                validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
-    submit = SubmitField("S'inscrire")
-
+from .form import *
 
 @app.route("/")
 @login_required
