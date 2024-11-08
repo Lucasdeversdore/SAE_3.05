@@ -4,15 +4,15 @@
         <div class="liens_page">
             {% if current_user.estPreparateur %}
             <form  action="{{ url_for('home') }}" method="GET">
-                <button>gérer les stocks</button>
+                <button> Gérer les stocks </button>
             </form>
             {% else %}
             <form  action="{{ url_for('home') }}" method="GET">
-                <button>liste des produits</button>
+                <button> Liste des produits </button>
             </form>
             {% endif %}
             <form  action="{{ url_for('preparation_reservation') }}" method="GET">
-                <button id="lien_reservation"> liste des réservations</button>
+                <button id="lien_reservation"> Liste des réservations </button>
             </form>
         </div>
     {% endblock %}

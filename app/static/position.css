@@ -233,9 +233,27 @@ th form{
     height: 100%;
 }
 
-th button{
+th button, th div{
     padding: 0.5em;
     margin-left: auto;
+    height: 1.5em;
+}
+
+th div{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+}
+th div button{
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    width: fit-content;
+    margin-right: 0.5em;
+}
+th div img{
+    height: 100%;
+    display: block;
 }
 
 tbody{
