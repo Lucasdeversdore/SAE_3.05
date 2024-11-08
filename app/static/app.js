@@ -258,25 +258,25 @@ function handleButtonAjoutProdfClick() {
     h3.textContent = `Ajout d'un produit`;
 
     const pNom = document.createElement("p");
-    pNom.textContent = "Nom du produit:";
+    pNom.textContent = "Nom du produit *";
     const textNom = document.createElement("input");
     textNom.type = "text";
     textNom.name = "textNewNom";
 
     const pFournisseur = document.createElement("p");
-    pFournisseur.textContent = "Fournisseur:";
+    pFournisseur.textContent = "Fournisseur";
     const selectFournisseur = document.createElement("input");
     selectFournisseur.type = "text";
     selectFournisseur.name = "textNewFournisseur";
 
     const pUnite = document.createElement("p");
-    pUnite.textContent = "Unité"
+    pUnite.textContent = "Unité *"
     const textUnite = document.createElement("input");
     textUnite.type = "text";
     textUnite.name = "textNewUnite";
 
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = "Quantiter disponible"
+    pQuantite.textContent = "Quantiter disponible *"
     const textQuantite = document.createElement("input");
     textQuantite.type = "number";
     textQuantite.name = "textNewQuantite";
@@ -290,7 +290,7 @@ function handleButtonAjoutProdfClick() {
     
 
     const pLieuStock = document.createElement("p");
-    pLieuStock.textContent = "Lieu de stockage:";
+    pLieuStock.textContent = "Lieu de stockage *";
     const selectLieuStock = document.createElement("input");
     selectLieuStock.type = "text";
     selectLieuStock.name = "textNewLieu";
