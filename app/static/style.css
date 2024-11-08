@@ -73,6 +73,18 @@ button:hover{
   outline: 2px solid #007BFF;
 }
 
+.bdisabled{
+  background-color: grey;
+}
+
+.bdisabled:active{
+  transform: none;
+}
+
+.bdisabled:hover{
+  outline: none;
+}
+
 a{
   text-decoration: none;
   color: black;
@@ -89,6 +101,35 @@ img{
 #popup-overlay-info > div{
   border-radius: 5px;
   background-color: rgb(255, 255, 255);
+}
+
+tr{
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th button{
+    border-radius: 15px;
+  font-size: 1em;
+}
+
+th p{
+  font-size: 1.5em;
+}
+
+.non-commence{
+  background-color: red;
+}
+
+.en-cours{
+  background-color: orange;
+}
+
+.termine{
+  background-color: green;
 }
 
 .popup-content {
