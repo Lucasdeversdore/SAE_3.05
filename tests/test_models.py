@@ -29,8 +29,42 @@ class Testing(unittest.TestCase):
             #self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
 
     def test_reserver_qte_produit(self):
-        #TODO Terminer le test
-        pass
+        with app.app_context():
+            prod = Produit.query.filter(Produit.idProduit == 2).first()
+            id_prod = prod.idProduit 
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+            # qte_dispo = 200
+            qte_dispo = stock.quantiteStocke
+            
+            qte1 = 10
+            qte2 = 190 
+            qte3 = 0
+            qte4 = None
+            id_chimiste1 = 1
+            id_chimiste2 = 2
+            
+            r1 = reserver_prod(id_prod, qte1, id_chimiste1)
+            commande1 = Commande.query.filter(Commande.idCommande == next_commande_id()-1).first()
+            user1 = commande1.idChimiste
+
+            r2 = reserver_prod(id_prod, qte2, id_chimiste2)
+            commande2 = Commande.query.filter(Commande.idCommande == next_commande_id()-1).first()
+            user2 = commande2.idChimiste
+
+            r3 = reserver_prod(id_prod, qte3, id_chimiste1)
+            r4 = reserver_prod(id_prod, qte4, id_chimiste1)
+
+
+            self.assertEqual(r1, True)
+            self.assertEqual(user1, id_chimiste1)
+
+            self.assertEqual(r2, True)
+            self.assertEqual(user2, id_chimiste2)
+            
+            self.assertEqual(r3, None)
+            self.assertEqual(r4, None)
+            
+            
     def test_modifier_qte_produit(self):
         #TODO Terminer le test
         pass
