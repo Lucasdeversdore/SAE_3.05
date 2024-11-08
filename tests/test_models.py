@@ -32,9 +32,6 @@ class Testing(unittest.TestCase):
         with app.app_context():
             prod = Produit.query.filter(Produit.idProduit == 2).first()
             id_prod = prod.idProduit 
-            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
-            # qte_dispo = 200
-            qte_dispo = stock.quantiteStocke
             
             qte1 = 10
             qte2 = 190 
@@ -241,6 +238,37 @@ class Testing(unittest.TestCase):
         self.assertEqual(check_mdp(mdp10), True)
         self.assertEqual(check_mdp(mdp11), True)
 
+    def test_convertir_quantite(self):
+        with app.app_context():
+            prod1 = Produit.query.filter(Produit.idProduit == 3).first()
+            id_prod = prod1.idProduit 
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == prod1.idProduit).first()
+            stock_base= stock.quantiteStocke
+            
+            stock.quantiteStocke = 2000
+            convertir_quantite(id_prod)
+            self.assertEqual(stock.quantiteStocke, 2)
+            self.assertEqual(prod1.nomUnite, "kg")
+            stock.quantiteStocke = 0.1
+            convertir_quantite(id_prod)
+            self.assertEqual(stock.quantiteStocke, 100)
+            self.assertEqual(prod1.nomUnite, "g")
+            stock.quantiteStocke = stock_base
+
+            prod2 = Produit.query.filter(Produit.idProduit == 4).first()
+            id_prod = prod2.idProduit 
+            stock2 = Est_Stocker.query.filter(Est_Stocker.idProduit == prod2.idProduit).first()
+            stock_base= stock2.quantiteStocke
+
+            stock2.quantiteStocke = 2000
+            convertir_quantite(id_prod)
+            self.assertEqual(stock2.quantiteStocke, 2)
+            self.assertEqual(prod2.nomUnite, "L")
+            stock2.quantiteStocke = 0.1
+            convertir_quantite(id_prod)
+            self.assertEqual(stock2.quantiteStocke, 100)
+            self.assertEqual(prod2.nomUnite, "mL")
+            stock2.quantiteStocke = stock_base
 
 
 if __name__ == "__main__":

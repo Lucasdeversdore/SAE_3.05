@@ -19,6 +19,19 @@ def get_nombre_unite(quantite):
     return (int(quantite), None)
 
 
+def get_unite(unite):
+    if unite is not None:
+        if unite.upper() == "G":
+            return "g"
+        elif unite.upper() == "KG":
+            return "kg"
+        elif unite.upper() == "ML":
+            return "mL"
+        elif unite.upper() == "L":
+            return "L"
+        else:
+            return unite
+
 
 def csv_to_db(filename):
     with open(filename, newline='') as f:
@@ -34,7 +47,7 @@ def csv_to_db(filename):
                         nom_fou = row[1]
                     qte_unite = get_nombre_unite(row[2])
                     qte = qte_unite[0]
-                    unite = qte_unite[1]
+                    unite = get_unite(qte_unite[1])
                     if row[3] == "":
                         prod_fonction = None
                     else: 

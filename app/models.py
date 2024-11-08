@@ -514,7 +514,7 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
             add_lieu_stock(lieu)
             res = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
             stock.idLieu = res.idLieu
-    
+    convertir_quantite(idProduit)
     db.session.commit()
     print("Commande mise à jour")
     return True
@@ -579,6 +579,7 @@ def reserver_prod(id_produit, qte, user):
             db.session.add(faire)
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
+            convertir_quantite(id_produit)
             db.session.commit()
             return True
 
@@ -613,5 +614,44 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
             quantite = 0
         stock = Est_Stocker(id_prod, le_lieu, quantite)
         db.session.add(stock)
+        convertir_quantite(id_prod)
         db.session.commit()
         return True
+    
+
+def convertir_quantite(id_produit):
+    """convertis les unités tous en adaptant la quantite,
+    quand qte restante < 1 convertir sur l'unité inférieur, 
+    quand qte restante > 999 convertir sur l'unité supérieur
+    Args:
+        id_produit (int): id d'un produit
+    """
+    stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+    quantite = float(stock.quantiteStocke)
+    if quantite < 1 and quantite > 0:
+        prod = Produit.query.get(id_produit)
+        
+        if prod:
+            unite = prod.nomUnite
+            match unite:
+                case "L":
+                    prod.nomUnite = "mL"
+                    stock.quantiteStocke = quantite *10**3
+                case "kg":
+                    prod.nomUnite = "g"
+                    stock.quantiteStocke = quantite *10**3
+            db.session.commit()
+    elif quantite > 999:
+        prod = Produit.query.get(id_produit)
+        if prod:
+            
+            unite = prod.nomUnite
+            match unite:
+
+                case "mL":
+                    prod.nomUnite = "L"
+                    stock.quantiteStocke = quantite *10**-3
+                case "g":
+                    prod.nomUnite = "kg"
+                    stock.quantiteStocke = quantite *10**-3
+            db.session.commit()
