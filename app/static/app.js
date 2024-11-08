@@ -95,20 +95,25 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     const h3 = document.createElement("h3");
     h3.textContent = `Modification du produit: ${produit.nomProduit}`;
 
+    // ligne Nomdu produit
     const pNom = document.createElement("p");
-    pNom.textContent = "Nom du produit : *";
-    const textNom = document.createElement("input");
-    textNom.type = "text";
-    textNom.name = "textNom";
-    textNom.value = produit.nomProduit;
-    textNom.className = "form-control"
-
+    pNom.textContent = "Nom du produit:";
+    const dNom = document.createElement("div")
+    dNom.className = "inputGroup";
+    const inputNom = document.createElement("input");
+    inputNom.type = "text";
+    inputNom.name = "inputNom";
+    inputNom.value = produit.nomProduit;
     const ligne_nom = document.createElement("div");
+    dNom.appendChild(inputNom)
     ligne_nom.appendChild(pNom)
-    ligne_nom.appendChild(textNom)
+    ligne_nom.appendChild(dNom)
 
+    // ligne Fournisseur
     const pFournisseur = document.createElement("p");
     pFournisseur.textContent = "Fournisseur :";
+    const dFournisseur = document.createElement("div")
+    dFournisseur.className = "inputGroup";
     const selectFournisseur = document.createElement("input");
     selectFournisseur.type = "text";
     selectFournisseur.name = "textFournisseur";
@@ -118,66 +123,72 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     else {
         selectFournisseur.value = fournisseur.nomFou;
     }
-    selectFournisseur.className = "form-control"
-
     const ligne_fournisseur = document.createElement("div");
+    dFournisseur.appendChild(selectFournisseur)
     ligne_fournisseur.appendChild(pFournisseur)
-    ligne_fournisseur.appendChild(selectFournisseur)
+    ligne_fournisseur.appendChild(dFournisseur)
 
+    // ligne Quantité actuelle
     const pQuantite = document.createElement("p");
+
     pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}) : *`;
+
     const textQuantite = document.createElement("input");
     textQuantite.type = "text";
     textQuantite.name = "textQuantite";
     textQuantite.value = est_stocker.quantiteStocke || 0;
-    textQuantite.className = "form-control"
 
     const ligne_quantite = document.createElement("div");
     ligne_quantite.appendChild(pQuantite)
     ligne_quantite.appendChild(textQuantite)
 
+    // ligne Fonction du produit
     const pFonction = document.createElement("p");
     pFonction.textContent = "Fonction du produit :";
     const textFonction = document.createElement("input");
     textFonction.type = "text";
     textFonction.name = "textFonction";
     textFonction.value = produit.fonctionProduit || "";
-    textFonction.className = "form-control"
 
     const ligne_fonction = document.createElement("div");
     ligne_fonction.appendChild(pFonction)
     ligne_fonction.appendChild(textFonction)
 
+    // ligne Lieu de stockage
     const pLieuStock = document.createElement("p");
     pLieuStock.textContent = "Lieu de stockage : *";
     const selectLieuStock = document.createElement("input");
     selectLieuStock.type = "text";
     selectLieuStock.name = "textLieu";
     selectLieuStock.value = lieu.nomLieu;
-    selectLieuStock.className = "form-control"
 
     const ligne_lieu_stock = document.createElement("div");
     ligne_lieu_stock.appendChild(pLieuStock)
     ligne_lieu_stock.appendChild(selectLieuStock)
 
+
     const bOk = document.createElement("button");
-    bOk.textContent = "Annuler";
+    const spanOk = document.createElement("span");
+    spanOk.textContent = "Annuler";
     bOk.id = "okModif";
-    bOk.className = "btn btn-dark"
+    bOk.className = "cssbuttons-io"
     bOk.addEventListener("click", handleButtonOKModifClick);
+    bOk.appendChild(spanOk)
 
     const bSauv = document.createElement("button");
-    bSauv.textContent = "Sauvegarder";
+    const spanSauv = document.createElement("span");
+    spanSauv.textContent = "Sauvegarder";
     bSauv.id = "sauvModif";
-    bSauv.className = "btn btn-dark"
+    bSauv.className = "cssbuttons-io"
     bSauv.addEventListener("click", function () {
-        if (!textNom.value || !textQuantite.value || !selectLieuStock.value) {
+        if (!inputNom.value || !textQuantite.value || !selectLieuStock.value) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
-        sauvegarderProduit(produit.idProduit, textNom.value, selectFournisseur.value,
+        sauvegarderProduit(produit.idProduit, inputNom.value, inputFournisseur.value,
             textQuantite.value, textFonction.value, selectLieuStock.value);
     });
+    bSauv.appendChild(spanSauv)
 
     const ligne_bouton = document.createElement("div");
     ligne_bouton.appendChild(bOk)
@@ -204,7 +215,7 @@ function handleButtonOKModifClick() {
 }
 
 function sauvegarderProduit(idProduit, nom, nom_fournisseur, quantite, fonction, lieu) {
-    fetch(`/sauvegarder/${idProduit}?textNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
+    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
