@@ -146,7 +146,7 @@ def reserver_produit(id_produit):
     if qte == "":
         qte = 0
     else:
-        qte = int(qte)
+        qte = float(qte)
     res = reserver_prod(id_produit, qte, current_user.idChimiste)
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200

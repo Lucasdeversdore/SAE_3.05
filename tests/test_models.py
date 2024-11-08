@@ -97,7 +97,7 @@ class Testing(unittest.TestCase):
         unite4 = None
         quantite1 = 5
         quantite2 = 0
-        quantite3 = "5"
+        quantite3 = "5.6"
         quantite4 = "a"
         quantite5 = None
         fonction1 = "test"
@@ -200,7 +200,7 @@ class Testing(unittest.TestCase):
             self.assertEqual(lieu2, testlieu2)
 
             self.assertEqual(prod3,testprod3)
-            self.assertEqual(int(quantite3), testqte3)
+            self.assertEqual(float(quantite3), testqte3)
             self.assertEqual(lieu3, testlieu3)
 
             self.assertEqual(prod4,testprod4)
