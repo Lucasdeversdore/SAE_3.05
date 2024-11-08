@@ -40,9 +40,31 @@
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
                 {% if current_user.estPreparateur %}
-                    <form><button type="submit" id="BoutonEtat{{produit.idProduit}}">{{etat}}</button></form>
-                {% else %}
-                    {% if etat == "non commencé" %}<form><button type="submit" id="BoutonSupp{{produit.idProduit}}"><img src="" alt="Bouton de suppression"></button>{% endif %} {{etat}}</form>
+                <form> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
+                        {% if etat == "non commencé" %}
+                            <button type="submit" class ="non-commence">{{etat}}</button> 
+                        {% elif etat == "en cours" %}
+                            <button type="submit" class ="en-cours">{{etat}}</button>
+                        {% elif etat == "termine" %}
+                            <button type="submit" class ="termine">{{etat}}</button>
+                        {% else %}
+                            <button type="submit">{{etat}}</button>
+                        {% endif %}
+                    </form>
+                {% else %} <!-- Gérer la suppression d'une réservation -->
+                <form>
+                    {% if etat == "non commencé" %}
+                        <div class ="non-commence"><button type="submit" class="etat">
+                            <img src="" alt="Bouton de suppression">
+                        </button>{{etat}}</div>
+                    {% elif etat == "en cours" %}
+                        <div class ="en-cours">{{etat}}</div>
+                    {% elif etat == "termine" %}
+                        <div class ="termine">{{etat}}</div>
+                    {% else %}
+                        <div>{{etat}}</div>
+                    {% endif %} 
+                </form>
                 {% endif %}
             </th>
         </tr>

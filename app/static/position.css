@@ -214,20 +214,32 @@ table{
 }
 
 tr{
-    min-width: 80rem;
+    width: 80em;
 }
 
 th{
     padding: 1em;
     display: flex;
-    flex-direction: column;
+    flex-direction:column;
+}
+
+th p{
+    margin-bottom: 0px;
+}
+
+th form{
+    align-items: center;
+    display: flex;
+    height: 100%;
 }
 
 th button{
     padding: 0.5em;
+    margin-left: auto;
 }
 
 tbody{
+    min-width:fit-content;
     display: flex;
     flex-direction: column;
 }
