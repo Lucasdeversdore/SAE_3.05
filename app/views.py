@@ -70,12 +70,17 @@ def inscrire():
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
-
+        
+        # Vérifier si les conditions générales d'utilisation ont été acceptées
+        if not request.form.get('cgu-inscription'):
+            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
+            return redirect(url_for('inscrire'))
+        
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             flash('Cet email est déjà utilisé.', 'danger')
-            return redirect(url_for('inscription'))
+            return redirect(url_for('inscrire'))
         
         # Créer un nouvel utilisateur Chimiste
         nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
@@ -83,10 +88,10 @@ def inscrire():
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
-
+        
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
         return redirect(url_for('connection'))
-
+    
     return render_template('inscription.html', form=form)
 
 @app.route("/search", methods=('GET',))
