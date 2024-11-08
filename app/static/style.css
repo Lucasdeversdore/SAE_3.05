@@ -26,13 +26,18 @@ header button{
   border: none;
   font-size: 16px;
 }
+
+.top_main .barre_recherche:focus-within {
+  outline: 2px solid #007BFF;
+}
+
 .top_main .barre_recherche input::placeholder{
   color: #ff8fc5;
   font-size: 16px;
   font-style: italic;
 }
 
-input:focus{
+.top_main .barre_recherche input:focus{
   outline: none;
 }
 
@@ -142,4 +147,22 @@ th p{
 
 .popup-content > div > input {
   background-color: #ff8cc4;
+}
+
+th div{
+  border-radius: 15px;
+  user-select: none;
+}
+
+th div:hover{
+  outline: 2px solid #007BFF;
+}
+
+th div button{
+  background: none;
+  border: none;
+}
+
+th div button:hover{
+  outline: none;
 }
