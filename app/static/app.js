@@ -120,7 +120,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
     ligne_fournisseur.appendChild(selectFournisseur)
 
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0}):`;
+    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}):`;
     const textQuantite = document.createElement("input");
     textQuantite.type = "text";
     textQuantite.name = "textQuantite";
