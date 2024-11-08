@@ -248,3 +248,7 @@ header button{
 #okModif, #sauvModif {
     margin-right: 5%;
 }
+
+.nomProduit {
+    margin-top: 16px;
+}
