@@ -280,10 +280,11 @@ def add_prod(nom, unite, fonctionProd, four):
         id_fou = get_id_fournisseur(four)
     else:
         id_fou = None
-    prod = Produit(id, nom, unite, fonctionProd, id_fou)
-    db.session.add(prod)
-    db.session.commit()
-    return id
+    if nom != "" and nom is not None:
+        prod = Produit(id, nom, unite, fonctionProd, id_fou)
+        db.session.add(prod)
+        db.session.commit()
+        return id
 
 def get_id_prod(nom_prod):
     return Produit.query.filter(Produit.nomProduit == nom_prod).all()[0].idProduit
@@ -328,6 +329,18 @@ def next_chimiste_id():
 
 def get_all_prod():
     return Produit.query.all()
+
+def get_all_prod_qte():
+    liste_prod_qte = []
+    liste_prod = Produit.query.all()
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
 
 def get_sample_prduit_qte(nb=20):
     """Renvoie 20 produits et sa quantité de la base de donnée"""
@@ -570,3 +583,22 @@ def reserver_prod(id_produit, qte, user):
             db.session.commit()
             return True
 
+
+def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+    if add_prod(nom, unite, fonction, nom_fournisseur):
+        prod = Produit.query.get(next_prod_id()-1)
+        id_prod = prod.idProduit
+        le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+        if not le_lieu:
+            add_lieu_stock(lieu)
+            le_lieu = next_lieu_id()-1
+        else:
+            le_lieu = le_lieu.idLieu  
+        try:
+            quantite = int(quantite)
+        except:
+            quantite = 0
+        stock = Est_Stocker(id_prod, le_lieu, quantite)
+        db.session.add(stock)
+        db.session.commit()
+        return True

@@ -1,5 +1,5 @@
 body{
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
 }
 
 header{
@@ -82,7 +82,7 @@ img{
   pointer-events: none;
 }
 
-#popup-overlay-info{
+#popup-overlay-info, #popup-overlay-modif{
   background-color: rgba(0, 0, 0, 0.7);
 }
 
@@ -91,6 +91,7 @@ img{
   background-color: rgb(255, 255, 255);
 }
 
+<<<<<<< HEAD
 tr{
     background-color: #f4f4f4;
 }
@@ -118,4 +119,16 @@ th p{
 
 .termine{
   background-color: green;
+=======
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content > div > input {
+  background-color: #ff8cc4;
+>>>>>>> develop
 }
