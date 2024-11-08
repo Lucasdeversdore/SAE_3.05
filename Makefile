@@ -10,6 +10,7 @@ install:
 
 .PHONY: tests
 tests:
+	make loaddb_test 
 	echo "nomDB = 'test.db'" > nomDB.py
 	python -m unittest -v -b tests/test_*.py
 

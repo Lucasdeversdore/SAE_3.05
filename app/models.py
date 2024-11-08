@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, Text, Date, Boolean
+from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
@@ -138,7 +138,7 @@ class Est_Stocker(db.Model):
     
     idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
     idLieu = Column(Integer, ForeignKey("LIEU_STOCKAGE.idLieu"), primary_key = True, nullable = False)
-    quantiteStocke = Column(Integer)
+    quantiteStocke = Column(Float)
     stockerLieu = relationship("Lieu_Stockage", back_populates="lieuStock")
     stockerProduit = relationship("Produit", back_populates="produitStock")
 
@@ -561,7 +561,7 @@ def reserver_prod(id_produit, qte, user):
 
     Args:
         id_produit (int): l'id du produit
-        qte (int): la quantité reservé
+        qte (float): la quantité reservé
         user (int): l'id du chimiste qui a réservé
     """
     prod = Produit.query.get(id_produit)
@@ -590,13 +590,14 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         nom (String): nom du produit
         nom_fournisseur (String): nom du fournisseur
         unite (String): nom de l'unite (L, g, mL ...)
-        quantite (String, int): quantité deisponible du produit 
+        quantite (String, float): quantité deisponible du produit 
         fonction (String): famille du produit 
         lieu (String): nom du lieu de stockage
 
     Returns:
         bool: True si l'ajout du produit se passe bien
     """
+    
     if add_prod(nom, unite, fonction, nom_fournisseur):
         prod = Produit.query.get(next_prod_id()-1)
         id_prod = prod.idProduit
@@ -607,7 +608,7 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         else:
             le_lieu = le_lieu.idLieu  
         try:
-            quantite = int(quantite)
+            quantite = float(quantite)
         except:
             quantite = 0
         stock = Est_Stocker(id_prod, le_lieu, quantite)
