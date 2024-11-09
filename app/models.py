@@ -355,6 +355,22 @@ def get_sample_prduit_qte(nb=20):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
+def get_pagination_produits(page=1, nb=15):
+    liste_prod_qte = []
+    liste_prod = Produit.query.order_by(Produit.nomProduit).all()
+    liste_prod = liste_prod[(page-1)*nb:page*nb]
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
+
+def get_nb_page_max_produits(nb):
+    return len(Produit.query.all())//nb+1
+
 def get_sample_reservation(nb=20):
     """Renvoie 20 reservations, ses états, chimistes et produits de la base de donnée"""
     liste_reserv_etat = []

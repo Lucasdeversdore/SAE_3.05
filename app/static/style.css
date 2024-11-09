@@ -166,3 +166,8 @@ th div button{
 th div button:hover{
   outline: none;
 }
+
+.content > div > form > button{
+  background-color: white;
+  border-radius: 15px;
+}
