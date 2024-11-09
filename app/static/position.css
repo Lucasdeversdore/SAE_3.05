@@ -236,12 +236,12 @@ th form{
 th button, th div{
     padding: 0.5em;
     margin-left: auto;
-    height: 1.5em;
 }
 
 th div{
     width: fit-content;
     display: flex;
+    height: 1.5em;
     align-items: center;
 }
 th div button{
