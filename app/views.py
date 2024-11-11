@@ -44,6 +44,7 @@ def preparation_reservation_page(id_page=1, nb=5):
     reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
     return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
 
+# Même chose que pour "/1"
 @app.route("/preparation/reservations/1")
 @login_required
 def preparation_reservation_page_1():
