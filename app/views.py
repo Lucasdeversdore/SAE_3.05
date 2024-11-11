@@ -211,3 +211,7 @@ def sauvegarder_ajout():
     else:
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
+
+@app.errorhandler(404)
+def internal_error(error):
+    return redirect(url_for('index'))
