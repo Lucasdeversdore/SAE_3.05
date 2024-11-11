@@ -312,3 +312,16 @@ tbody{
 .nomProduit {
     margin-top: 24px;
 }
+
+.content > div{
+    justify-content:center;
+    align-items: center;
+    display: flex;
+    flex-flow: nowrap;
+}
+
+.content > div > form > button{
+    width: 10em;
+    padding: 1em;
+    margin: 1em;
+}

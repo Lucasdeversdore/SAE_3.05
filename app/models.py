@@ -355,6 +355,22 @@ def get_sample_prduit_qte(nb=20):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
+def get_pagination_produits(page=1, nb=15):
+    liste_prod_qte = []
+    liste_prod = Produit.query.order_by(Produit.nomProduit).all()
+    liste_prod = liste_prod[(page-1)*nb:page*nb]
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
+
+def get_nb_page_max_produits(nb):
+    return len(Produit.query.all())//nb+1
+
 def get_sample_reservation(nb=20):
     """Renvoie 20 reservations, ses états, chimistes et produits de la base de donnée"""
     liste_reserv_etat = []
@@ -367,6 +383,28 @@ def get_sample_reservation(nb=20):
             etat = faire.statutCommande
             liste_reserv_etat.append((reservation, etat, chimiste, produit))
     return liste_reserv_etat
+
+def get_pagination_reservations(page, nb, chimiste):
+    liste_reserv_etat = []
+    if not chimiste.estPreparateur:
+        liste_reserv = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste).all()
+    else:
+        liste_reserv = Commande.query.order_by(Commande.dateCommande).all()
+    liste_reserv = liste_reserv[(page-1)*nb:page*nb]
+    for reservation in liste_reserv:
+        faire = Faire.query.filter(Faire.idCommande == reservation.idCommande).first()
+        chimiste = Chimiste.query.filter(Chimiste.idChimiste == reservation.idChimiste).first()
+        produit = Produit.query.filter(Produit.idProduit == reservation.idProduit).first()
+        if faire and chimiste and produit:
+            etat = faire.statutCommande
+            liste_reserv_etat.append((reservation, etat, chimiste, produit))
+    return liste_reserv_etat
+
+def get_nb_page_max_reservations(nb, chimiste):
+    if chimiste.estPreparateur:
+        return len(Commande.query.all())//nb+1
+    else:
+        return len(Commande.query.filter(Commande.idChimiste == chimiste.idChimiste).all())//nb+1
 
 def get_sample_reservation_chimiste(chimiste:Chimiste):
     """renvoi les Commandes avec leurs états du chimiste
@@ -386,7 +424,6 @@ def get_sample_reservation_chimiste(chimiste:Chimiste):
             etat = faire.statutCommande
             liste_reserv_etat.append((reservation, etat, chimiste, produit))
     return liste_reserv_etat
-
 
 def search_filter(q):
     """renvoie une liste de produit_qte selon une requete q  
