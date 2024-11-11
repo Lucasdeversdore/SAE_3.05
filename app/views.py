@@ -18,7 +18,7 @@ def home_page(id_page=1, nb=15):
         return redirect("/")
     id_page_max = get_nb_page_max_produits(nb)
     if id_page_max < id_page:
-        id_page = id_page_max
+        return redirect(url_for('home_page', id_page=id_page_max))
     liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
     return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
 
@@ -40,7 +40,7 @@ def preparation_reservation_page(id_page=1, nb=5):
         return redirect("/preparation/reservations")
     id_page_max = get_nb_page_max_reservations(nb, current_user)
     if id_page_max < id_page:
-        id_page = id_page_max
+        return redirect(url_for('preparation_reservation_page', id_page=id_page_max))
     reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
     return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
 
@@ -191,8 +191,7 @@ def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
     results = search_famille_filter(q)
-    print(results)
-    return render_template("home.html", liste_produit_qte=results)
+    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route('/ajout/sauvegarder/', methods=['POST'])
 def sauvegarder_ajout():
