@@ -214,4 +214,4 @@ def sauvegarder_ajout():
 
 @app.errorhandler(404)
 def internal_error(error):
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
