@@ -171,3 +171,7 @@ th div button:hover{
   background-color: white;
   border-radius: 15px;
 }
+
+button{
+  font-size: 90%;
+}
