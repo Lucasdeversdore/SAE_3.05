@@ -63,9 +63,9 @@
                             <p class="dispo">Disponible</p>
                             <div class="bouton">
                                 {% if current_user.estPreparateur %}
-                                    <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier </button>
+                                    <button class="Modifier" data-produit="{{ produit.idProduit }}"> Modifier <img src="{{url_for('static', filename='images/modifier.png')}}" alt =""></button>
                                 {% endif %}
-                                <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver </button>
+                                <button class="Reserver" data-produit="{{ produit.idProduit }}"> Reserver <img src="{{url_for('static', filename='images/reserver.png')}}" alt =""></button>
                             </div>
                         {% else %}
                             <p class="dispo">Indisponible</p>

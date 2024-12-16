@@ -18,6 +18,7 @@ header{
     justify-content: space-between;
     flex-wrap: wrap;
     height: 100%;
+    min-height:fit-content;
 }
 
 .liens_page{
