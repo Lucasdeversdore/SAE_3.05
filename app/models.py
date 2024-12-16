@@ -107,7 +107,7 @@ class Commande(db.Model):
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
         self.idChimiste = idChimiste
-        self.idProduit = idProduit        
+        self.idProduit = idProduit
     
     def __str__(self):
         return str(self.idChimiste) + str(self.dateCommande) + str(self.qteCommande)  + str(self.idChimiste) + str(self.idProduit)
@@ -123,7 +123,7 @@ class Faire(db.Model):
     faireCom = relationship("Commande", back_populates="commandeFaire")
     faireChim = relationship("Chimiste", back_populates="chimisteFaire")
 
-    def __init__(self, idCommande, idChimiste, statutCommande= 'non commencé'):
+    def __init__(self, idCommande, idChimiste, statutCommande = 'non-commence'):
         self.idCommande = idCommande
         self.idChimiste = idChimiste
         self.statutCommande = statutCommande
@@ -131,6 +131,21 @@ class Faire(db.Model):
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
 
+    def set_non_commence(self):
+        self.statutCommande = 'non-commence'
+
+    def set_en_cours(self):
+        self.statutCommande = 'en-cours'
+
+    def set_termine(self):
+        self.statutCommande = 'termine'
+    
+    def update_etat(self):
+        match self.statutCommande:
+            case 'non-commence':
+                self.set_en_cours()
+            case 'en-cours':
+                self.set_termine()
 
 class Est_Stocker(db.Model):
 

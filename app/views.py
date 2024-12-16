@@ -200,6 +200,12 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
+@app.route('/etat/commande/<int:id>', methods=['POST'])
+def etat_commande(id):
+    # Test pour voir si on peut update l'état d'une commande
+    print("ESSAI")
+    Faire.query.get(id).update_etat()
+
 @app.errorhandler(404)
 def internal_error(error):
     return redirect(url_for('home'))

@@ -40,7 +40,7 @@
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
                 {% if current_user.estPreparateur %}
-                <form> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
+                    <form action="{{url_for('etat_commande', id=reservation.idCommande, methods=['POST'])}}"> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
                         {% if etat == "non commencé" %}
                             <button type="submit" class ="non-commence">{{etat}}</button> 
                         {% elif etat == "en cours" %}
@@ -52,22 +52,22 @@
                         {% endif %}
                     </form>
                 {% else %} <!-- Gérer la suppression d'une réservation -->
-                <form>
-                    {% if etat == "non commencé" %}
+                    {% if etat == "non-commence" %}
                         <div class ="non-commence">
-                            <button type="submit">
-                                <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
-                            </button>
+                            <form>
+                                <button type="submit">
+                                    <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
+                                </button>
+                            </form>
                             {{etat}}
                         </div>
-                    {% elif etat == "en cours" %}
+                    {% elif etat == "en-cours" %}
                         <div class ="en-cours">{{etat}}</div>
                     {% elif etat == "termine" %}
                         <div class ="termine">{{etat}}</div>
                     {% else %}
                         <div>{{etat}}</div>
                     {% endif %} 
-                </form>
                 {% endif %}
             </th>
         </tr>
