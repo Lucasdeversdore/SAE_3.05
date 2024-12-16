@@ -29,3 +29,16 @@ class InscriptionForm(FlaskForm):
     confirm_mdp = PasswordField('Confirmer mot de passe',
                                 validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
     submit = SubmitField("S'inscrire")
+
+
+class ResetForm(FlaskForm):
+    email = StringField('email')
+    next = HiddenField()
+    submit = SubmitField("Réinitialiser votre mot de passe")
+
+class ChangePasswordForm(FlaskForm):
+    from .models import check_mdp_validator
+    mdp = PasswordField('Mot de passe', validators=[DataRequired(), check_mdp_validator])
+    confirm_mdp = PasswordField('Confirmer mot de passe',
+                                validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
+    submit = SubmitField("Changer de mot de passe")

@@ -4,8 +4,9 @@ from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
-from .app import  db
+from .app import  db, app
 
 
 
@@ -36,6 +37,20 @@ class Chimiste(db.Model, UserMixin):
     
     def get_id(self):
         return self.idChimiste
+    
+    def get_token(self):
+        serial=Serializer(app.config['SECRET_KEY'])
+        return serial.dumps({'user_id':self.idChimiste})
+    
+    @staticmethod
+    def verify_token(token):
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = serial.loads(token)['user_id']
+        except:
+            return None
+        return Chimiste.query.get(user_id)
+
 
 class Unite(db.Model):
 
@@ -711,3 +726,4 @@ def convertir_quantite(id_produit):
                     prod.nomUnite = "kg"
                     stock.quantiteStocke = quantite *10**-3
             db.session.commit()
+
