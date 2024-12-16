@@ -1,9 +1,8 @@
 from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
-from .app import app
-from flask import jsonify, redirect, render_template, url_for
+from .app import app, db
+from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
 from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
-from flask import request
 from .form import *
 
 @app.route("/")
@@ -50,14 +49,19 @@ def preparation_reservation_page(id_page=1, nb=5):
 def preparation_reservation_page_1():
     return redirect("/preparation/reservations")
 
-@app.route("/connection")
-def connecter():
+@app.route("/connection", methods = ('GET', 'POST'))
+def connection():
+    user = None
     f = LoginForm()
-    return render_template("connection.html", msg=None, form=f)
-
-
-from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db, next_chimiste_id
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
+        user = f.get_authenticated_user()
+        if type(user) != str:
+            login_user(user)
+            next = f.next.data or url_for("home")
+            return redirect(next)
+    return render_template("connection.html", form=f, msg=user)
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -91,33 +95,17 @@ def inscrire():
 
     return render_template('inscription.html', form=form)
 
+@app.route("/logout/")
+def logout():
+    logout_user()
+    return redirect(url_for('connection'))
+
 @app.route("/search", methods=('GET',))
 @login_required
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
     return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
-
-
-@app.route("/test/connection", methods=('GET', 'POST'))
-def connection():
-    user = None
-    f = LoginForm()
-    if not f.is_submitted():
-        f.next.data = request.args.get("next")
-    elif f.validate_on_submit():
-        user = f.get_authenticated_user()
-        if type(user) != str:
-            login_user(user)
-            next = f.next.data or url_for("home")
-            return redirect(next)
-    return render_template("connection.html", form=f, msg=user)
-
-@app.route("/logout/")
-def logout():
-    logout_user()
-    return redirect(url_for('connection'))
-
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
 @login_required
