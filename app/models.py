@@ -370,6 +370,10 @@ def get_sample_prduit_qte(nb=20):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
+
+def get_all_chimiste():
+    return Chimiste.query.all()
+
 def get_pagination_produits(page=1, nb=15):
     liste_prod_qte = []
     liste_prod = Produit.query.order_by(Produit.nomProduit).all()
@@ -477,6 +481,44 @@ def search_famille_filter(q):
                 qte = est_stocker.quantiteStocke
             results2.append((prod,qte))
     
+    results = results2
+    return results
+
+def search_reserv_filter(q):
+    """renvoie une liste des reservation selon une requete q  
+
+    Args:
+        q (str): requete de l'utilisateur
+
+    Returns:
+        list: liste de reservation
+    """
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if q.upper() in prod.nomProduit.upper():
+            commandes = Commande.query.filter(Commande.idProduit == prod.idProduit)
+            for commande in commandes:
+                etat = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+                etat= etat.statutCommande
+                chimiste = Chimiste.query.filter(Chimiste.idChimiste == commande.idChimiste).first()
+                prod = Produit.query.filter(Produit.idProduit == commande.idProduit).first()
+                results2.append((commande,etat,chimiste,prod))
+    results = results2
+    return results
+
+def search_chimiste_filter(q):
+    results = get_all_chimiste()
+    results2 = []
+    for chimiste in results:
+        if q.upper() in chimiste.nom.upper() or q.upper() in chimiste.prenom.upper():
+            commandes = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste)
+            for commande in commandes:
+                etat = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+                etat= etat.statutCommande
+                chimiste = Chimiste.query.filter(Chimiste.idChimiste == commande.idChimiste).first()
+                prod = Produit.query.filter(Produit.idProduit == commande.idProduit).first()
+                results2.append((commande,etat,chimiste,prod))
     results = results2
     return results
 

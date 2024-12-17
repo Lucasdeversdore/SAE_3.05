@@ -2,7 +2,7 @@ from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
 from .app import app, db, mail
 from flask import jsonify, redirect, render_template, url_for,flash, request, Flask
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_chimiste_filter, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations, search_reserv_filter
 from .form import *
 from flask_mail import Message
 
@@ -101,7 +101,14 @@ def cgu():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    return render_template("home.html", liste_produit=results)
+    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
+
+@app.route("/search-preparation")
+@login_required
+def search_preparation():
+    q = request.args.get("search")
+    results = search_reserv_filter(q) + search_chimiste_filter(q)
+    return render_template("reservation-preparation.html", reservations_etats=results, actu_id_page=None)
 
 
 @app.route("/connection", methods=('GET', 'POST'))
