@@ -217,7 +217,7 @@ class Fournisseur(db.Model):
         self.numTelFou = numTelFou
     
     def __str__(self):
-        return str(self.idFou) + self.nomFou + self.adresseFou + str(self.numTelFou)
+        return str(self.idFou) + str(self.nomFou) + str(self.adresseFou) + str(self.numTelFou)
 
     def to_dict(self):
         return {
@@ -595,23 +595,19 @@ def verif_lieu_existe(lieu):
 
 def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     produit = Produit.query.get(idProduit)
-    four = Fournisseur.query.get(produit.idFou)
+    four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+    produit.idFou = four.idFou
+    
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
-    le_lieu = Lieu_Stockage.query.get(stock.idLieu)
-
+    print(stock)
+    le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+    print(le_lieu)
+    stock.idLieu = le_lieu.idLieu
+    print(stock)
+    
     if nom != "":
         produit.nomProduit = nom
-    
-    if nom_fournisseur == "":
-        produit.idFou = None
-    elif four is None or nom_fournisseur != four.nomFou:
 
-        if verif_fourn_existe(nom_fournisseur) and four is not None:
-            produit.idFou = four.idFou
-        else:
-            add_fournisseur(nom_fournisseur)
-            res = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
-            produit.idFou = res.idFou
 
     if quantite != "":
         stock.quantiteStocke = quantite
@@ -619,16 +615,9 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     if fonction != "":
        produit.fonctionProduit = fonction
 
-    if  lieu != le_lieu.nomLieu:
 
-        if verif_lieu_existe(lieu):
-            stock.idLieu = le_lieu.idLieu
-        else:
-            add_lieu_stock(lieu)
-            res = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
-            stock.idLieu = res.idLieu
-    convertir_quantite(idProduit)
     db.session.commit()
+    print(stock)
     print("Commande mise à jour")
     return True
 
