@@ -1,61 +1,67 @@
 from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
-from wtforms import HiddenField, PasswordField, StringField
-from .app import app
-from flask_wtf import FlaskForm
-from flask import jsonify, redirect, render_template, url_for
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, get_sample_prduit_qte, get_sample_reservation, next_chimiste_id, search_filter, search_famille_filter, reserver_prod
-from flask import request
-
-class LoginForm ( FlaskForm ):
-    email = StringField('email')
-    password = PasswordField('Password')
-    next = HiddenField()
-    def get_authenticated_user(self):
-        user = Chimiste.query.filter(Chimiste.email == self.email.data).first()
-        if user is None:
-            return "Email incorrect"
-        m = sha256()
-        m.update(self.password.data.encode())
-        passwd = m.hexdigest()
-        return user if passwd == user.mdp else "Mot de passe incorrect"
-
-from flask_wtf import FlaskForm
-from wtforms import SubmitField, ValidationError
-from wtforms.validators import DataRequired, Email, Length, EqualTo
-
-class InscriptionForm(FlaskForm):
-    from .models import check_mdp_validator
-    prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
-    nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    mdp = PasswordField('Mot de passe', validators=[DataRequired(), check_mdp_validator])
-    confirm_mdp = PasswordField('Confirmer mot de passe',
-                                validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
-    submit = SubmitField("S'inscrire")
-
+from .app import app, db
+from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
+from .form import *
 
 @app.route("/")
 @login_required
 def home():
-    liste_produit_qte = get_sample_prduit_qte(141)
-    return render_template("home.html", liste_produit_qte=liste_produit_qte)
+    return home_page()
+
+@app.route("/<int:id_page>", methods=['GET'])
+@login_required
+def home_page(id_page=1, nb=15):
+    if id_page < 1:
+        return redirect("/")
+    id_page_max = get_nb_page_max_produits(nb)
+    if id_page_max < id_page:
+        return redirect(url_for('home_page', id_page=id_page_max))
+    liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
+    return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
+
+# Route execptionnel pour ne pas afficher /1 comme adresse url
+@app.route("/1")
+@login_required
+def home_page_1():
+    return redirect("/")
 
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
-    reservations = get_sample_reservation()
-    return render_template("reservation-preparation.html", reservations=reservations)
+    return preparation_reservation_page()
 
+@app.route("/preparation/reservations/<int:id_page>")
+@login_required
+def preparation_reservation_page(id_page=1, nb=5):
+    if id_page < 1:
+        return redirect("/preparation/reservations")
+    id_page_max = get_nb_page_max_reservations(nb, current_user)
+    if id_page_max < id_page:
+        return redirect(url_for('preparation_reservation_page', id_page=id_page_max))
+    reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
+    return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
 
-@app.route("/connection")
-def connecter():
+# Même chose que pour "/1"
+@app.route("/preparation/reservations/1")
+@login_required
+def preparation_reservation_page_1():
+    return redirect("/preparation/reservations")
+
+@app.route("/connection", methods = ('GET', 'POST'))
+def connection():
+    user = None
     f = LoginForm()
-    return render_template("connection.html", msg=None, form=f)
-
-
-from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db, next_chimiste_id
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
+        user = f.get_authenticated_user()
+        if type(user) != str:
+            login_user(user)
+            next = f.next.data or url_for("home")
+            return redirect(next)
+    return render_template("connection.html", form=f, msg=user)
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -126,15 +132,25 @@ def logout():
     logout_user()
     return redirect(url_for('connection'))
 
+@app.route("/search", methods=('GET',))
+@login_required
+def search():
+    q = request.args.get("search")
+    results = search_filter(q) + search_famille_filter(q)
+    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
 @login_required
 def get_produit(id_produit):
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
-    id_lieu = est_stocker.idLieu
-    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    if est_stocker:
+        id_lieu = est_stocker.idLieu
+        lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+    else:
+        lieu = None
     return jsonify(produit=produit, lieu=lieu)
+
 
 @app.route('/reserver/<int:id_produit>', methods=['GET'])
 @login_required
@@ -152,11 +168,70 @@ def reserver_produit(id_produit):
     if qte == "":
         qte = 0
     else:
-        qte = int(qte)
+        qte = float(qte)
     res = reserver_prod(id_produit, qte, current_user.idChimiste)
+    if res:
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
+        return jsonify(success=False, message="Quantité non valide"), 400   
+
+@app.route('/modifier/<int:id_produit>', methods=['GET'])
+def get_modif_produit(id_produit):
+    produit = Produit.query.get(id_produit).to_dict()
+    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+    id_lieu = est_stocker["idLieu"]
+    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+
+    id_fou = produit["idFou"]
+    print(id_fou)
+    if id_fou is None:
+        fournisseur = ""
+    else:
+        fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
+
+@app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
+def sauvegarder_modif(id_produit):
+   
+    nom = request.args.get("textNom")
+    four = request.args.get("textFournisseur")
+    quantite = request.args.get("textQuantite")
+    fonction = request.args.get("textFonction")
+    lieu = request.args.get("textLieu")
+
+    res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
 
+@app.route("/search/famille/<int:id_produit>", methods=('GET',))
+@login_required
+def searchByButton(id_produit):
+    prod = Produit.query.get(id_produit)
+    q = str(prod.fonctionProduit)
+    results = search_famille_filter(q)
+    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
+@app.route('/ajout/sauvegarder/', methods=['POST'])
+def sauvegarder_ajout():
+   
+    data = request.get_json()
+    nom = data.get("textNom")
+    four = data.get("textFournisseur")
+    unite = data.get("textUnite")
+    quantite = data.get("textQuantite")
+    fonction = data.get("textFonction")
+    lieu = data.get("textLieu")
+
+    res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
+    if res:
+        print("test")
+        return jsonify(success=True, message="Réservation réussie !"), 200
+    else:
+        print("test2")
+        return jsonify(success=False, message="Quantité non valide"), 400
+
+@app.errorhandler(404)
+def internal_error(error):
+    return redirect(url_for('home'))

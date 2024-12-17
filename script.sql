@@ -26,9 +26,9 @@ CREATE TABLE FAIRE (
 );
 
 CREATE TABLE EST_STOCKER (
-    idProduit int NOT NULL,
+    idProduit int NOT NULL UNIQUE,
     idLieu int NOT NULL,
-    quantiteStocke int,
+    quantiteStocke float,
     CONSTRAINT PK_Est_Stocker PRIMARY KEY (idProduit, idLieu),
     CONSTRAINT FK_Est_Stocker_Produit FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit),
     CONSTRAINT FK_Est_Stocker_Lieu FOREIGN KEY (idLieu) REFERENCES LIEU_STOCKAGE (idLieu)
@@ -83,7 +83,7 @@ CREATE TABLE CHIMISTE (
 
 CREATE TABLE PRODUIT (
     idProduit int NOT NULL,
-    nomProduit VARCHAR(50),
+    nomProduit VARCHAR(50) NOT NULL,
     nomUnite VARCHAR(50),
     afficher boolean default true,
     fonctionProduit VARCHAR(100),
@@ -110,9 +110,9 @@ END;
 
 CREATE TRIGGER update_verif_qte_commande
 BEFORE UPDATE ON COMMANDE
-WHEN NOT (NEW.qteCommande) < (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
+WHEN NOT (NEW.qteCommande) <= (SELECT quantiteStocke from EST_STOCKER where NEW.idProduit = idProduit)
 BEGIN
-    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur à la quantité stocké');
+    SELECT RAISE(FAIL, 'La quantite commandee doit être inférieur ou égale à la quantité stocké');
 END;
 
 CREATE TRIGGER update_commande_statut

@@ -1,37 +1,20 @@
 body{
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
 }
 
 header{
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
 
-li{
-  background-color: #f0f0f0; 
-  list-style: none;
+header button{
+  background-color: white;
   border-radius: 15px;
 }
 
-a{
-  text-decoration: none;
-  color: black;
-}
 #ajouter_prod{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
   color: white;
-}
-
-.supp_produit, .info_prod, #search{
-  background: none;
-  border: none;
-  border-radius: 15px;
-}
-
-.Modifier, .Reserver, .famille{
-  background-color: black;
-  color: white;
-  border-radius: 8px;
 }
 
 .top_main .barre_recherche{
@@ -41,15 +24,33 @@ a{
 }
 .top_main .barre_recherche input{
   border: none;
+  font-size: 16px;
 }
+
+.top_main .barre_recherche:focus-within {
+  outline: 2px solid #007BFF;
+}
+
 .top_main .barre_recherche input::placeholder{
   color: #ff8fc5;
   font-size: 16px;
   font-style: italic;
 }
 
-.top_main .barre_recherche input{
-  font-size: 16px;
+.top_main .barre_recherche input:focus{
+  outline: none;
+}
+
+.objet_produit{
+  background-color: #f0f0f0; 
+  list-style: none;
+  border-radius: 15px;
+}
+
+.supp_produit, .info_prod, #search{
+  background: none;
+  border: none;
+  border-radius: 15px;
 }
 
 .dispo{
@@ -58,9 +59,10 @@ a{
   user-select: none;
 }
 
-header button{
-  background-color: white;
-  border-radius: 15px;
+.Modifier, .Reserver, .famille{
+  background-color: black;
+  color: white;
+  border-radius: 8px;
 }
 
 button{
@@ -76,10 +78,100 @@ button:hover{
   outline: 2px solid #007BFF;
 }
 
+.bdisabled{
+  background-color: grey;
+}
+
+.bdisabled:active{
+  transform: none;
+}
+
+.bdisabled:hover{
+  outline: none;
+}
+
+a{
+  text-decoration: none;
+  color: black;
+}
+
 img{
   pointer-events: none;
 }
 
-input:focus{
-    outline: none;
+#popup-overlay-info, #popup-overlay-modif{
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+#popup-overlay-info > div{
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+}
+
+tr{
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th button{
+    border-radius: 15px;
+  font-size: 1em;
+}
+
+th p{
+  font-size: 1.5em;
+}
+
+.non-commence{
+  background-color: red;
+}
+
+.en-cours{
+  background-color: orange;
+}
+
+.termine{
+  background-color: green;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content > div > input {
+  background-color: #ff8cc4;
+}
+
+th div{
+  border-radius: 15px;
+  user-select: none;
+}
+
+th div:hover{
+  outline: 2px solid #007BFF;
+}
+
+th div button{
+  background: none;
+  border: none;
+}
+
+th div button:hover{
+  outline: none;
+}
+
+.content > div > form > button{
+  background-color: white;
+  border-radius: 15px;
+}
+
+button{
+  font-size: 90%;
 }
