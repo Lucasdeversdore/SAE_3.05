@@ -18,6 +18,7 @@ header{
     justify-content: space-between;
     flex-wrap: wrap;
     height: 100%;
+    min-height:fit-content;
 }
 
 .liens_page{
@@ -202,6 +203,66 @@ header button{
     text-align: center;
 }
 
+#lien_logout img{
+    height: 1.5em;
+    size: 100%;
+
+}
+
+table{
+    justify-content: center;
+    display: flex;
+}
+
+tr{
+    width: 80em;
+}
+
+th{
+    padding: 1em;
+    display: flex;
+    flex-direction:column;
+}
+
+th p{
+    margin-bottom: 0px;
+}
+
+th form{
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+th button, th div{
+    padding: 0.5em;
+    margin-left: auto;
+}
+
+th div{
+    width: fit-content;
+    display: flex;
+    height: 1.5em;
+    align-items: center;
+}
+th div button{
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    width: fit-content;
+    margin-right: 0.5em;
+}
+th div img{
+    height: 100%;
+    display: block;
+}
+
+tbody{
+    min-width:fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
 #popup-overlay-modif {
     position: fixed;
     top: 0;
@@ -251,4 +312,17 @@ header button{
 
 .nomProduit {
     margin-top: 24px;
+}
+
+.content > div{
+    justify-content:center;
+    align-items: center;
+    display: flex;
+    flex-flow: nowrap;
+}
+
+.content > div > form > button{
+    width: 10em;
+    padding: 1em;
+    margin: 1em;
 }

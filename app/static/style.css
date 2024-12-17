@@ -26,13 +26,18 @@ header button{
   border: none;
   font-size: 16px;
 }
+
+.top_main .barre_recherche:focus-within {
+  outline: 2px solid #007BFF;
+}
+
 .top_main .barre_recherche input::placeholder{
   color: #ff8fc5;
   font-size: 16px;
   font-style: italic;
 }
 
-input:focus{
+.top_main .barre_recherche input:focus{
   outline: none;
 }
 
@@ -73,6 +78,18 @@ button:hover{
   outline: 2px solid #007BFF;
 }
 
+.bdisabled{
+  background-color: grey;
+}
+
+.bdisabled:active{
+  transform: none;
+}
+
+.bdisabled:hover{
+  outline: none;
+}
+
 a{
   text-decoration: none;
   color: black;
@@ -91,6 +108,35 @@ img{
   background-color: rgb(255, 255, 255);
 }
 
+tr{
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th button{
+    border-radius: 15px;
+  font-size: 1em;
+}
+
+th p{
+  font-size: 1.5em;
+}
+
+.non-commence{
+  background-color: red;
+}
+
+.en-cours{
+  background-color: orange;
+}
+
+.termine{
+  background-color: green;
+}
+
 .popup-content {
   background-color: #fff;
   padding: 20px;
@@ -101,4 +147,31 @@ img{
 
 .popup-content > div > input {
   background-color: #ff8cc4;
+}
+
+th div{
+  border-radius: 15px;
+  user-select: none;
+}
+
+th div:hover{
+  outline: 2px solid #007BFF;
+}
+
+th div button{
+  background: none;
+  border: none;
+}
+
+th div button:hover{
+  outline: none;
+}
+
+.content > div > form > button{
+  background-color: white;
+  border-radius: 15px;
+}
+
+button{
+  font-size: 90%;
 }

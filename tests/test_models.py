@@ -29,8 +29,39 @@ class Testing(unittest.TestCase):
             #self.assertEqual(search_famille_filter("ajuste"), Produit.query.filter(Produit.fonctionProduit == "ajusteur de pH").all())
 
     def test_reserver_qte_produit(self):
-        #TODO Terminer le test
-        pass
+        with app.app_context():
+            prod = Produit.query.filter(Produit.idProduit == 2).first()
+            id_prod = prod.idProduit 
+            
+            qte1 = 10
+            qte2 = 190 
+            qte3 = 0
+            qte4 = None
+            id_chimiste1 = 1
+            id_chimiste2 = 2
+            
+            r1 = reserver_prod(id_prod, qte1, id_chimiste1)
+            commande1 = Commande.query.filter(Commande.idCommande == next_commande_id()-1).first()
+            user1 = commande1.idChimiste
+
+            r2 = reserver_prod(id_prod, qte2, id_chimiste2)
+            commande2 = Commande.query.filter(Commande.idCommande == next_commande_id()-1).first()
+            user2 = commande2.idChimiste
+
+            r3 = reserver_prod(id_prod, qte3, id_chimiste1)
+            r4 = reserver_prod(id_prod, qte4, id_chimiste1)
+
+
+            self.assertEqual(r1, True)
+            self.assertEqual(user1, id_chimiste1)
+
+            self.assertEqual(r2, True)
+            self.assertEqual(user2, id_chimiste2)
+            
+            self.assertEqual(r3, None)
+            self.assertEqual(r4, None)
+            
+            
     def test_modifier_qte_produit(self):
         #TODO Terminer le test
         pass
@@ -63,7 +94,7 @@ class Testing(unittest.TestCase):
         unite4 = None
         quantite1 = 5
         quantite2 = 0
-        quantite3 = "5"
+        quantite3 = "5.6"
         quantite4 = "a"
         quantite5 = None
         fonction1 = "test"
@@ -166,7 +197,7 @@ class Testing(unittest.TestCase):
             self.assertEqual(lieu2, testlieu2)
 
             self.assertEqual(prod3,testprod3)
-            self.assertEqual(int(quantite3), testqte3)
+            self.assertEqual(float(quantite3), testqte3)
             self.assertEqual(lieu3, testlieu3)
 
             self.assertEqual(prod4,testprod4)
@@ -207,6 +238,37 @@ class Testing(unittest.TestCase):
         self.assertEqual(check_mdp(mdp10), True)
         self.assertEqual(check_mdp(mdp11), True)
 
+    def test_convertir_quantite(self):
+        with app.app_context():
+            prod1 = Produit.query.filter(Produit.idProduit == 3).first()
+            id_prod = prod1.idProduit 
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == prod1.idProduit).first()
+            stock_base= stock.quantiteStocke
+            
+            stock.quantiteStocke = 2000
+            convertir_quantite(id_prod)
+            self.assertEqual(stock.quantiteStocke, 2)
+            self.assertEqual(prod1.nomUnite, "kg")
+            stock.quantiteStocke = 0.1
+            convertir_quantite(id_prod)
+            self.assertEqual(stock.quantiteStocke, 100)
+            self.assertEqual(prod1.nomUnite, "g")
+            stock.quantiteStocke = stock_base
+
+            prod2 = Produit.query.filter(Produit.idProduit == 4).first()
+            id_prod = prod2.idProduit 
+            stock2 = Est_Stocker.query.filter(Est_Stocker.idProduit == prod2.idProduit).first()
+            stock_base= stock2.quantiteStocke
+
+            stock2.quantiteStocke = 2000
+            convertir_quantite(id_prod)
+            self.assertEqual(stock2.quantiteStocke, 2)
+            self.assertEqual(prod2.nomUnite, "L")
+            stock2.quantiteStocke = 0.1
+            convertir_quantite(id_prod)
+            self.assertEqual(stock2.quantiteStocke, 100)
+            self.assertEqual(prod2.nomUnite, "mL")
+            stock2.quantiteStocke = stock_base
 
 
 if __name__ == "__main__":

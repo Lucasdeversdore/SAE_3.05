@@ -18,33 +18,23 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
-                {% if msg %}
-                    <h1>{{msg}}</h1>
-                {% endif %}
-                <form role="form" method="POST" action = "{{ url_for ('connection') }}">
+                <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
                     {{ form.hidden_tag() }}
                     <ul>
-                        <li><h1>Connectez-vous</h1></li>
+                        <li><h1>Réinitilisez votre mot de passe</h1></li>
                         <li id="email">{{ form.email(placeholder ="Entrer votre email") }}</li>
-                        
-                        <li id="pwd">{{ form.password(placeholder ="Entrer votre mot de passe") }}</li>
-
-                        <li id="li_reset_pwd"><a href="{{url_for('reset_pwd')}}">mot de passe oublié</a></li>
-
-                        <li id="paragraphe">
-                            <input type="checkbox">
-                            <p>Rester connecté</p>
-                            <button type="submit">Se connecter</button>
-                            
+                        <li>
+                            <button type="submit">Entrer</button>
+                            <a href="/connection">retour</a>
                         </li>
-                        <li><a href="/inscription">Créer un compte</a></li>
-                    </ul>     
+                    </ul>
                 </form>
             </section>
             <section>
                 <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
-        </main>
+        </main>  
+
         <script src="app.js"></script>
     </body>
 </html>

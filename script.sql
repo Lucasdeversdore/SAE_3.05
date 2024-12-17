@@ -28,7 +28,7 @@ CREATE TABLE FAIRE (
 CREATE TABLE EST_STOCKER (
     idProduit int NOT NULL UNIQUE,
     idLieu int NOT NULL,
-    quantiteStocke int,
+    quantiteStocke float,
     CONSTRAINT PK_Est_Stocker PRIMARY KEY (idProduit, idLieu),
     CONSTRAINT FK_Est_Stocker_Produit FOREIGN KEY (idProduit) REFERENCES PRODUIT (idProduit),
     CONSTRAINT FK_Est_Stocker_Lieu FOREIGN KEY (idLieu) REFERENCES LIEU_STOCKAGE (idLieu)

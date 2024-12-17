@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, Text, Date, Boolean
+from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
-from .app import  db
+from .app import  db, app
 
 
 
@@ -36,6 +37,20 @@ class Chimiste(db.Model, UserMixin):
     
     def get_id(self):
         return self.idChimiste
+    
+    def get_token(self):
+        serial=Serializer(app.config['SECRET_KEY'])
+        return serial.dumps({'user_id':self.idChimiste})
+    
+    @staticmethod
+    def verify_token(token):
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = serial.loads(token)['user_id']
+        except:
+            return None
+        return Chimiste.query.get(user_id)
+
 
 class Unite(db.Model):
 
@@ -138,7 +153,7 @@ class Est_Stocker(db.Model):
     
     idProduit = Column(Integer, ForeignKey("PRODUIT.idProduit"), primary_key = True, nullable = False)
     idLieu = Column(Integer, ForeignKey("LIEU_STOCKAGE.idLieu"), primary_key = True, nullable = False)
-    quantiteStocke = Column(Integer)
+    quantiteStocke = Column(Float)
     stockerLieu = relationship("Lieu_Stockage", back_populates="lieuStock")
     stockerProduit = relationship("Produit", back_populates="produitStock")
 
@@ -355,6 +370,22 @@ def get_sample_prduit_qte(nb=20):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
+def get_pagination_produits(page=1, nb=15):
+    liste_prod_qte = []
+    liste_prod = Produit.query.order_by(Produit.nomProduit).all()
+    liste_prod = liste_prod[(page-1)*nb:page*nb]
+    for produit in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        liste_prod_qte.append((produit, qte))
+    return liste_prod_qte
+
+def get_nb_page_max_produits(nb):
+    return len(Produit.query.all())//nb+1
+
 def get_sample_reservation(nb=20):
     """Renvoie 20 reservations, ses états, chimistes et produits de la base de donnée"""
     liste_reserv_etat = []
@@ -368,6 +399,46 @@ def get_sample_reservation(nb=20):
             liste_reserv_etat.append((reservation, etat, chimiste, produit))
     return liste_reserv_etat
 
+def get_pagination_reservations(page, nb, chimiste):
+    liste_reserv_etat = []
+    if not chimiste.estPreparateur:
+        liste_reserv = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste).all()
+    else:
+        liste_reserv = Commande.query.order_by(Commande.dateCommande).all()
+    liste_reserv = liste_reserv[(page-1)*nb:page*nb]
+    for reservation in liste_reserv:
+        faire = Faire.query.filter(Faire.idCommande == reservation.idCommande).first()
+        chimiste = Chimiste.query.filter(Chimiste.idChimiste == reservation.idChimiste).first()
+        produit = Produit.query.filter(Produit.idProduit == reservation.idProduit).first()
+        if faire and chimiste and produit:
+            etat = faire.statutCommande
+            liste_reserv_etat.append((reservation, etat, chimiste, produit))
+    return liste_reserv_etat
+
+def get_nb_page_max_reservations(nb, chimiste):
+    if chimiste.estPreparateur:
+        return len(Commande.query.all())//nb+1
+    else:
+        return len(Commande.query.filter(Commande.idChimiste == chimiste.idChimiste).all())//nb+1
+
+def get_sample_reservation_chimiste(chimiste:Chimiste):
+    """renvoi les Commandes avec leurs états du chimiste
+
+    Args:
+        chimiste (Chimiste): un Chimiste
+    Return:
+        list: liste des Commande avec leurs états du chimiste
+    """
+    liste_reserv_etat = []
+    liste_reserv = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste).all()
+    for reservation in liste_reserv:
+        faire = Faire.query.filter(Faire.idCommande == reservation.idCommande).first()
+        chimiste = Chimiste.query.filter(Chimiste.idChimiste == reservation.idChimiste).first()
+        produit = Produit.query.filter(Produit.idProduit == reservation.idProduit).first()
+        if faire and chimiste and produit:
+            etat = faire.statutCommande
+            liste_reserv_etat.append((reservation, etat, chimiste, produit))
+    return liste_reserv_etat
 
 def search_filter(q):
     """renvoie une liste de produit_qte selon une requete q  
@@ -460,8 +531,8 @@ def check_mdp(mdp):
         return False
 
     if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
-        return True
-    return False
+        return (True, "")
+    return (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères")
 
 def verif_fourn_existe(fournisseur):
     les_fours = Fournisseur.query.all()
@@ -502,6 +573,7 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     if fonction != "":
        produit.fonctionProduit = fonction
 
+
     db.session.commit()
     print(stock)
     print("Commande mise à jour")
@@ -530,12 +602,15 @@ def check_mdp_validator(form, field):
     
     from .models import check_mdp
     from wtforms import ValidationError
-    result = check_mdp(field.data)
+    result = check_mdp(field.data)  # Appel de la fonction check_mdp
     if isinstance(result, bool):
-        is_valid, error_message = result, ""
+        is_valid = result
+        error_message = ""
     else:
         is_valid, error_message = result
-    if not is_valid:
+
+    if not is_valid:  # Si le mot de passe n'est pas valide
+        # Affiche le message d'erreur spécifique
         raise ValidationError(error_message)
 
 
@@ -549,8 +624,8 @@ def reserver_prod(id_produit, qte, user):
 
     Args:
         id_produit (int): l'id du produit
-        qte (int): la quantité reservé
-        user (_int): l'id du chimiste qui a réservé
+        qte (float): la quantité reservé
+        user (int): l'id du chimiste qui a réservé
     """
     prod = Produit.query.get(id_produit)
     if prod:
@@ -559,7 +634,7 @@ def reserver_prod(id_produit, qte, user):
             qte_dispo = 0
         else:
             qte_dispo = est_stocker.quantiteStocke
-        if qte <= qte_dispo and qte > 0:
+        if qte is not None and qte <= qte_dispo and qte > 0:
             id = next_commande_id()
             commande = Commande(id, qte, user,id_produit)
             db.session.add(commande)
@@ -567,11 +642,26 @@ def reserver_prod(id_produit, qte, user):
             db.session.add(faire)
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
+            convertir_quantite(id_produit)
             db.session.commit()
             return True
 
 
 def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+    """Fonction qui permet d'ajouter un produit à la bd
+
+    Args:
+        nom (String): nom du produit
+        nom_fournisseur (String): nom du fournisseur
+        unite (String): nom de l'unite (L, g, mL ...)
+        quantite (String, float): quantité deisponible du produit 
+        fonction (String): famille du produit 
+        lieu (String): nom du lieu de stockage
+
+    Returns:
+        bool: True si l'ajout du produit se passe bien
+    """
+    
     if add_prod(nom, unite, fonction, nom_fournisseur):
         prod = Produit.query.get(next_prod_id()-1)
         id_prod = prod.idProduit
@@ -582,10 +672,50 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         else:
             le_lieu = le_lieu.idLieu  
         try:
-            quantite = int(quantite)
+            quantite = float(quantite)
         except:
             quantite = 0
         stock = Est_Stocker(id_prod, le_lieu, quantite)
         db.session.add(stock)
+        convertir_quantite(id_prod)
         db.session.commit()
         return True
+    
+
+def convertir_quantite(id_produit):
+    """convertis les unités tous en adaptant la quantite,
+    quand qte restante < 1 convertir sur l'unité inférieur, 
+    quand qte restante > 999 convertir sur l'unité supérieur
+    Args:
+        id_produit (int): id d'un produit
+    """
+    stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first()
+    quantite = float(stock.quantiteStocke)
+    if quantite < 1 and quantite > 0:
+        prod = Produit.query.get(id_produit)
+        
+        if prod:
+            unite = prod.nomUnite
+            match unite:
+                case "L":
+                    prod.nomUnite = "mL"
+                    stock.quantiteStocke = quantite *10**3
+                case "kg":
+                    prod.nomUnite = "g"
+                    stock.quantiteStocke = quantite *10**3
+            db.session.commit()
+    elif quantite > 999:
+        prod = Produit.query.get(id_produit)
+        if prod:
+            
+            unite = prod.nomUnite
+            match unite:
+
+                case "mL":
+                    prod.nomUnite = "L"
+                    stock.quantiteStocke = quantite *10**-3
+                case "g":
+                    prod.nomUnite = "kg"
+                    stock.quantiteStocke = quantite *10**-3
+            db.session.commit()
+
