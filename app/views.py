@@ -76,12 +76,17 @@ def inscrire():
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
-
+        
+        # Vérifier si les conditions générales d'utilisation ont été acceptées
+        if not request.form.get('cgu-inscription'):
+            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
+            return redirect(url_for('inscrire'))
+        
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             flash('Cet email est déjà utilisé.', 'danger')
-            return redirect(url_for('inscription'))
+            return redirect(url_for('inscrire'))
         
         # Créer un nouvel utilisateur Chimiste
         nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
@@ -89,11 +94,38 @@ def inscrire():
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
-
+        
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
         return redirect(url_for('connection'))
-
+    
     return render_template('inscription.html', form=form)
+
+@app.route("/inscription-cgu")
+def cgu():
+    return render_template("inscription-cgu.html")
+
+@app.route("/search", methods=('GET',))
+@login_required
+def search():
+    q = request.args.get("search")
+    results = search_filter(q) + search_famille_filter(q)
+    print(results)
+    return render_template("home.html", liste_produit=results)
+
+
+@app.route("/test/connection", methods=('GET', 'POST'))
+def connection():
+    user = None
+    f = LoginForm()
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
+        user = f.get_authenticated_user()
+        if type(user) != str:
+            login_user(user)
+            next = f.next.data or url_for("home")
+            return redirect(next)
+    return render_template("connection.html", form=f, msg=user)
 
 @app.route("/logout/")
 def logout():
