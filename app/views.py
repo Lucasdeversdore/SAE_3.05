@@ -53,8 +53,7 @@ def preparation_reservation_page_1():
 
 
 
-from flask import Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, db, next_chimiste_id
+
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():

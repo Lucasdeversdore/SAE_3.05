@@ -13,16 +13,33 @@
     </head>
     
     <body>
-        <main>
-            <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
-                {{ form.hidden_tag() }}
-                <ul>
-                    <li><h1>Réinitilisez votre mot de passe</h1></li>
-                    <li id="email">{{ form.email(placeholder ="Entrer votre email") }}</li>
-                    <button type="submit">Entrer</button>
-                </ul>
-            </form>
+        <main class="main_co_ins">
+            <section>
+                <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
+            </section>
+            <section id="main_section">
+                <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
+                    {{ form.hidden_tag() }}
+                    <ul>
+                        <li><h1>Réinitilisez votre mot de passe</h1></li>
+                        <li id="email">{{ form.email(placeholder ="Entrer votre email") }}</li>
+                        <li>
+                            <button type="submit">Entrer</button>
+                            <a href="/connection">retour</a>
+                        </li>
+                    </ul>
+                </form>
+            </section>
+            <section>
+                <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
+            </section>
         </main>  
         <script src="app.js"></script>
     </body>
 </html>
+
+
+
+
+
+
