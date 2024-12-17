@@ -1,9 +1,8 @@
 from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
-from .app import app, mail
-from flask import jsonify, redirect, render_template, url_for
+from .app import app, db, mail
+from flask import jsonify, redirect, render_template, url_for,flash, request, Flask
 from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
-from flask import request
 from .form import *
 from flask_mail import Message
 
@@ -70,12 +69,17 @@ def inscrire():
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
-
+        
+        # Vérifier si les conditions générales d'utilisation ont été acceptées
+        if not request.form.get('cgu-inscription'):
+            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
+            return redirect(url_for('inscrire'))
+        
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             flash('Cet email est déjà utilisé.', 'danger')
-            return redirect(url_for('inscription'))
+            return redirect(url_for('inscrire'))
         
         # Créer un nouvel utilisateur Chimiste
         nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
@@ -83,23 +87,22 @@ def inscrire():
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
-
+        
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
         return redirect(url_for('connection'))
-
+    
     return render_template('inscription.html', form=form)
+
+@app.route("/inscription-cgu")
+def cgu():
+    return render_template("inscription-cgu.html")
 
 @app.route("/search", methods=('GET',))
 @login_required
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
-
-@app.route("/connection")
-def connecter():
-    f = LoginForm()
-    return render_template("connection.html", msg=None, form=f)
+    return render_template("home.html", liste_produit=results)
 
 
 @app.route("/connection", methods=('GET', 'POST'))
