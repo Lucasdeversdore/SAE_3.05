@@ -38,4 +38,14 @@ ul{
     
   }
   
-  
+  .errors {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+    list-style-type: none;
+    padding: 0;
+}
+.errors li {
+    margin-bottom: 2px;
+}
+

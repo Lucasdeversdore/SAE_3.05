@@ -89,7 +89,7 @@ def inscrire():
         
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
         return redirect(url_for('connection'))
-    
+    flash(form.errors)
     return render_template('inscription.html', form=form)
 
 @app.route("/inscription-cgu")

@@ -573,8 +573,8 @@ def check_mdp(mdp):
         return False
 
     if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
-        return True
-    return False
+        return (True, "")
+    return (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères")
 
 def verif_fourn_existe(fournisseur):
     les_fours = Fournisseur.query.all()
@@ -655,12 +655,15 @@ def check_mdp_validator(form, field):
     
     from .models import check_mdp
     from wtforms import ValidationError
-    result = check_mdp(field.data)
+    result = check_mdp(field.data)  # Appel de la fonction check_mdp
     if isinstance(result, bool):
-        is_valid, error_message = result, ""
+        is_valid = result
+        error_message = ""
     else:
         is_valid, error_message = result
-    if not is_valid:
+
+    if not is_valid:  # Si le mot de passe n'est pas valide
+        # Affiche le message d'erreur spécifique
         raise ValidationError(error_message)
 
 

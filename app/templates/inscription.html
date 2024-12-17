@@ -2,14 +2,12 @@
 <html>
     <head>
         {% block head %}
-        <!-- Required meta tags -->
         <meta charset="utf-8">
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>Stockage Chimie</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Stockage Chimie</title>
         {% endblock %}
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='position_page_co_ins.css') }}">
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='style_page_co_ins.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='position_page_co_ins.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_page_co_ins.css') }}">
     </head>
     <body>
         <main class="main_co_ins">
@@ -17,19 +15,83 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
-                <form role="form" method="POST" action = "{{ url_for ('inscrire') }}">
+                <form role="form" method="POST" action="{{ url_for('inscrire') }}">
                     {{ form.hidden_tag() }}
                     <ul>
                         <li><h1>Inscrivez-vous</h1></li>
-                        <li id="email">{{ form.email(placeholder ="Entrez votre email") }}</li>
-                        <li id="prenom-nom">
-                            {{ form.prenom(placeholder ="Prenom") }}
-                            {{ form.nom(placeholder ="Nom") }}
+
+                        <!-- Champ email -->
+                        <li id="email">
+                            {{ form.email(placeholder="Entrez votre email") }}
+                            {% if form.email.errors %}
+                                <ul class="errors">
+                                    {% for error in form.email.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </li>
-                        <li id="pwd">{{ form.mdp(placeholder ="Entrez votre mot de passe") }}</li>
-                        <li id="pwd">{{ form.confirm_mdp(placeholder ="Confirmez votre mot de passe") }}</li>
-                        <li id="cgu"><input type="checkbox" name="cgu-inscription">J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></li>
+
+                        <!-- Champs prénom et nom -->
+                        <li id="prenom-nom">
+                            {{ form.prenom(placeholder="Prénom") }}
+                            {% if form.prenom.errors %}
+                                <ul class="errors">
+                                    {% for error in form.prenom.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {{ form.nom(placeholder="Nom") }}
+                            {% if form.nom.errors %}
+                                <ul class="errors">
+                                    {% for error in form.nom.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+
+                        <!-- Champ mot de passe -->
+                        <li id="pwd">
+                            {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                            {% if form.mdp.errors %}
+                                <ul class="errors">
+                                    {% for error in form.mdp.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+
+                        <!-- Champ confirmation mot de passe -->
+                        <li id="pwd">
+                            {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                            {% if form.confirm_mdp.errors %}
+                                <ul class="errors">
+                                    {% for error in form.confirm_mdp.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+
+                        <!-- Champ CGU -->
+                        <li id="cgu">
+                            {{ form.cgu }} J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></li>{{ form.cgu.label }}
+                            {% if form.cgu.errors %}
+                                <ul class="errors">
+                                    {% for error in form.cgu.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+
+                        <!-- Bouton submit -->
                         <li id="inscrire"><button type="submit">M'inscrire</button></li>
+
+                        <!-- Lien vers connexion -->
                         <li id="compte_existant"><a href="/connection">J'ai déjà un compte</a></li>
                     </ul>
                 </form>
@@ -41,4 +103,3 @@
         <script src="app.js"></script>
     </body>
 </html>
-
