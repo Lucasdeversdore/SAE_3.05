@@ -19,7 +19,10 @@
 
     {% block top_main %}
         {% if current_user.estPreparateur %}
-            <button id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
+            <button class="bouton-ajouter" id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
+            <button class="bouton-ajouter" id="ajouter_fournisseur" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un fournisseur </button>
+            <button class="bouton-ajouter" id="ajouter_lieu" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un lieu </button>
+            <button class="bouton-ajouter" id="ajouter_fonction" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter une fonction </button>
         {% else %}
             <h1>Liste des produits</h1>
         {% endif %}
