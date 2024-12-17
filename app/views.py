@@ -2,7 +2,7 @@ from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
 from .app import app, db
 from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations, update_etat
 from .form import *
 
 @app.route("/")
@@ -200,11 +200,10 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
-@app.route('/etat/commande/<int:id>', methods=['POST'])
-def etat_commande(id):
-    # Test pour voir si on peut update l'état d'une commande
-    print("ESSAI")
-    Faire.query.get(id).update_etat()
+@app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['POST'])
+def etat_commande(idCommande, idChimiste):
+    update_etat(idCommande, idChimiste)
+    return redirect(url_for("preparation_reservation"))
 
 @app.errorhandler(404)
 def internal_error(error):

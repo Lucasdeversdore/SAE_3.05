@@ -131,22 +131,6 @@ class Faire(db.Model):
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
 
-    def set_non_commence(self):
-        self.statutCommande = 'non-commence'
-
-    def set_en_cours(self):
-        self.statutCommande = 'en-cours'
-
-    def set_termine(self):
-        self.statutCommande = 'termine'
-    
-    def update_etat(self):
-        match self.statutCommande:
-            case 'non-commence':
-                self.set_en_cours()
-            case 'en-cours':
-                self.set_termine()
-
 class Est_Stocker(db.Model):
 
     __tablename__ = "EST_STOCKER"
@@ -726,3 +710,16 @@ def convertir_quantite(id_produit):
                     prod.nomUnite = "kg"
                     stock.quantiteStocke = quantite *10**-3
             db.session.commit()
+
+def set_etat_commande(faire, nouvel_etat):
+    faire.statutCommande = nouvel_etat
+    db.session.commit()
+
+
+def update_etat(idCommande, idChimiste):
+    faire = Faire.query.filter(Faire.idCommande == idCommande and Faire.idChimiste == idChimiste).first()
+    match faire.statutCommande:
+        case 'non-commence':
+            set_etat_commande(faire, 'en-cours')
+        case 'en-cours':
+            set_etat_commande(faire, 'termine')

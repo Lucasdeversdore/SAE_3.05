@@ -40,34 +40,20 @@
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
                 {% if current_user.estPreparateur %}
-                    <form action="{{url_for('etat_commande', id=reservation.idCommande, methods=['POST'])}}"> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
-                        {% if etat == "non commencé" %}
-                            <button type="submit" class ="non-commence">{{etat}}</button> 
-                        {% elif etat == "en cours" %}
-                            <button type="submit" class ="en-cours">{{etat}}</button>
-                        {% elif etat == "termine" %}
-                            <button type="submit" class ="termine">{{etat}}</button>
-                        {% else %}
-                            <button type="submit">{{etat}}</button>
-                        {% endif %}
+                    <form role="form" method='POST' action="{{url_for('etat_commande', idCommande=reservation.idCommande, idChimiste=chimiste.idChimiste)}}"> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
+                        <button type="submit" class="{{ etat }}"> {{ etat }} </button>
                     </form>
                 {% else %} <!-- Gérer la suppression d'une réservation -->
-                    {% if etat == "non-commence" %}
-                        <div class ="non-commence">
-                            <form>
-                                <button type="submit">
-                                    <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
-                                </button>
-                            </form>
-                            {{etat}}
-                        </div>
-                    {% elif etat == "en-cours" %}
-                        <div class ="en-cours">{{etat}}</div>
-                    {% elif etat == "termine" %}
-                        <div class ="termine">{{etat}}</div>
-                    {% else %}
-                        <div>{{etat}}</div>
-                    {% endif %} 
+                    <div class ="{{ etat }}">
+                        {% if etat == "non-commence" %}
+                        <form>
+                            <button type="submit">
+                                <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
+                            </button>
+                        </form>
+                        {% endif %}
+                        {{etat}}
+                    </div>
                 {% endif %}
             </th>
         </tr>
