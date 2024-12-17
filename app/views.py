@@ -200,11 +200,11 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
-@app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['POST'])
+@app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
 def etat_commande(idCommande, idChimiste):
     update_etat(idCommande, idChimiste)
     return redirect(url_for("preparation_reservation"))
 
-@app.errorhandler(404)
-def internal_error(error):
-    return redirect(url_for('home'))
+# @app.errorhandler(404)
+# def internal_error(error):
+#     return redirect(url_for('home'))

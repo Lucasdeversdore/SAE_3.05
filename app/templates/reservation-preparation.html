@@ -40,9 +40,11 @@
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
                 {% if current_user.estPreparateur %}
-                    <form role="form" method='POST' action="{{url_for('etat_commande', idCommande=reservation.idCommande, idChimiste=chimiste.idChimiste)}}"> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
+                    <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
+                    <!-- <form role="form" method='POST' action="{{url_for('etat_commande', idCommande=reservation.idCommande, idChimiste=chimiste.idChimiste)}}"> 
                         <button type="submit" class="{{ etat }}"> {{ etat }} </button>
-                    </form>
+                    </form> -->
+                    <button class="Etat {{ etat }}" idCommande="{{reservation.idCommande}}" idChimiste="{{chimiste.idChimiste}}" etat="{{etat}}" > {{ etat }} </button>
                 {% else %} <!-- Gérer la suppression d'une réservation -->
                     <div class ="{{ etat }}">
                         {% if etat == "non-commence" %}
