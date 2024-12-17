@@ -1,9 +1,10 @@
 from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
-from .app import app, db
-from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
+from .app import app, db, mail
+from flask import jsonify, redirect, render_template, url_for,flash, request, Flask
 from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
 from .form import *
+from flask_mail import Message
 
 @app.route("/")
 @login_required
@@ -49,19 +50,11 @@ def preparation_reservation_page(id_page=1, nb=5):
 def preparation_reservation_page_1():
     return redirect("/preparation/reservations")
 
-@app.route("/connection", methods = ('GET', 'POST'))
-def connection():
-    user = None
-    f = LoginForm()
-    if not f.is_submitted():
-        f.next.data = request.args.get("next")
-    elif f.validate_on_submit():
-        user = f.get_authenticated_user()
-        if type(user) != str:
-            login_user(user)
-            next = f.next.data or url_for("home")
-            return redirect(next)
-    return render_template("connection.html", form=f, msg=user)
+
+
+
+from flask import Flask, render_template, redirect, url_for, flash
+from .models import Chimiste, db, next_chimiste_id
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -109,11 +102,10 @@ def cgu():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
-    print(results)
     return render_template("home.html", liste_produit=results)
 
 
-@app.route("/test/connection", methods=('GET', 'POST'))
+@app.route("/connection", methods=('GET', 'POST'))
 def connection():
     user = None
     f = LoginForm()
@@ -127,17 +119,64 @@ def connection():
             return redirect(next)
     return render_template("connection.html", form=f, msg=user)
 
+
+def send_mail(user:Chimiste):
+    token=user.get_token()
+    msg=Message('Demande de réinitialisation de mot de passe', recipients=[user.email], sender='noreply@codejana.com')
+    msg.body=f''' Pour réinitialiser votre mot de passe cliquer sur le lien ci-dessous.
+
+    {url_for('reset_token', token=token, _external=True)}
+
+    '''
+    mail.send(msg)
+    
+
+@app.route("/reset_pwd", methods=('GET', 'POST'))
+def reset_pwd():
+    form = ResetForm()
+    if not form.is_submitted():
+        form.next.data = request.args.get("next")
+    elif form.validate_on_submit():
+        email = form.email.data
+         # Vérifier si l'email existe déjà dans la base
+        chimiste_existant = Chimiste.query.filter_by(email=email).first()
+        if chimiste_existant:
+            send_mail(chimiste_existant)
+            flash("Rgerdez vos mail pour réinitialiser votre mot de passe.")
+            print("Rgerdez vos mail pour réinitialiser votre mot de passe.")
+            return redirect(url_for('connection'))
+
+        else:
+            flash("non")
+    return render_template("reset_pwd.html", form=form)
+
+@app.route('/reset_pwd/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user=Chimiste.verify_token(token)
+    if user is None:
+        flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
+        return redirect(url_for('reset_pwd'))
+    form=ChangePasswordForm()
+    
+    if form.validate_on_submit():
+        print("here")
+        m = sha256()
+        m.update(form.mdp.data.encode())
+        passwd = m.hexdigest()
+        user.mdp = passwd
+        db.session.commit()
+        flash("mot de passe changer.","success" )
+        return redirect(url_for("connection"))
+    if not form.validate_on_submit():
+        print(form.errors)
+
+    return render_template('change_password.html', form=form, token=token)
+
 @app.route("/logout/")
 def logout():
     logout_user()
     return redirect(url_for('connection'))
 
-@app.route("/search", methods=('GET',))
-@login_required
-def search():
-    q = request.args.get("search")
-    results = search_filter(q) + search_famille_filter(q)
-    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
 @login_required
@@ -232,6 +271,6 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
-@app.errorhandler(404)
-def internal_error(error):
-    return redirect(url_for('home'))
+#@app.errorhandler(404)
+#def internal_error(error):
+#    return redirect(url_for('home'))
