@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Fonction pour afficher le popup de modifications de produit
 
-function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
+function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
     popup_overlay_modif.id = "popup-overlay-modif";
     popup_overlay_modif.classList.add("popup-overlay-modif");  // Ajoute une classe CSS
@@ -109,15 +109,22 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
 
     const pFournisseur = document.createElement("p");
     pFournisseur.textContent = "Fournisseur :";
-    const selectFournisseur = document.createElement("input");
-    selectFournisseur.type = "text";
-    selectFournisseur.name = "textFournisseur";
-    if (fournisseur == "") {
-        selectFournisseur.value = ""
+    const selectFournisseur = document.createElement("select");
+    const optionFournisseur = document.createElement("option");
+    selectFournisseur.name = "selectFournisseur";
+
+    optionFournisseur.value = fournisseur.nomFou
+    optionFournisseur.innerHTML = fournisseur.nomFou;
+    selectFournisseur.appendChild(optionFournisseur);
+
+
+    for (let i = 0; i < les_fournisseurs.length; i++) {
+        let option = document.createElement("option");
+        option.value = les_fournisseurs[i].nomFou;
+        option.innerHTML = les_fournisseurs[i].nomFou;
+        selectFournisseur.appendChild(option);
     }
-    else {
-        selectFournisseur.value = fournisseur.nomFou;
-    }
+
     selectFournisseur.className = "form-control"
 
     const ligne_fournisseur = document.createElement("div");
@@ -138,33 +145,78 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
 
     const pFonction = document.createElement("p");
     pFonction.textContent = "Fonction du produit :";
-    const textFonction = document.createElement("input");
-    textFonction.type = "text";
-    textFonction.name = "textFonction";
-    textFonction.value = produit.fonctionProduit || "";
-    textFonction.className = "form-control"
+    const selectFonction = document.createElement("select");
+    const optionFonction = document.createElement("option");
+    selectFonction.name = "selectFonction";
+    
+    optionFonction.value = produit.fonctionProduit
+    optionFonction.innerHTML = produit.fonctionProduit
+    selectFonction.appendChild(optionFonction);
+
+    const optionFonctionVide = document.createElement("option");
+    optionFonctionVide.value = "vide"
+    optionFonctionVide.innerHTML = " "
+    selectFonction.appendChild(optionFonctionVide);
+
+    for (let i = 0; i < les_fonctions.length; i++) {
+        if (les_fonctions[i].fonctionProduit !== null && les_fonctions[i].fonctionProduit !== '-') {
+            // Vérifie si l'option existe déjà dans le select
+            let existeDeja = Array.from(selectFonction.options).some(option => option.value === les_fonctions[i].fonctionProduit);
+            
+            if (!existeDeja) {
+                let option = document.createElement("option");
+                option.value = les_fonctions[i].fonctionProduit;
+                option.innerHTML = les_fonctions[i].fonctionProduit;
+                selectFonction.appendChild(option);
+            }
+        }
+    }
+
+    selectFonction.className = "form-control"
 
     const ligne_fonction = document.createElement("div");
     ligne_fonction.appendChild(pFonction)
-    ligne_fonction.appendChild(textFonction)
+    ligne_fonction.appendChild(selectFonction)
 
     const pLieuStock = document.createElement("p");
     pLieuStock.textContent = "Lieu de stockage : *";
-    const selectLieuStock = document.createElement("input");
-    selectLieuStock.type = "text";
-    selectLieuStock.name = "textLieu";
-    selectLieuStock.value = lieu.nomLieu;
+
+    const selectLieuStock = document.createElement("select");  
+    const optionLieuStock = document.createElement("option");
+    selectLieuStock.name = "selectLieuStock";
+
+    optionLieuStock.value = lieu.nomLieu;
+    optionLieuStock.innerHTML = lieu.nomLieu;
+    selectLieuStock.appendChild(optionLieuStock);
+
+    
+
+    for (let i = 0; i < les_lieux.length; i++) {
+        if (les_lieux[i].nomLieu !== null) {
+            // Vérifie si l'option existe déjà dans le select
+            let existeDeja = Array.from(selectFonction.options).some(option => option.value === les_lieux[i].nomLieu);
+            
+            if (!existeDeja) {
+                let option = document.createElement("option");
+                option.value = les_lieux[i].nomLieu;
+                option.innerHTML = les_lieux[i].nomLieu;
+                selectLieuStock.appendChild(option);
+            }
+        }
+    }
+
     selectLieuStock.className = "form-control"
 
     const ligne_lieu_stock = document.createElement("div");
     ligne_lieu_stock.appendChild(pLieuStock)
     ligne_lieu_stock.appendChild(selectLieuStock)
-
+    
     const bOk = document.createElement("button");
     bOk.textContent = "Annuler";
     bOk.id = "okModif";
     bOk.className = "btn btn-dark"
     bOk.addEventListener("click", handleButtonOKModifClick);
+
 
     const bSauv = document.createElement("button");
     bSauv.textContent = "Sauvegarder";
@@ -175,8 +227,13 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
+        console.log(selectFournisseur.value);
+        console.log(selectFonction.value);
+        console.log(selectLieuStock.value);
+
+        console
         sauvegarderProduit(produit.idProduit, textNom.value, selectFournisseur.value,
-            textQuantite.value, textFonction.value, selectLieuStock.value);
+            textQuantite.value, selectFonction.value, selectLieuStock.value);
     });
 
     const ligne_bouton = document.createElement("div");
@@ -225,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/modifier/${produitId}`)
                 .then(response => response.json())
                 .then(data => {
-                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker);
+                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker, data.les_fournisseurs, data.les_fonctions, data.les_lieux);
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
         });

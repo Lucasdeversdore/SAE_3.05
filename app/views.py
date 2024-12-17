@@ -215,6 +215,26 @@ def reserver_produit(id_produit):
 
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
 def get_modif_produit(id_produit):
+    
+    les_four = Fournisseur.query.all()
+    les_fournisseurs = []
+    cpt = 0
+    for fourn in les_four:
+        cpt +=1
+        if cpt != id_produit:
+            les_fournisseurs.append(fourn.to_dict())
+        cpt +=1
+
+    les_fon = Produit.query.all()
+    les_fonctions = []
+    for fonc in les_fon:
+        les_fonctions.append(fonc.to_dict())
+
+    les_li = Lieu_Stockage.query.all()
+    les_lieux = []
+    for li in les_li:
+        les_lieux.append(li.to_dict())
+    
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
     id_lieu = est_stocker["idLieu"]
@@ -226,7 +246,7 @@ def get_modif_produit(id_produit):
         fournisseur = ""
     else:
         fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
-    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
+    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux)     
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 def sauvegarder_modif(id_produit):
@@ -239,7 +259,7 @@ def sauvegarder_modif(id_produit):
 
     res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
     if res:
-        return jsonify(success=True, message="Réservation réussie !"), 200
+        return jsonify(success=True, message="Modification réussie !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
 
