@@ -94,6 +94,10 @@ def inscrire():
     
     return render_template('inscription.html', form=form)
 
+@app.route("/inscription-cgu")
+def cgu():
+    return render_template("inscription-cgu.html")
+
 @app.route("/search", methods=('GET',))
 @login_required
 def search():
