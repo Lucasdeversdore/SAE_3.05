@@ -126,6 +126,7 @@ def send_mail(user:Chimiste):
 
     '''
     mail.send(msg)
+    
 
 @app.route("/reset_pwd", methods=('GET', 'POST'))
 def reset_pwd():
@@ -151,14 +152,22 @@ def reset_token(token):
     user=Chimiste.verify_token(token)
     if user is None:
         flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
-        return redirect(url_for(reset_pwd))
+        return redirect(url_for('reset_pwd'))
     form=ChangePasswordForm()
+    
     if form.validate_on_submit():
-        user.mdp = form.password.data
+        print("here")
+        m = sha256()
+        m.update(form.mdp.data.encode())
+        passwd = m.hexdigest()
+        user.mdp = passwd
         db.session.commit()
         flash("mot de passe changer.","success" )
-        return redirect(url_for("conection"))
-    return render_template('reset_pwd.html', form=form)
+        return redirect(url_for("connection"))
+    if not form.validate_on_submit():
+        print(form.errors)
+
+    return render_template('change_password.html', form=form, token=token)
 
 @app.route("/logout/")
 def logout():

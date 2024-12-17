@@ -22,11 +22,12 @@ login_manager = LoginManager(app)
 login_manager.login_view = "connecter"
 
 
-app.config['MAIL_SERVER'] = 'smtp.univ-orleans.fr'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'pierre.gangneux@etu.univ-orleans.fr'
-app.config['MAIL_PASSWORD'] = mdp
+app.config['MAIL_SERVER'] = 'localhost'
+app.config['MAIL_PORT'] = 25
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = None
+app.config['MAIL_PASSWORD'] = None
 
-
+mail = Mail()
+mail.init_app(app)
 mail=Mail(app)
