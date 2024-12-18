@@ -19,6 +19,19 @@
                     {{ form.hidden_tag() }}
                     <ul>
                         <li><h1>Inscrivez-vous</h1></li>
+                        
+                        <!-- message informatif -->
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                        {% if messages %}
+                          <ul>
+                            {% for category, message in messages %}
+                                {% if category == "info" %}
+                                    <li><p>{{ message }}</p></li>
+                                {% endif %}
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                        {% endwith %}
 
                         <!-- Champ email -->
                         <li id="email">
