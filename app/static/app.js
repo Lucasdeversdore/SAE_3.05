@@ -369,86 +369,86 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction
     .catch(error => console.error('Erreur:', error));
 }
 
-function handleButtonAjoutFonctionClick() {
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-Fonction";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000";
+// function handleButtonAjoutFonctionClick() {
+//     const popup_overlay = document.createElement("div");
+//     popup_overlay.id = "popup-overlay-Fonction";
+//     popup_overlay.style.position = "fixed";
+//     popup_overlay.style.top = "0";
+//     popup_overlay.style.left = "0";
+//     popup_overlay.style.width = "100%";
+//     popup_overlay.style.height = "100%";
+//     popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+//     popup_overlay.style.display = "flex";
+//     popup_overlay.style.justifyContent = "center";
+//     popup_overlay.style.alignItems = "center";
+//     popup_overlay.style.zIndex = "1000";
 
-    const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+//     const popup_content = document.createElement("div");
+//     popup_content.style.backgroundColor = "#fff";
+//     popup_content.style.padding = "20px";
+//     popup_content.style.borderRadius = "5px";
+//     popup_content.style.width = "300px";
+//     popup_content.style.textAlign = "center";
 
-    const h3 = document.createElement("h3");
-    h3.textContent = `Ajout d'une fonction`;
+//     const h3 = document.createElement("h3");
+//     h3.textContent = `Ajout d'une fonction`;
 
-    const pNom = document.createElement("p");
-    pNom.textContent = "Nom de la fonction *";
-    const textNom = document.createElement("input");
-    textNom.type = "text";
-    textNom.name = "textNomFonction";
+//     const pNom = document.createElement("p");
+//     pNom.textContent = "Nom de la fonction *";
+//     const textNom = document.createElement("input");
+//     textNom.type = "text";
+//     textNom.name = "textNomFonction";
 
-    const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Annuler";
-    bAnnuler.id = "AnnulerFonction";
-    bAnnuler.addEventListener("click", function () {
-        const popup = document.getElementById("popup-overlay-Fonction");
-        if (popup) popup.remove();
-    });
+//     const bAnnuler = document.createElement("button");
+//     bAnnuler.textContent = "Annuler";
+//     bAnnuler.id = "AnnulerFonction";
+//     bAnnuler.addEventListener("click", function () {
+//         const popup = document.getElementById("popup-overlay-Fonction");
+//         if (popup) popup.remove();
+//     });
 
-    const bSauv = document.createElement("button");
-    bSauv.textContent = "Sauvegarder";
-    bSauv.id = "sauvFonction";
-    bSauv.addEventListener("click", function () {
-        if (!textNom.value) {
-            alert("Veuillez remplir le champ requis.");
-            return;
-        }
-        sauvegarderAjoutFonction(textNom.value);
-    });
+//     const bSauv = document.createElement("button");
+//     bSauv.textContent = "Sauvegarder";
+//     bSauv.id = "sauvFonction";
+//     bSauv.addEventListener("click", function () {
+//         if (!textNom.value) {
+//             alert("Veuillez remplir le champ requis.");
+//             return;
+//         }
+//         sauvegarderAjoutFonction(textNom.value);
+//     });
 
     
-    popup_content.appendChild(h3);
-    popup_content.appendChild(pNom);
-    popup_content.appendChild(textNom);
-    popup_content.appendChild(bAnnuler);
-    popup_content.appendChild(bSauv);
-    popup_overlay.appendChild(popup_content);
-    document.body.appendChild(popup_overlay);
-}
+//     popup_content.appendChild(h3);
+//     popup_content.appendChild(pNom);
+//     popup_content.appendChild(textNom);
+//     popup_content.appendChild(bAnnuler);
+//     popup_content.appendChild(bSauv);
+//     popup_overlay.appendChild(popup_content);
+//     document.body.appendChild(popup_overlay);
+// }
 
-function sauvegarderAjoutFonction(nom) {
-    fetch('/ajoutFonction/sauvegarder', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            nomFonction: nom
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            window.location.href = '/'; 
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => console.error('Erreur:', error));
-}
+// function sauvegarderAjoutFonction(nom) {
+//     fetch('/ajoutFonction/sauvegarder', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             nomFonction: nom
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             alert(data.message);
+//             window.location.href = '/'; 
+//         } else {
+//             alert(data.message);
+//         }
+//     })
+//     .catch(error => console.error('Erreur:', error));
+// }
 
 function handleButtonAjoutLieuClick() {
     const popup_overlay = document.createElement("div");
@@ -632,7 +632,7 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdfClick);
-    document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
+    // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
 });
