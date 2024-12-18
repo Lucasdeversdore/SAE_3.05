@@ -55,7 +55,7 @@
                     {% if current_user.estPreparateur %}
                         <button class="Etat" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" etat="{{etat}}" >{{ texte_etat }}</button>
                     {% else %}
-                        {{texte_etat}}
+                        {{ texte_etat }}
                     {% endif %}
                 </div>
             </th>

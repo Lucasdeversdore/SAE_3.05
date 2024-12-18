@@ -25,7 +25,7 @@ class Chimiste(db.Model, UserMixin):
     chimisteFaire = relationship("Faire", back_populates="faireChim")
 
 
-    def __init__(self, idChimiste, prenom, nom, email, mdp,  estPreparateur=False):
+    def __init__(self, idChimiste, prenom, nom, email, mdp, estPreparateur=False):
         self.idChimiste = idChimiste
         self.prenom = prenom
         self.nom = nom
