@@ -559,8 +559,7 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     const bResrever = document.createElement("button");
     bResrever.textContent = "Oui";
     bResrever.addEventListener("click", function() {
-        console.log("Test réussi");
-        changerEtatCommande(idCommande, idChimiste);
+        window.location.href = `/etat/commande/${idCommande}/${idChimiste}`;
     });
     
     
@@ -571,8 +570,4 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     popup_content.appendChild(bAnnuler);
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
-}
-
-function changerEtatCommande(idCommande, idChimiste) {
-    window.location.href = `/etat/commande/${idCommande}/${idChimiste}`;
 }

@@ -711,15 +711,12 @@ def convertir_quantite(id_produit):
                     stock.quantiteStocke = quantite *10**-3
             db.session.commit()
 
-def set_etat_commande(faire, nouvel_etat):
-    faire.statutCommande = nouvel_etat
-    db.session.commit()
-
-
 def update_etat(idCommande, idChimiste):
-    faire = Faire.query.filter(Faire.idCommande == idCommande and Faire.idChimiste == idChimiste).first()
+    faire = Faire.query.filter(Faire.idCommande == idCommande).first()
     match faire.statutCommande:
         case 'non-commence':
-            set_etat_commande(faire, 'en-cours')
+            faire.idChimiste = idChimiste
+            faire.statutCommande = 'en-cours'
         case 'en-cours':
-            set_etat_commande(faire, 'termine')
+            faire.statutCommande = 'termine'
+    db.session.commit()
