@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+    {% block header_nav%}
+        <div class="liens_page">
+            {% if current_user.estPreparateur %}
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button> Gérer les stocks </button>
+            </form>
+            {% else %}
+            <form  action="{{ url_for('home') }}" method="GET">
+                <button> Liste des produits </button>
+            </form>
+            {% endif %}
+            <form  action="{{ url_for('preparation_reservation') }}" method="GET">
+                <button id="lien_reservation"> Liste des réservations </button>
+            </form>
+        </div>
+    {% endblock %}
+
+    {% block content %}
+    <!-- Titre du formulaire -->
+    <!-- Formulaire de paramètres -->
+    <form role="form" method="POST" action = "{{ url_for ('settings_save') }}">
+        {{ form.hidden_tag() }}
+        <ul>
+            <li><h1>Vos paramètres</h1></li>
+
+            <!-- Champ email -->
+            <li id="email">
+                {{ form.email(placeholder="Entrez votre email") }}
+                {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+            
+            <!-- Champ mot de passe -->
+            <li id="pwd">
+                {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                {% if form.mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+
+            <li id="li_reset_pwd"><a href="{{url_for('reset_pwd')}}">mot de passe oublié</a></li>
+
+            <li id="paragraphe">
+                <input type="checkbox">
+                <p>Rester connecté</p>
+                <button type="submit">Se connecter</button>
+                
+            </li>
+            <li><a href="/inscription">Créer un compte</a></li>
+        </ul>     
+    </form>
+    {% endblock %}

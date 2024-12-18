@@ -134,9 +134,8 @@ def send_mail_activation(user:Chimiste):
                     </body>
                 </html>
                 '''
-
     mail.send(msg)
-    
+
 
 @app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
 def activation_token(token, time_in_link):
@@ -190,10 +189,20 @@ def send_mail_mdp(user: Chimiste):
                 '''
 
     mail.send(msg)
-    
 
-    
-    
+
+@app.route("/settings", methods=('GET', 'POST'))
+@login_required
+def settings():
+    form = SettingsForm()
+    # Logique des paramètres
+    return render_template("settings.html", form=form)
+
+@app.route("settings/save", methods=('GET', 'POST'))
+@login_required
+def settings_save():
+    # Sauvegarde des paramètres
+    return redirect(url_for("home"))
 
 @app.route("/reset_pwd", methods=('GET', 'POST'))
 def reset_pwd():
@@ -324,7 +333,6 @@ def get_modif_produit(id_produit):
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 def sauvegarder_modif(id_produit):
-   
     nom = request.args.get("textNom")
     four = request.args.get("textFournisseur")
     quantite = request.args.get("textQuantite")

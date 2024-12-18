@@ -21,7 +21,7 @@ header{
     min-height:fit-content;
 }
 
-.liens_page{
+.liens_page, .utilisateur{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -32,7 +32,7 @@ header button{
     margin: 1em;
 }
 
-#lien_logout{
+#lien_logout, #settings{
     min-width: 8em;
     display: flex;
     align-items: center;
@@ -40,8 +40,12 @@ header button{
     justify-content: space-between;
 }
 
-#lien_logout img{
+#lien_logout img, #settings img{
     height: 1.5em;
+}
+
+#settings{
+    min-width: 10em;
 }
 
 .top_main{
@@ -203,7 +207,7 @@ header button{
     text-align: center;
 }
 
-#lien_logout img{
+#lien_logout img, #settings img{
     height: 1.5em;
     size: 100%;
 
