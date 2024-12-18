@@ -328,12 +328,11 @@ def get_modif_produit(id_produit):
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 def sauvegarder_modif(id_produit):
    
-    nom = request.args.get("textNom")
+    nom = request.args.get("inputNom")
     four = request.args.get("textFournisseur")
     quantite = request.args.get("textQuantite")
     fonction = request.args.get("textFonction")
     lieu = request.args.get("textLieu")
-
     res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
     if res:
         return jsonify(success=True, message="Modification réussie !"), 200

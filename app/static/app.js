@@ -130,9 +130,8 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     selectFournisseur.className = "form-control"
     const ligne_fournisseur = document.createElement("div");
-    dFournisseur.appendChild(selectFournisseur)
     ligne_fournisseur.appendChild(pFournisseur)
-    ligne_fournisseur.appendChild(dFournisseur)
+    ligne_fournisseur.appendChild(selectFournisseur)
 
     // ligne Quantité actuelle
     const pQuantite = document.createElement("p");
@@ -241,7 +240,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
         console.log(selectLieuStock.value);
 
         console
-        sauvegarderProduit(produit.idProduit, textNom.value, selectFournisseur.value,
+        sauvegarderProduit(produit.idProduit, inputNom.value, selectFournisseur.value,
             textQuantite.value, selectFonction.value, selectLieuStock.value);
     });
     bSauv.appendChild(spanSauv)
