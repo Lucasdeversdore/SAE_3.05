@@ -381,8 +381,6 @@ function handleButtonAjoutProdfClick() {
         
     });
     
-    
-    
 
     popup_content.appendChild(h3);
     popup_content.appendChild(pNom);
@@ -438,10 +436,274 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction
     .catch(error => console.error('Erreur:', error));
 }
 
+// function handleButtonAjoutFonctionClick() {
+//     const popup_overlay = document.createElement("div");
+//     popup_overlay.id = "popup-overlay-Fonction";
+//     popup_overlay.style.position = "fixed";
+//     popup_overlay.style.top = "0";
+//     popup_overlay.style.left = "0";
+//     popup_overlay.style.width = "100%";
+//     popup_overlay.style.height = "100%";
+//     popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+//     popup_overlay.style.display = "flex";
+//     popup_overlay.style.justifyContent = "center";
+//     popup_overlay.style.alignItems = "center";
+//     popup_overlay.style.zIndex = "1000";
+
+//     const popup_content = document.createElement("div");
+//     popup_content.style.backgroundColor = "#fff";
+//     popup_content.style.padding = "20px";
+//     popup_content.style.borderRadius = "5px";
+//     popup_content.style.width = "300px";
+//     popup_content.style.textAlign = "center";
+
+//     const h3 = document.createElement("h3");
+//     h3.textContent = `Ajout d'une fonction`;
+
+//     const pNom = document.createElement("p");
+//     pNom.textContent = "Nom de la fonction *";
+//     const textNom = document.createElement("input");
+//     textNom.type = "text";
+//     textNom.name = "textNomFonction";
+
+//     const bAnnuler = document.createElement("button");
+//     bAnnuler.textContent = "Annuler";
+//     bAnnuler.id = "AnnulerFonction";
+//     bAnnuler.addEventListener("click", function () {
+//         const popup = document.getElementById("popup-overlay-Fonction");
+//         if (popup) popup.remove();
+//     });
+
+//     const bSauv = document.createElement("button");
+//     bSauv.textContent = "Sauvegarder";
+//     bSauv.id = "sauvFonction";
+//     bSauv.addEventListener("click", function () {
+//         if (!textNom.value) {
+//             alert("Veuillez remplir le champ requis.");
+//             return;
+//         }
+//         sauvegarderAjoutFonction(textNom.value);
+//     });
+
+    
+//     popup_content.appendChild(h3);
+//     popup_content.appendChild(pNom);
+//     popup_content.appendChild(textNom);
+//     popup_content.appendChild(bAnnuler);
+//     popup_content.appendChild(bSauv);
+//     popup_overlay.appendChild(popup_content);
+//     document.body.appendChild(popup_overlay);
+// }
+
+// function sauvegarderAjoutFonction(nom) {
+//     fetch('/ajoutFonction/sauvegarder', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             nomFonction: nom
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             alert(data.message);
+//             window.location.href = '/'; 
+//         } else {
+//             alert(data.message);
+//         }
+//     })
+//     .catch(error => console.error('Erreur:', error));
+// }
+
+function handleButtonAjoutLieuClick() {
+    const popup_overlay = document.createElement("div");
+    popup_overlay.id = "popup-overlay-Lieu";
+    popup_overlay.style.position = "fixed";
+    popup_overlay.style.top = "0";
+    popup_overlay.style.left = "0";
+    popup_overlay.style.width = "100%";
+    popup_overlay.style.height = "100%";
+    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay.style.display = "flex";
+    popup_overlay.style.justifyContent = "center";
+    popup_overlay.style.alignItems = "center";
+    popup_overlay.style.zIndex = "1000";
+
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = `Ajout d'un lieu`;
+
+    const pNom = document.createElement("p");
+    pNom.textContent = "Nom du lieu *";
+    const textNom = document.createElement("input");
+    textNom.type = "text";
+    textNom.name = "textNomLieu";
+
+    const bAnnuler = document.createElement("button");
+    bAnnuler.textContent = "Annuler";
+    bAnnuler.id = "AnnulerLieu";
+    bAnnuler.addEventListener("click", function () {
+        const popup = document.getElementById("popup-overlay-Lieu");
+        if (popup) popup.remove();
+    });
+
+    const bSauv = document.createElement("button");
+    bSauv.textContent = "Sauvegarder";
+    bSauv.id = "sauvLieu";
+    bSauv.addEventListener("click", function () {
+        if (!textNom.value) {
+            alert("Veuillez remplir le champ requis.");
+            return;
+        }
+        sauvegarderAjoutLieu(textNom.value);
+    });
+
+    popup_content.appendChild(h3);
+    popup_content.appendChild(pNom);
+    popup_content.appendChild(textNom);
+    popup_content.appendChild(bAnnuler);
+    popup_content.appendChild(bSauv);
+    popup_overlay.appendChild(popup_content);
+    document.body.appendChild(popup_overlay);
+}
+
+function sauvegarderAjoutLieu(nom) {
+    fetch('/ajoutLieu/sauvegarder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            nomLieu: nom
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = '/'; 
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+}
+
+function handleButtonAjoutFournisseurClick() {
+    const popup_overlay = document.createElement("div");
+    popup_overlay.id = "popup-overlay-Fournisseur";
+    popup_overlay.style.position = "fixed";
+    popup_overlay.style.top = "0";
+    popup_overlay.style.left = "0";
+    popup_overlay.style.width = "100%";
+    popup_overlay.style.height = "100%";
+    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay.style.display = "flex";
+    popup_overlay.style.justifyContent = "center";
+    popup_overlay.style.alignItems = "center";
+    popup_overlay.style.zIndex = "1000";
+
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = `Ajout d'un fournisseur`;
+
+    const pNom = document.createElement("p");
+    pNom.textContent = "Nom du fournisseur *";
+    const textNom = document.createElement("input");
+    textNom.type = "text";
+    textNom.name = "textNomFournisseur";
+
+    const pAdresse = document.createElement("p");
+    pAdresse.textContent = "Adresse";
+    const textAdresse = document.createElement("input");
+    textAdresse.type = "text";
+    textAdresse.name = "textAdresseFournisseur";
+
+    const pTelephone = document.createElement("p");
+    pTelephone.textContent = "Numéro de téléphone";
+    const textTelephone = document.createElement("input");
+    textTelephone.type = "text";
+    textTelephone.name = "textTelephoneFournisseur";
+
+    const bAnnuler = document.createElement("button");
+    bAnnuler.textContent = "Annuler";
+    bAnnuler.id = "AnnulerFournisseur";
+    bAnnuler.addEventListener("click", function () {
+        const popup = document.getElementById("popup-overlay-Fournisseur");
+        if (popup) popup.remove();
+    });
+
+    const bSauv = document.createElement("button");
+    bSauv.textContent = "Sauvegarder";
+    bSauv.id = "sauvFournisseur";
+    bSauv.addEventListener("click", function () {
+        if (!textNom.value) {
+            alert("Veuillez rensigner le nom du fournisseur.");
+            return;
+        }
+        sauvegarderAjoutFournisseur(textNom.value, textAdresse.value, textTelephone.value);
+    });
+
+    popup_content.appendChild(h3);
+    popup_content.appendChild(pNom);
+    popup_content.appendChild(textNom);
+    popup_content.appendChild(pAdresse);
+    popup_content.appendChild(textAdresse);
+    popup_content.appendChild(pTelephone);
+    popup_content.appendChild(textTelephone);
+    popup_content.appendChild(bAnnuler);
+    popup_content.appendChild(bSauv);
+    popup_overlay.appendChild(popup_content);
+    document.body.appendChild(popup_overlay);
+}
+
+function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
+    fetch('/ajoutFournisseur/sauvegarder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            nomFournisseur: nom,
+            adresseFournisseur: adresse,
+            telephoneFournisseur: telephone
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = '/'; 
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    const le_button = document.getElementById('ajouter_prod');
-    le_button.addEventListener('click', handleButtonAjoutProdfClick);
+    document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdfClick);
+    // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
+    document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
+    document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
 });
+
 
 
 
