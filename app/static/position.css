@@ -61,20 +61,21 @@ header button{
     margin-bottom: auto;
 }
 
-#ajouter_prod{
+.bouton-ajouter{
     min-width: 15em;
     height: 5em;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    justify-content: space-between;
     padding: 1em;
     margin-top: auto;
     margin-bottom: 1em;
+    text-align: left;
 }
 
-#ajouter_prod img{
+.bouton-ajouter img{
     height: 3em;
+    margin-right: 1em;
 }
 
 .top_main .barre_recherche{
@@ -250,8 +251,11 @@ th div button{
     margin: 0px;
     padding: 0px;
     width: fit-content;
-    margin-right: 0.5em;
 }
+.delete_reservation{
+    margin-right: 0.5em;    
+}
+
 th div img{
     height: 100%;
     display: block;

@@ -1,11 +1,13 @@
 from hashlib import sha256
 import time
 from .app import app, db, mail
-from flask import jsonify, redirect, render_template, url_for, flash, request, Flask
 from flask_login import login_required, login_user, logout_user, current_user
+from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
 from flask_mail import Message
 from .models import (
     Chimiste,
+    Commande,
+    Faire,
     Produit,
     Est_Stocker,
     Lieu_Stockage,
@@ -26,8 +28,12 @@ from .models import (
     get_nb_page_max_produits,
     get_pagination_reservations,
     get_nb_page_max_reservations,
-    update_etat
+    update_etat,
+    delete_reservation,
+    ajout_fournisseur_sauvegarde,
+    ajout_lieu_sauvegarde
 )
+
 from .form import *
 
 @app.route("/")
@@ -240,6 +246,7 @@ def logout():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
+
     return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route("/search-preparation")
@@ -324,12 +331,11 @@ def get_modif_produit(id_produit):
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 def sauvegarder_modif(id_produit):
    
-    nom = request.args.get("textNom")
+    nom = request.args.get("inputNom")
     four = request.args.get("textFournisseur")
     quantite = request.args.get("textQuantite")
     fonction = request.args.get("textFonction")
     lieu = request.args.get("textLieu")
-
     res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
     if res:
         return jsonify(success=True, message="Modification réussie !"), 200
@@ -346,7 +352,6 @@ def searchByButton(id_produit):
 
 @app.route('/ajout/sauvegarder/', methods=['POST'])
 def sauvegarder_ajout():
-   
     data = request.get_json()
     nom = data.get("textNom")
     four = data.get("textFournisseur")
@@ -362,10 +367,94 @@ def sauvegarder_ajout():
     else:
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
+    
+@app.route('/ajoutLieu/sauvegarder', methods=['POST'])
+def sauvegarder_ajout_lieu():
+    data = request.get_json()
+    nom_lieu = data.get("nomLieu")
+
+    if not nom_lieu:
+        return jsonify(success=False, message="Nom du lieu requis"), 400
+
+    if ajout_lieu_sauvegarde(nom_lieu):
+        return jsonify(success=True, message="Lieu ajouté avec succès !"), 200
+    else:
+        return jsonify(success=False, message="Le lieu existe déjà ou une erreur est survenue."), 400
+
+
+@app.route('/ajoutFournisseur/sauvegarder', methods=['POST'])
+def sauvegarder_ajout_fournisseur():
+    data = request.get_json()
+    nom_fou = data.get("nomFournisseur")
+    adresse_fou = data.get("adresseFournisseur")
+    num_tel_fou = data.get("telephoneFournisseur")
+
+    # Validation des données : seul le nom est obligatoire
+    if not nom_fou:
+        return jsonify(success=False, message="Nom du fournisseur requis"), 400
+
+    # Appel de la fonction pour sauvegarder le fournisseur
+    if ajout_fournisseur_sauvegarde(nom_fou, adresse_fou, num_tel_fou):
+        return jsonify(success=True, message="Fournisseur ajouté avec succès !"), 200
+    else:
+        return jsonify(success=False, message="Le fournisseur existe déjà ou une erreur est survenue."), 400
+
+
+
+
+def send_mail_etat(user: Chimiste, commande: Commande):
+    produit = Produit.query.get(commande.idProduit)
+    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+    msg = Message(
+        'Avancement de votre commande de ' + produit.nomProduit,
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Vérifier le statut de la commande et construire le contenu du message
+    if faire.statutCommande == 'en-cours':
+        # Contenu de l'e-mail en texte brut
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
+    else:
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
+
+    mail.send(msg)
+
 
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
 def etat_commande(idCommande, idChimiste):
     update_etat(idCommande, idChimiste)
+    commande = Commande.query.get(idCommande)
+    chimiste = Chimiste.query.get(commande.idChimiste)
+    send_mail_etat(chimiste, commande)
+    return redirect(url_for("preparation_reservation"))
+
+
+def send_mail_supp(user: Chimiste, commande:Commande):
+    produit = Produit.query.get(commande.idProduit)
+    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+    msg = Message(
+        'Avancement de votre commande de ' + produit.nomProduit,
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Vérifier le statut de la commande et construire le contenu du message
+        # Contenu de l'e-mail en texte brut
+    msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
+
+    mail.send(msg)
+
+@app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
+def suppr_reservation(idCommande, idChimiste):
+    chimiste = Chimiste.query.get(idChimiste)
+    if chimiste.estPreparateur:
+        commande = Commande.query.get(idCommande)
+        chimiste = Chimiste.query.get(commande.idChimiste)
+        send_mail_supp(chimiste, commande)
+    delete_reservation(idCommande, idChimiste)
     return redirect(url_for("preparation_reservation"))
 
 # @app.errorhandler(404)

@@ -36,7 +36,11 @@ def newuser(email, password, nom, prenom, est_preparateur):
     if check_mdp(password):
         m = sha256()
         m.update(password.encode())
-        u = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email = email, mdp = m.hexdigest(), estPreparateur=bool(est_preparateur))
+        if est_preparateur == "False":
+            est_preparateur = False
+        else:
+            est_preparateur = True
+        u = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email = email, mdp = m.hexdigest(), estPreparateur=est_preparateur)
         db.session.add(u)
         db.session.commit()
     else:

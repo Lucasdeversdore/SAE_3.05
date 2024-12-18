@@ -11,10 +11,11 @@ header button{
   border-radius: 15px;
 }
 
-#ajouter_prod{
+.bouton-ajouter{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
   color: white;
+  text-align: left;
 }
 
 .top_main .barre_recherche{
@@ -248,4 +249,8 @@ button{
 .containerObligatoire:hover .hover-text {
   visibility: visible; /* Rendre visible lorsqu'on survole */
   opacity: 1;
+}
+
+.Etat{
+  font-weight: bold;
 }
