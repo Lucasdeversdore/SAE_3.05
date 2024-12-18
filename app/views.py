@@ -6,6 +6,8 @@ from flask_login import login_required, login_user, logout_user, current_user
 from flask_mail import Message
 from .models import (
     Chimiste,
+    Commande,
+    Faire,
     Produit,
     Est_Stocker,
     Lieu_Stockage,
@@ -241,6 +243,7 @@ def logout():
 def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
+
     return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route("/search-preparation")
@@ -364,14 +367,61 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
+
+def send_mail_etat(user: Chimiste, commande: Commande):
+    produit = Produit.query.get(commande.idProduit)
+    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+    msg = Message(
+        'Avancement de votre commande de ' + produit.nomProduit,
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Vérifier le statut de la commande et construire le contenu du message
+    if faire.statutCommande == 'en-cours':
+        # Contenu de l'e-mail en texte brut
+        msg.body = f'''Votre commande de {produit.nomProduit} est en cours de préparation.'''
+    else:
+        msg.body = f'''Votre commande de {produit.nomProduit} est terminée.'''
+
+    mail.send(msg)
+
+
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
 def etat_commande(idCommande, idChimiste):
     update_etat(idCommande, idChimiste)
+    commande = Commande.query.get(idCommande)
+    chimiste = Chimiste.query.get(commande.idChimiste)
+    send_mail_etat(chimiste, commande)
     return redirect(url_for("preparation_reservation"))
+
+
+def send_mail_supp(user: Chimiste, commande:Commande):
+    produit = Produit.query.get(commande.idProduit)
+    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+    msg = Message(
+        'Avancement de votre commande de ' + produit.nomProduit,
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Vérifier le statut de la commande et construire le contenu du message
+    if faire.statutCommande == 'en-cours':
+        # Contenu de l'e-mail en texte brut
+        msg.body = f'''Votre commande de {produit.nomProduit} est en cours de préparation.'''
+    else:
+        msg.body = f'''Votre commande de {produit.nomProduit} est terminée.'''
+
+    mail.send(msg)
 
 @app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
 def suppr_reservation(idCommande, idChimiste):
     delete_reservation(idCommande, idChimiste)
+    commande = Commande.query.get(idCommande)
+    chimiste = Chimiste.query.get(commande.idChimiste)
+    send_mail_supp(chimiste)
     return redirect(url_for("preparation_reservation"))
 
 # @app.errorhandler(404)
