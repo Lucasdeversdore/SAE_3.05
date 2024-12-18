@@ -58,7 +58,9 @@ def preparation_reservation_page_1():
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
     form = InscriptionForm()
+    print("test")
     if form.validate_on_submit():
+        print("form valide")
         # Récupérer les données du formulaire
         prenom = form.prenom.data
         nom = form.nom.data
@@ -68,29 +70,41 @@ def inscrire():
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
-        
-        # Vérifier si les conditions générales d'utilisation ont été acceptées
-        if not request.form.get('cgu-inscription'):
-            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
-            return redirect(url_for('inscrire'))
-        
+   
+        print("mdp fait")
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             flash('Cet email est déjà utilisé.', 'danger')
+            print('Cet email est déjà utilisé.')
             return redirect(url_for('inscrire'))
-        
-        # Créer un nouvel utilisateur Chimiste
         nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
-        
-        # Ajouter à la session et enregistrer dans la base de données
-        db.session.add(nouveau_chimiste)
-        db.session.commit()
-        
-        flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
+        send_mail_activation(nouveau_chimiste)
         return redirect(url_for('connection'))
-    flash(form.errors)
     return render_template('inscription.html', form=form)
+
+def send_mail_activation(user:Chimiste):
+    token=user.get_token()
+    msg=Message('Activation de votre compte', recipients=[user.email], sender='noreply@codejana.com')
+    msg.body=f''' Pour activer votre compte, cliquer sur le lien ci-dessous.
+
+    {url_for('activation_token', token=token, _external=True)}
+
+    '''
+    mail.send(msg)
+    
+
+@app.route('/activation/<token>', methods=['GET', 'POST'])
+def activation_token(token):
+    user=Chimiste.verify_activation_token(token)
+    if user is None:
+        flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
+        return redirect(url_for('inscrire'))
+    
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for('connection'))
+
 
 @app.route("/inscription-cgu")
 def cgu():
@@ -126,7 +140,7 @@ def connection():
     return render_template("connection.html", form=f, msg=user)
 
 
-def send_mail(user:Chimiste):
+def send_mail_mdp(user:Chimiste):
     token=user.get_token()
     msg=Message('Demande de réinitialisation de mot de passe', recipients=[user.email], sender='noreply@codejana.com')
     msg.body=f''' Pour réinitialiser votre mot de passe cliquer sur le lien ci-dessous.
@@ -135,6 +149,7 @@ def send_mail(user:Chimiste):
 
     '''
     mail.send(msg)
+    
     
 
 @app.route("/reset_pwd", methods=('GET', 'POST'))
@@ -147,18 +162,15 @@ def reset_pwd():
          # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
-            send_mail(chimiste_existant)
+            send_mail_mdp(chimiste_existant)
             flash("Rgerdez vos mail pour réinitialiser votre mot de passe.")
             print("Rgerdez vos mail pour réinitialiser votre mot de passe.")
             return redirect(url_for('connection'))
-
-        else:
-            flash("non")
     return render_template("reset_pwd.html", form=form)
 
 @app.route('/reset_pwd/<token>', methods=['GET', 'POST'])
 def reset_token(token):
-    user=Chimiste.verify_token(token)
+    user=Chimiste.verify_mdp_token(token)
     if user is None:
         flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
         return redirect(url_for('reset_pwd'))
@@ -173,9 +185,6 @@ def reset_token(token):
         db.session.commit()
         flash("mot de passe changer.","success" )
         return redirect(url_for("connection"))
-    if not form.validate_on_submit():
-        print(form.errors)
-
     return render_template('change_password.html', form=form, token=token)
 
 @app.route("/logout/")

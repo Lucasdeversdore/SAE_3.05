@@ -40,16 +40,31 @@ class Chimiste(db.Model, UserMixin):
     
     def get_token(self):
         serial=Serializer(app.config['SECRET_KEY'])
-        return serial.dumps({'user_id':self.idChimiste})
+        return serial.dumps({'idChimiste':self.idChimiste, 'prenom':self.prenom, 'nom':self.nom, 'email':self.email, 'mdp':self.mdp, 'preparateur':self.estPreparateur})
     
     @staticmethod
-    def verify_token(token):
+    def verify_mdp_token(token):
         serial = Serializer(app.config['SECRET_KEY'])
         try:
-            user_id = serial.loads(token)['user_id']
+            user_id = serial.loads(token)['idChimiste']
         except:
             return None
         return Chimiste.query.get(user_id)
+    
+    @staticmethod
+    def verify_activation_token(token):
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            idChimiste = serial.loads(token)['idChimiste']
+            prenom =  serial.loads(token)['prenom']
+            nom = serial.loads(token)['nom']
+            email = serial.loads(token)['email'] 
+            mdp = serial.loads(token)['mdp']
+            estPreparateur=serial.loads(token)['preparateur']
+
+            return Chimiste(idChimiste=idChimiste, prenom=prenom, nom=nom, email=email, mdp=mdp, estPreparateur=estPreparateur)
+        except:
+            return None
 
 
 class Unite(db.Model):
