@@ -380,9 +380,9 @@ def send_mail_etat(user: Chimiste, commande: Commande):
     # Vérifier le statut de la commande et construire le contenu du message
     if faire.statutCommande == 'en-cours':
         # Contenu de l'e-mail en texte brut
-        msg.body = f'''Votre commande de {produit.nomProduit} est en cours de préparation.'''
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
     else:
-        msg.body = f'''Votre commande de {produit.nomProduit} est terminée.'''
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
 
     mail.send(msg)
 
@@ -407,20 +407,19 @@ def send_mail_supp(user: Chimiste, commande:Commande):
     )
 
     # Vérifier le statut de la commande et construire le contenu du message
-    if faire.statutCommande == 'en-cours':
         # Contenu de l'e-mail en texte brut
-        msg.body = f'''Votre commande de {produit.nomProduit} est en cours de préparation.'''
-    else:
-        msg.body = f'''Votre commande de {produit.nomProduit} est terminée.'''
+    msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
 
     mail.send(msg)
 
 @app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
 def suppr_reservation(idCommande, idChimiste):
+    chimiste = Chimiste.query.get(idChimiste)
+    if chimiste.estPreparateur:
+        commande = Commande.query.get(idCommande)
+        chimiste = Chimiste.query.get(commande.idChimiste)
+        send_mail_supp(chimiste, commande)
     delete_reservation(idCommande, idChimiste)
-    commande = Commande.query.get(idCommande)
-    chimiste = Chimiste.query.get(commande.idChimiste)
-    send_mail_supp(chimiste)
     return redirect(url_for("preparation_reservation"))
 
 # @app.errorhandler(404)
