@@ -85,12 +85,26 @@ def inscrire():
 
 def send_mail_activation(user:Chimiste):
     token=user.get_token()
-    msg=Message('Activation de votre compte', recipients=[user.email], sender='noreply@codejana.com')
-    msg.body=f''' Pour activer votre compte, cliquer sur le lien ci-dessous.
+    reset_url = url_for('activation_token', token=token, _external=True)
+    
+    msg = Message(
+        'Activation de votre compte Stockage Chimie',
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
 
-    {url_for('activation_token', token=token, _external=True)}
+    # Contenu de l'e-mail en HTML
+    msg.html = f'''
+                <!doctype html>
+                <html>
+                    <body>
+                        <p>Pour activez votre compte Stockage Chimie, cliquez sur le lien ci-dessous :</p>
+                        <p><a href="{reset_url}">Activez votre compte</a></p>
+                        <p>Si vous n'avez pas demandé cette activation, ignorez simplement cet e-mail.</p>
+                    </body>
+                </html>
+                '''
 
-    '''
     mail.send(msg)
     
 
@@ -140,15 +154,30 @@ def connection():
     return render_template("connection.html", form=f, msg=user)
 
 
-def send_mail_mdp(user:Chimiste):
-    token=user.get_token()
-    msg=Message('Demande de réinitialisation de mot de passe', recipients=[user.email], sender='noreply@codejana.com')
-    msg.body=f''' Pour réinitialiser votre mot de passe cliquer sur le lien ci-dessous.
+def send_mail_mdp(user: Chimiste):
+    token = user.get_token()
+    reset_url = url_for('reset_token', token=token, _external=True)
 
-    {url_for('reset_token', token=token, _external=True)}
+    msg = Message(
+        'Demande de réinitialisation de mot de passe',
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
 
-    '''
+    # Contenu de l'e-mail en HTML
+    msg.html = f'''
+                <!doctype html>
+                <html>
+                    <body>
+                        <p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous :</p>
+                        <p><a href="{reset_url}">Réinitialiser votre mot de passe</a></p>
+                        <p>Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet e-mail.</p>
+                    </body>
+                </html>
+                '''
+
     mail.send(msg)
+
     
     
 
