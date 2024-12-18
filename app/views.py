@@ -11,6 +11,7 @@ from flask_mail import Message
 def home():
     return home_page()
 
+
 @app.route("/<int:id_page>", methods=['GET'])
 @login_required
 def home_page(id_page=1, nb=15):
@@ -22,16 +23,19 @@ def home_page(id_page=1, nb=15):
     liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
     return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
 
+
 # Route execptionnel pour ne pas afficher /1 comme adresse url
 @app.route("/1")
 @login_required
 def home_page_1():
     return redirect("/")
 
+
 @app.route("/preparation/reservations")
 @login_required
 def preparation_reservation():
     return preparation_reservation_page()
+
 
 @app.route("/preparation/reservations/<int:id_page>")
 @login_required
@@ -44,14 +48,12 @@ def preparation_reservation_page(id_page=1, nb=5):
     reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
     return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
 
+
 # Même chose que pour "/1"
 @app.route("/preparation/reservations/1")
 @login_required
 def preparation_reservation_page_1():
     return redirect("/preparation/reservations")
-
-
-
 
 
 
@@ -82,6 +84,12 @@ def inscrire():
         send_mail_activation(nouveau_chimiste)
         return redirect(url_for('connection'))
     return render_template('inscription.html', form=form)
+
+
+@app.route("/inscription-cgu")
+def cgu():
+    return render_template("inscription-cgu.html")
+
 
 def send_mail_activation(user:Chimiste):
     token=user.get_token()
@@ -118,25 +126,6 @@ def activation_token(token):
     db.session.add(user)
     db.session.commit()
     return redirect(url_for('connection'))
-
-
-@app.route("/inscription-cgu")
-def cgu():
-    return render_template("inscription-cgu.html")
-
-@app.route("/search", methods=('GET',))
-@login_required
-def search():
-    q = request.args.get("search")
-    results = search_filter(q) + search_famille_filter(q)
-    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
-
-@app.route("/search-preparation")
-@login_required
-def search_preparation():
-    q = request.args.get("search")
-    results = search_reserv_filter(q) + search_chimiste_filter(q)
-    return render_template("reservation-preparation.html", reservations_etats=results, actu_id_page=None)
 
 
 @app.route("/connection", methods=('GET', 'POST'))
@@ -220,6 +209,21 @@ def reset_token(token):
 def logout():
     logout_user()
     return redirect(url_for('connection'))
+
+
+@app.route("/search", methods=('GET',))
+@login_required
+def search():
+    q = request.args.get("search")
+    results = search_filter(q) + search_famille_filter(q)
+    return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
+
+@app.route("/search-preparation")
+@login_required
+def search_preparation():
+    q = request.args.get("search")
+    results = search_reserv_filter(q) + search_chimiste_filter(q)
+    return render_template("reservation-preparation.html", reservations_etats=results, actu_id_page=None)
 
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
