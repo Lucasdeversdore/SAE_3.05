@@ -1,10 +1,33 @@
 from hashlib import sha256
-from flask_login import login_required, login_user, logout_user, current_user
 from .app import app, db, mail
-from flask import jsonify, redirect, render_template, url_for,flash, request, Flask
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_chimiste_filter, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations, search_reserv_filter
-from .form import *
+from flask import jsonify, redirect, render_template, url_for, flash, request, Flask
+from flask_login import login_required, login_user, logout_user, current_user
 from flask_mail import Message
+from .models import (
+    Chimiste,
+    Produit,
+    Est_Stocker,
+    Lieu_Stockage,
+    Fournisseur,
+    get_sample_prduit_qte,
+    get_sample_reservation,
+    get_sample_reservation_chimiste,
+    next_chimiste_id,
+    next_prod_id,
+    search_filter,
+    search_famille_filter,
+    search_chimiste_filter,
+    search_reserv_filter,
+    reserver_prod,
+    modif_sauvegarde,
+    ajout_sauvegarde,
+    get_pagination_produits,
+    get_nb_page_max_produits,
+    get_pagination_reservations,
+    get_nb_page_max_reservations,
+    update_etat
+)
+from .form import *
 
 @app.route("/")
 @login_required
@@ -69,10 +92,6 @@ def inscrire():
         m.update(mdp.encode())
         passwd = m.hexdigest()
         
-        # Vérifier si les conditions générales d'utilisation ont été acceptées
-        if not request.form.get('cgu-inscription'):
-            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
-            return redirect(url_for('inscrire'))
         
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
@@ -297,6 +316,11 @@ def sauvegarder_ajout():
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
-#@app.errorhandler(404)
-#def internal_error(error):
-#    return redirect(url_for('home'))
+@app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
+def etat_commande(idCommande, idChimiste):
+    update_etat(idCommande, idChimiste)
+    return redirect(url_for("preparation_reservation"))
+
+# @app.errorhandler(404)
+# def internal_error(error):
+#     return redirect(url_for('home'))

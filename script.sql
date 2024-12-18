@@ -91,7 +91,6 @@ CREATE TABLE PRODUIT (
     CONSTRAINT PK_Produit PRIMARY KEY (idProduit),
     CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite),
     CONSTRAINT FK_Produit_Fournisseur FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou)
-
 );
 
 CREATE TABLE UNITE (
@@ -117,7 +116,7 @@ END;
 
 CREATE TRIGGER update_commande_statut
 BEFORE UPDATE ON FAIRE
-WHEN NOT (OLD.statutCommande = "Pas commence") AND ((SELECT qteCommande from COMMANDE where idCommande = OLD.idCommande) = (SELECT qteCommande from COMMANDE where idCommande = NEW.idCommande))
+WHEN NOT (OLD.statutCommande = "non-commence") AND NOT ((SELECT qteCommande from COMMANDE where idCommande = OLD.idCommande) = (SELECT qteCommande from COMMANDE where idCommande = NEW.idCommande))
 BEGIN
     SELECT RAISE(FAIL,  'Vous ne pouvez pas changer la quantité de la commande si la commande est en cours');
 END;
