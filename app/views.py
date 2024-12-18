@@ -92,10 +92,6 @@ def inscrire():
         m.update(mdp.encode())
         passwd = m.hexdigest()
         
-        # Vérifier si les conditions générales d'utilisation ont été acceptées
-        if not request.form.get('cgu-inscription'):
-            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
-            return redirect(url_for('inscrire'))
         
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
