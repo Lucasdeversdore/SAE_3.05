@@ -19,7 +19,7 @@
 
 {% block top_main %}
     <h1>Liste des réservations</h1>
-    <form action="{{ url_for('search') }}" method="GET" class="barre_recherche">
+    <form action="{{ url_for('search_preparation') }}" method="GET" class="barre_recherche">
         {% if current_user.estPreparateur %}
             <input class="barre_recherche" type="search" placeholder="  Nom produit / étudiant" aria-label="Search" name="search" id="search">
         {% else %}

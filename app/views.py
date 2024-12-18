@@ -1,8 +1,32 @@
 from hashlib import sha256
+from .app import app, db, mail
+from flask import jsonify, redirect, render_template, url_for, flash, request, Flask
 from flask_login import login_required, login_user, logout_user, current_user
-from .app import app, db
-from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations, update_etat
+from flask_mail import Message
+from .models import (
+    Chimiste,
+    Produit,
+    Est_Stocker,
+    Lieu_Stockage,
+    Fournisseur,
+    get_sample_prduit_qte,
+    get_sample_reservation,
+    get_sample_reservation_chimiste,
+    next_chimiste_id,
+    next_prod_id,
+    search_filter,
+    search_famille_filter,
+    search_chimiste_filter,
+    search_reserv_filter,
+    reserver_prod,
+    modif_sauvegarde,
+    ajout_sauvegarde,
+    get_pagination_produits,
+    get_nb_page_max_produits,
+    get_pagination_reservations,
+    get_nb_page_max_reservations,
+    update_etat
+)
 from .form import *
 
 @app.route("/")
@@ -49,19 +73,10 @@ def preparation_reservation_page(id_page=1, nb=5):
 def preparation_reservation_page_1():
     return redirect("/preparation/reservations")
 
-@app.route("/connection", methods = ('GET', 'POST'))
-def connection():
-    user = None
-    f = LoginForm()
-    if not f.is_submitted():
-        f.next.data = request.args.get("next")
-    elif f.validate_on_submit():
-        user = f.get_authenticated_user()
-        if type(user) != str:
-            login_user(user)
-            next = f.next.data or url_for("home")
-            return redirect(next)
-    return render_template("connection.html", form=f, msg=user)
+
+
+
+
 
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
@@ -76,12 +91,17 @@ def inscrire():
         m = sha256()
         m.update(mdp.encode())
         passwd = m.hexdigest()
-
+        
+        # Vérifier si les conditions générales d'utilisation ont été acceptées
+        if not request.form.get('cgu-inscription'):
+            flash("Veuillez accepter les conditions générales d'utilisation pour continuer.", 'danger')
+            return redirect(url_for('inscrire'))
+        
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             flash('Cet email est déjà utilisé.', 'danger')
-            return redirect(url_for('inscription'))
+            return redirect(url_for('inscrire'))
         
         # Créer un nouvel utilisateur Chimiste
         nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
@@ -89,16 +109,15 @@ def inscrire():
         # Ajouter à la session et enregistrer dans la base de données
         db.session.add(nouveau_chimiste)
         db.session.commit()
-
+        
         flash('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success')
         return redirect(url_for('connection'))
-
+    flash(form.errors)
     return render_template('inscription.html', form=form)
 
-@app.route("/logout/")
-def logout():
-    logout_user()
-    return redirect(url_for('connection'))
+@app.route("/inscription-cgu")
+def cgu():
+    return render_template("inscription-cgu.html")
 
 @app.route("/search", methods=('GET',))
 @login_required
@@ -106,6 +125,87 @@ def search():
     q = request.args.get("search")
     results = search_filter(q) + search_famille_filter(q)
     return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
+
+@app.route("/search-preparation")
+@login_required
+def search_preparation():
+    q = request.args.get("search")
+    results = search_reserv_filter(q) + search_chimiste_filter(q)
+    return render_template("reservation-preparation.html", reservations_etats=results, actu_id_page=None)
+
+
+@app.route("/connection", methods=('GET', 'POST'))
+def connection():
+    user = None
+    f = LoginForm()
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
+        user = f.get_authenticated_user()
+        if type(user) != str:
+            login_user(user)
+            next = f.next.data or url_for("home")
+            return redirect(next)
+    return render_template("connection.html", form=f, msg=user)
+
+
+def send_mail(user:Chimiste):
+    token=user.get_token()
+    msg=Message('Demande de réinitialisation de mot de passe', recipients=[user.email], sender='noreply@codejana.com')
+    msg.body=f''' Pour réinitialiser votre mot de passe cliquer sur le lien ci-dessous.
+
+    {url_for('reset_token', token=token, _external=True)}
+
+    '''
+    mail.send(msg)
+    
+
+@app.route("/reset_pwd", methods=('GET', 'POST'))
+def reset_pwd():
+    form = ResetForm()
+    if not form.is_submitted():
+        form.next.data = request.args.get("next")
+    elif form.validate_on_submit():
+        email = form.email.data
+         # Vérifier si l'email existe déjà dans la base
+        chimiste_existant = Chimiste.query.filter_by(email=email).first()
+        if chimiste_existant:
+            send_mail(chimiste_existant)
+            flash("Rgerdez vos mail pour réinitialiser votre mot de passe.")
+            print("Rgerdez vos mail pour réinitialiser votre mot de passe.")
+            return redirect(url_for('connection'))
+
+        else:
+            flash("non")
+    return render_template("reset_pwd.html", form=form)
+
+@app.route('/reset_pwd/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user=Chimiste.verify_token(token)
+    if user is None:
+        flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
+        return redirect(url_for('reset_pwd'))
+    form=ChangePasswordForm()
+    
+    if form.validate_on_submit():
+        print("here")
+        m = sha256()
+        m.update(form.mdp.data.encode())
+        passwd = m.hexdigest()
+        user.mdp = passwd
+        db.session.commit()
+        flash("mot de passe changer.","success" )
+        return redirect(url_for("connection"))
+    if not form.validate_on_submit():
+        print(form.errors)
+
+    return render_template('change_password.html', form=form, token=token)
+
+@app.route("/logout/")
+def logout():
+    logout_user()
+    return redirect(url_for('connection'))
+
 
 @app.route('/get/produit/<int:id_produit>', methods=['GET'])
 @login_required
@@ -145,6 +245,26 @@ def reserver_produit(id_produit):
 
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
 def get_modif_produit(id_produit):
+    
+    les_four = Fournisseur.query.all()
+    les_fournisseurs = []
+    cpt = 0
+    for fourn in les_four:
+        cpt +=1
+        if cpt != id_produit:
+            les_fournisseurs.append(fourn.to_dict())
+        cpt +=1
+
+    les_fon = Produit.query.all()
+    les_fonctions = []
+    for fonc in les_fon:
+        les_fonctions.append(fonc.to_dict())
+
+    les_li = Lieu_Stockage.query.all()
+    les_lieux = []
+    for li in les_li:
+        les_lieux.append(li.to_dict())
+    
     produit = Produit.query.get(id_produit).to_dict()
     est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
     id_lieu = est_stocker["idLieu"]
@@ -156,7 +276,7 @@ def get_modif_produit(id_produit):
         fournisseur = ""
     else:
         fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
-    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker)     
+    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux)     
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 def sauvegarder_modif(id_produit):
@@ -169,7 +289,7 @@ def sauvegarder_modif(id_produit):
 
     res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
     if res:
-        return jsonify(success=True, message="Réservation réussie !"), 200
+        return jsonify(success=True, message="Modification réussie !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
 
