@@ -30,12 +30,13 @@ def cancel_commande(id_commande):
 @click.argument('password')
 @click.argument('prenom')
 @click.argument('nom')
-def newuser(email, password, nom, prenom):
+@click.argument('est_preparateur')
+def newuser(email, password, nom, prenom, est_preparateur):
     '''Adds a new user.'''
     if check_mdp(password):
         m = sha256()
         m.update(password.encode())
-        u = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email = email, mdp = m.hexdigest(), estPreparateur=True)
+        u = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email = email, mdp = m.hexdigest(), estPreparateur=bool(est_preparateur))
         db.session.add(u)
         db.session.commit()
     else:
