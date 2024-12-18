@@ -18,16 +18,48 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
-                {% if msg %}
-                    <h1>{{msg}}</h1>
-                {% endif %}
                 <form role="form" method="POST" action = "{{ url_for ('connection') }}">
                     {{ form.hidden_tag() }}
                     <ul>
                         <li><h1>Connectez-vous</h1></li>
-                        <li id="email">{{ form.email(placeholder ="Entrer votre email") }}</li>
+
+                        <!-- message informatif -->
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                        {% if messages %}
+                          <ul>
+                            {% for category, message in messages %}
+                                {% if category == "info" %}
+                                    <li><p>{{ message }}</p></li>
+                                {% endif %}
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                        {% endwith %}
+
+
+                        <!-- Champ email -->
+                        <li id="email">
+                            {{ form.email(placeholder="Entrez votre email") }}
+                            {% if form.email.errors %}
+                                <ul class="errors">
+                                    {% for error in form.email.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
                         
-                        <li id="pwd">{{ form.password(placeholder ="Entrer votre mot de passe") }}</li>
+                        <!-- Champ mot de passe -->
+                        <li id="pwd">
+                            {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                            {% if form.mdp.errors %}
+                                <ul class="errors">
+                                    {% for error in form.mdp.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
 
                         <li id="li_reset_pwd"><a href="{{url_for('reset_pwd')}}">mot de passe oublié</a></li>
 

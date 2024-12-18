@@ -302,7 +302,6 @@ tbody{
 .popup-content > div > p, .popup-content > div > input {
     width: 40%;
     box-sizing: border-box;
-    padding: 10px;
 }
 
 #bouton_modif {

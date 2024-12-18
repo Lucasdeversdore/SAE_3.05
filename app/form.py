@@ -7,17 +7,20 @@ from app.models import Chimiste
 
 class LoginForm ( FlaskForm ):
     email = StringField('email')
-    password = PasswordField('Password')
+    mdp = PasswordField('Password')
     next = HiddenField()
     def get_authenticated_user(self):
         user = Chimiste.query.filter(Chimiste.email == self.email.data).first()
         if user is None:
-            return "Email incorrect"
+            self.email.errors.append("Email incorrect")
+            return False
         m = sha256()
-        m.update(self.password.data.encode())
+        m.update(self.mdp.data.encode())
         passwd = m.hexdigest()
-        return user if passwd == user.mdp else "Mot de passe incorrect"
-    
+        if passwd == user.mdp:
+            return user  
+        self.mdp.errors.append("Mot de passe incorrect")
+        return False
 
 
 from flask_wtf import FlaskForm
