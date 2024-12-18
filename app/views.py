@@ -83,9 +83,7 @@ def preparation_reservation_page_1():
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscrire():
     form = InscriptionForm()
-    print("test")
     if form.validate_on_submit():
-        print("form valide")
         # Récupérer les données du formulaire
         prenom = form.prenom.data
         nom = form.nom.data
@@ -98,12 +96,12 @@ def inscrire():
         # Vérifier si l'email existe déjà dans la base
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
-            flash('Cet email est déjà utilisé.', 'danger')
-            print('Cet email est déjà utilisé.')
-            return redirect(url_for('inscrire'))
-        nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
-        send_mail_activation(nouveau_chimiste)
-        return redirect(url_for('connection'))
+            form.email.errors.append('Cet email est déjà utilisé.')
+            print(form.email.errors)
+        else:
+            nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
+            send_mail_activation(nouveau_chimiste)
+            return redirect(url_for('connection'))
     return render_template('inscription.html', form=form)
 
 
