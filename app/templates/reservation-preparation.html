@@ -36,35 +36,40 @@
         {% set etat = reservation_etat[1] %}
         {% set chimiste = reservation_etat[2] %}
         {% set produit = reservation_etat[3] %}
+        {% if etat == "non-commence": %}
+            {% set texte_etat = "non commencé" %}
+        {% elif etat == "en-cours": %}
+            {% set texte_etat = "en cours" %}
+        {% elif etat == "termine": %}
+            {% set texte_etat = "terminé" %}
+        {% endif %}
         <tr>
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
-                {% if current_user.estPreparateur %}
-                    <button class="Etat {{ etat }}" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" etat="{{etat}}" > {{ etat }} </button>
-                {% else %} <!-- Gérer la suppression d'une réservation -->
-                    <div class ="{{ etat }}">
-                        {% if etat == "non-commence" %}
-                        <form>
-                            <button type="submit">
-                                <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
-                            </button>
-                        </form>
-                        {% endif %}
-                        {{etat}}
-                    </div>
-                {% endif %}
+                <div class ="{{ etat }}">
+                    {% if etat == "non-commence" or (current_user.estPreparateur and etat == "en-cours") %}
+                        <button class="delete_reservation" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" >
+                            <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
+                        </button>
+                    {% endif %}
+                    {% if current_user.estPreparateur %}
+                        <button class="Etat" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" etat="{{etat}}" >{{ texte_etat }}</button>
+                    {% else %}
+                        {{texte_etat}}
+                    {% endif %}
+                </div>
             </th>
         </tr>
     {% endfor %}
 </table>
 {% if actu_id_page != None%}
-<div>
-    <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page - 1 ) }}", method="get">
-        <button type="submit"> Précédent </button>
-    </form>
-    <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page + 1 ) }}", method="get">
-        <button type="submit"> Suivant </button>
-    </form>
-</div>
+    <div>
+        <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page - 1 ) }}", method="get">
+            <button type="submit"> Précédent </button>
+        </form>
+        <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page + 1 ) }}", method="get">
+            <button type="submit"> Suivant </button>
+        </form>
+    </div>
 {% endif %}
 {% endblock %}

@@ -235,3 +235,7 @@ th div button:hover{
 button{
   font-size: 90%;
 }
+
+.Etat{
+  font-weight: bold;
+}
