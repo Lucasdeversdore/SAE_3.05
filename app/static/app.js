@@ -628,3 +628,60 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const les_buttons = document.getElementsByClassName('delete_reservation');
+    for (let button of les_buttons) {
+        const idCommande = button.getAttribute('idCommande');
+        const idChimiste = button.getAttribute('idChimiste');
+        button.addEventListener('click', function() {
+            handleButtonDeleteReservation(idCommande, idChimiste);
+        });
+    }
+}); 
+
+function handleButtonDeleteReservation(idCommande, idChimiste) {
+    // Crée le fond du popup
+    const popup_overlay = document.createElement("div");
+    popup_overlay.id = "popup-overlay-resrev";
+    popup_overlay.style.position = "fixed";
+    popup_overlay.style.top = "0";
+    popup_overlay.style.left = "0";
+    popup_overlay.style.width = "100%";
+    popup_overlay.style.height = "100%";
+    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay.style.display = "flex";
+    popup_overlay.style.justifyContent = "center";
+    popup_overlay.style.alignItems = "center";
+    popup_overlay.style.zIndex = "1000"; 
+
+    // Contenu du popup
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    // Titre du popup
+    const h3 = document.createElement("h3");
+    h3.textContent = "Voulez vous supprimer cette commande ?";
+
+    // Bouton Annuler pour fermer le popup
+    const bAnnuler = document.createElement("button");
+    bAnnuler.textContent = "Non";
+    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+
+    const bResrever = document.createElement("button");
+    bResrever.textContent = "Oui";
+    bResrever.addEventListener("click", function() {
+        window.location.href = `/supprimer/reservation/${idCommande}/${idChimiste}`;
+    });
+
+    // Assemble les éléments dans le popup
+    popup_content.appendChild(h3);
+    popup_content.appendChild(bResrever);
+    popup_content.appendChild(bAnnuler);
+    popup_overlay.appendChild(popup_content);
+    document.body.appendChild(popup_overlay); 
+}

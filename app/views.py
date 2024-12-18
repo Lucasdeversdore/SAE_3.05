@@ -25,7 +25,8 @@ from .models import (
     get_nb_page_max_produits,
     get_pagination_reservations,
     get_nb_page_max_reservations,
-    update_etat
+    update_etat,
+    delete_reservation
 )
 from .form import *
 
@@ -319,6 +320,11 @@ def sauvegarder_ajout():
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
 def etat_commande(idCommande, idChimiste):
     update_etat(idCommande, idChimiste)
+    return redirect(url_for("preparation_reservation"))
+
+@app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
+def suppr_reservation(idCommande, idChimiste):
+    delete_reservation(idCommande, idChimiste)
     return redirect(url_for("preparation_reservation"))
 
 # @app.errorhandler(404)
