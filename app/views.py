@@ -1,4 +1,5 @@
 from hashlib import sha256
+import time
 from .app import app, db, mail
 from flask import jsonify, redirect, render_template, url_for, flash, request, Flask
 from flask_login import login_required, login_user, logout_user, current_user
@@ -97,10 +98,10 @@ def inscrire():
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             form.email.errors.append('Cet email est déjà utilisé.')
-            print(form.email.errors)
         else:
             nouveau_chimiste = Chimiste(idChimiste=next_chimiste_id(), prenom=prenom, nom=nom, email=email, mdp=passwd)
             send_mail_activation(nouveau_chimiste)
+            flash("Veuillez consulter vos e-mails pour activer votre compte.", "info")
             return redirect(url_for('connection'))
     return render_template('inscription.html', form=form)
 
@@ -112,7 +113,8 @@ def cgu():
 
 def send_mail_activation(user:Chimiste):
     token=user.get_token()
-    reset_url = url_for('activation_token', token=token, _external=True)
+    time_in_link = time.time()
+    reset_url = url_for('activation_token', token=token, time_in_link=time_in_link, _external=True)
     
     msg = Message(
         'Activation de votre compte Stockage Chimie',
@@ -135,11 +137,11 @@ def send_mail_activation(user:Chimiste):
     mail.send(msg)
     
 
-@app.route('/activation/<token>', methods=['GET', 'POST'])
-def activation_token(token):
-    user=Chimiste.verify_activation_token(token)
+@app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
+def activation_token(token, time_in_link):
+    user=Chimiste.verify_activation_token(token, time_in_link)
     if user is None:
-        flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
+        flash('Token invalide ou expiré. Veulliez réessayer de vous inscrire.', "info")
         return redirect(url_for('inscrire'))
     
     db.session.add(user)
@@ -155,16 +157,18 @@ def connection():
         f.next.data = request.args.get("next")
     elif f.validate_on_submit():
         user = f.get_authenticated_user()
-        if type(user) != str:
+        if user:
             login_user(user)
             next = f.next.data or url_for("home")
             return redirect(next)
-    return render_template("connection.html", form=f, msg=user)
+    
+    return render_template("connection.html", form=f)
 
 
 def send_mail_mdp(user: Chimiste):
     token = user.get_token()
-    reset_url = url_for('reset_token', token=token, _external=True)
+    time_in_link = time.time()
+    reset_url = url_for('reset_token', token=token, time_in_link=time_in_link, _external=True)
 
     msg = Message(
         'Demande de réinitialisation de mot de passe',
@@ -185,6 +189,7 @@ def send_mail_mdp(user: Chimiste):
                 '''
 
     mail.send(msg)
+    
 
     
     
@@ -200,27 +205,27 @@ def reset_pwd():
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             send_mail_mdp(chimiste_existant)
-            flash("Rgerdez vos mail pour réinitialiser votre mot de passe.")
-            print("Rgerdez vos mail pour réinitialiser votre mot de passe.")
+            flash("Rgerdez vos mail pour réinitialiser votre mot de passe.", "info")
             return redirect(url_for('connection'))
+        else:
+            form.email.errors.append('Email invalid')
     return render_template("reset_pwd.html", form=form)
 
-@app.route('/reset_pwd/<token>', methods=['GET', 'POST'])
-def reset_token(token):
-    user=Chimiste.verify_mdp_token(token)
+@app.route('/reset_pwd/<token>/<time_in_link>', methods=['GET', 'POST'])
+def reset_token(token, time_in_link):
+    user=Chimiste.verify_mdp_token(token, time_in_link)
     if user is None:
-        flash('token invalide ou expiré. Veulliez réessayer.', 'warning')
+        flash('Token invalide ou expiré. Veulliez réessayer.', 'info')
         return redirect(url_for('reset_pwd'))
     form=ChangePasswordForm()
     
     if form.validate_on_submit():
-        print("here")
         m = sha256()
         m.update(form.mdp.data.encode())
         passwd = m.hexdigest()
         user.mdp = passwd
         db.session.commit()
-        flash("mot de passe changer.","success" )
+        flash("Votre mot de passe à été changé avec succès.","info" )
         return redirect(url_for("connection"))
     return render_template('change_password.html', form=form, token=token)
 

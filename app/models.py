@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import time
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
@@ -39,11 +40,24 @@ class Chimiste(db.Model, UserMixin):
         return self.idChimiste
     
     def get_token(self):
-        serial=Serializer(app.config['SECRET_KEY'])
-        return serial.dumps({'idChimiste':self.idChimiste, 'prenom':self.prenom, 'nom':self.nom, 'email':self.email, 'mdp':self.mdp, 'preparateur':self.estPreparateur})
+        # Utilisez URLSafeTimedSerializer avec expires_in pour définir l'expiration du token
+        serial = Serializer(app.config['SECRET_KEY']) 
+        # Sérialisez les données de l'utilisateur dans un token
+        token= serial.dumps({
+            'idChimiste': self.idChimiste,
+            'prenom': self.prenom,
+            'nom': self.nom,
+            'email': self.email,
+            'mdp': self.mdp,
+            'preparateur': self.estPreparateur
+        })
+        return token
     
     @staticmethod
-    def verify_mdp_token(token):
+    def verify_mdp_token(token, time_in_link):
+        time_limit = 60*15 # 15 min
+        if (time.time() - float(time_in_link)) > time_limit:
+            return None
         serial = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = serial.loads(token)['idChimiste']
@@ -52,7 +66,10 @@ class Chimiste(db.Model, UserMixin):
         return Chimiste.query.get(user_id)
     
     @staticmethod
-    def verify_activation_token(token):
+    def verify_activation_token(token, time_in_link):
+        time_limit = 60*15 # 15 min
+        if (time.time() - float(time_in_link)) > time_limit:
+            return None
         serial = Serializer(app.config['SECRET_KEY'])
         try:
             idChimiste = serial.loads(token)['idChimiste']
