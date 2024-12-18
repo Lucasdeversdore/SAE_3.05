@@ -25,7 +25,8 @@ from .models import (
     get_nb_page_max_produits,
     get_pagination_reservations,
     get_nb_page_max_reservations,
-    update_etat
+    update_etat,
+    cacher_le_produit
 )
 from .form import *
 
@@ -310,10 +311,8 @@ def sauvegarder_ajout():
 
     res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
     if res:
-        print("test")
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
-        print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
 
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
@@ -324,3 +323,18 @@ def etat_commande(idCommande, idChimiste):
 # @app.errorhandler(404)
 # def internal_error(error):
 #     return redirect(url_for('home'))
+
+@app.route('/pop_up_cacher/<int:id_produit>',  methods=['GET'])
+def pop_up_cacher(id_produit):
+    produit = Produit.query.get(id_produit)
+    return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+
+@app.route('/cacher/<int:id_produit>',  methods=['GET'])
+def cacher(id_produit):
+    res = cacher_le_produit(id_produit)
+    if res:
+        return jsonify(success=True, message="Vous avez caché le produit !"), 200
+    else:
+        return jsonify(success=False, message="Vous n'avez pas caché le produit !"), 400
+
+    

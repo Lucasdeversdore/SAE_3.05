@@ -56,7 +56,7 @@
                         </section>
 
                         {% if current_user.estPreparateur %}
-                            <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
+                            <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
                         {% endif %}
                         <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
                         {% if qte > 0 %}

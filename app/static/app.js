@@ -628,3 +628,95 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }
+
+
+// Fonction pour afficher la popup de cacher un produit
+function handleButtonCacherProduit(produit, nomProduit) {
+    const popup_overlay_cacher = document.createElement("div");
+    popup_overlay_cacher.id = "popup-overlay-cacher";
+    popup_overlay_cacher.style.position = "fixed";
+    popup_overlay_cacher.style.top = "0";
+    popup_overlay_cacher.style.left = "0";
+    popup_overlay_cacher.style.width = "100%";
+    popup_overlay_cacher.style.height = "100%";
+    popup_overlay_cacher.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay_cacher.style.display = "flex";
+    popup_overlay_cacher.style.justifyContent = "center";
+    popup_overlay_cacher.style.alignItems = "center";
+    popup_overlay_cacher.style.zIndex = "1000";
+
+    // Contenu du popup
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    // Titre du popup
+    const h3 = document.createElement("h3");
+    h3.textContent = `Souhaitez vous cacher: ${nomProduit} ?`;
+
+    // Bouton Non pour fermer le popup
+    const bNon = document.createElement("button");
+    bNon.textContent = "Non";
+    bNon.id = "non"; // Associez un ID pour le bouton
+    bNon.addEventListener("click", handleButtonNonClick);
+
+
+    // Bouton Oui 
+    const bOui = document.createElement("button");
+    bOui.textContent = "Oui";
+    bOui.id = "oui"; // Associez un ID pour le bouton
+    bOui.data = produit
+    bOui.addEventListener("click", function (){
+        cacherProduit(produit)
+    });
+
+    popup_content.appendChild(h3);
+    popup_content.appendChild(bNon);
+    popup_content.appendChild(bOui);
+    popup_overlay_cacher.appendChild(popup_content);
+    document.body.appendChild(popup_overlay_cacher); 
+
+}
+
+// Fonction pour masquer le popup
+function handleButtonNonClick() {
+    const popup = document.getElementById("popup-overlay-cacher");
+    if (popup) {
+        popup.remove(); 
+    }
+}
+
+
+function cacherProduit(idProduit) {
+
+    fetch(`/cacher/${idProduit}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '/';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const les_buttons = document.getElementsByClassName('supp_produit');
+    for (let button of les_buttons) {
+        const produitId = button.getAttribute('data-produit');
+        button.addEventListener('click', function() {
+            fetch(`/pop_up_cacher/${produitId}`)
+                .then(response => response.json())
+                .then(data => {
+                    handleButtonCacherProduit(data.id_produit, data.nomProduit);
+
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+        });
+    }
+});

@@ -85,11 +85,14 @@ class Produit(db.Model):
 
     def __init__(self, idProduit, nomProduit, nomUnite, fonctionProduit, idfou):
         self.idProduit = idProduit
+
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
         self.fonctionProduit = fonctionProduit
         self.idFou = idfou
         self.afficher = True
+        if self.idProduit == 1:
+            self.afficher = False
 
     def __str__(self):
         return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher) 
@@ -375,7 +378,7 @@ def get_all_chimiste():
 
 def get_pagination_produits(page=1, nb=15):
     liste_prod_qte = []
-    liste_prod = Produit.query.order_by(Produit.nomProduit).all()
+    liste_prod = Produit.query.order_by(Produit.afficher.desc()).all()
     liste_prod = liste_prod[(page-1)*nb:page*nb]
     for produit in liste_prod:
         est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
@@ -618,6 +621,13 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     db.session.commit()
     print(stock)
     print("Commande mise à jour")
+    return True
+
+
+def cacher_le_produit(idProduit):
+    produit = Produit.query.get(idProduit)
+    produit.afficher = False
+    db.session.commit()
     return True
 
 def cancel_commande(id_commande):
