@@ -1,3 +1,19 @@
+function createDivTextCache() {
+    const divTextCache2 = document.createElement("div");
+    divTextCache2.className = "hover-text";
+    divTextCache2.textContent = "champ obligatoire";
+    return divTextCache2;
+}
+
+function createDivObligatoire(elem) {
+    const divQuantite = document.createElement("div");
+    divQuantite.className = "containerObligatoire";
+    divQuantite.appendChild(elem);
+    divQuantite.appendChild(createDivTextCache());
+    return divQuantite;
+}
+
+
 // Fonction pour afficher le popup d'info produit
 function handleButtonInfoClick(produit, lieu) {
     // Crée le fond du popup
@@ -83,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Fonction pour afficher le popup de modifications de produit
-
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
     popup_overlay_modif.id = "popup-overlay-modif";
@@ -98,16 +113,15 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     // ligne Nomdu produit
     const pNom = document.createElement("p");
     pNom.textContent = "Nom du produit:";
-    const dNom = document.createElement("div")
-    dNom.className = "inputGroup";
     const inputNom = document.createElement("input");
     inputNom.type = "text";
     inputNom.name = "inputNom";
+    inputNom.placeholder = "Nom du produit";
     inputNom.value = produit.nomProduit;
     const ligne_nom = document.createElement("div");
-    dNom.appendChild(inputNom)
-    ligne_nom.appendChild(pNom)
-    ligne_nom.appendChild(dNom)
+    ligne_nom.className = "inputGroup";
+    ligne_nom.appendChild(pNom);
+    ligne_nom.appendChild(inputNom);
 
     // ligne Fournisseur
     const pFournisseur = document.createElement("p");
@@ -130,6 +144,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     selectFournisseur.className = "form-control"
     const ligne_fournisseur = document.createElement("div");
+    ligne_fournisseur.className = "selectGroup";
     ligne_fournisseur.appendChild(pFournisseur)
     ligne_fournisseur.appendChild(selectFournisseur)
 
@@ -137,14 +152,18 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     const pQuantite = document.createElement("p");
 
     pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}) : *`;
+    pQuantite.className = "obligatoire";
 
     const textQuantite = document.createElement("input");
     textQuantite.type = "text";
     textQuantite.name = "textQuantite";
+    textQuantite.placeholder = "Quantite";
     textQuantite.value = est_stocker.quantiteStocke || 0;
 
     const ligne_quantite = document.createElement("div");
-    ligne_quantite.appendChild(pQuantite)
+    ligne_quantite.className = "inputGroup";
+
+    ligne_quantite.appendChild(createDivObligatoire(pQuantite))
     ligne_quantite.appendChild(textQuantite)
 
     // ligne Fonction du produit
@@ -179,12 +198,14 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     selectFonction.className = "form-control"
     const ligne_fonction = document.createElement("div");
+    ligne_fonction.className = "selectGroup";
     ligne_fonction.appendChild(pFonction)
     ligne_fonction.appendChild(selectFonction)
 
     // ligne Lieu de stockage
     const pLieuStock = document.createElement("p");
     pLieuStock.textContent = "Lieu de stockage : *";
+    pLieuStock.className = "obligatoire";
     const selectLieuStock = document.createElement("select");  
     const optionLieuStock = document.createElement("option");
     selectLieuStock.name = "selectLieuStock";
@@ -192,9 +213,6 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     optionLieuStock.value = lieu.nomLieu;
     optionLieuStock.innerHTML = lieu.nomLieu;
     selectLieuStock.appendChild(optionLieuStock);
-
-    
-
     for (let i = 0; i < les_lieux.length; i++) {
         if (les_lieux[i].nomLieu !== null) {
             // Vérifie si l'option existe déjà dans le select
@@ -212,7 +230,8 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     selectLieuStock.className = "form-control"
 
     const ligne_lieu_stock = document.createElement("div");
-    ligne_lieu_stock.appendChild(pLieuStock)
+    ligne_lieu_stock.className = "selectGroup";
+    ligne_lieu_stock.appendChild(createDivObligatoire(pLieuStock))
     ligne_lieu_stock.appendChild(selectLieuStock)
 
   

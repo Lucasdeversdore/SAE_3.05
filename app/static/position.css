@@ -267,7 +267,7 @@ tbody{
     flex-direction: column;
 }
 
-#popup-overlay-modif {
+#popup-overlay-modif , #popup-overlay-Ajout{
     position: fixed;
     top: 0;
     left: 0;
@@ -300,8 +300,13 @@ tbody{
     justify-content: space-evenly;
 }
 
-.popup-content > div > p, .popup-content > div > input {
+.popup-content > div > *{
     width: 40%;
+    box-sizing: border-box;
+}
+
+.popup-content > div > button{
+    width: auto;
     box-sizing: border-box;
 }
 
