@@ -1,11 +1,13 @@
 #!/usr/bin/python3
+import time
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
-from .app import  db
+from .app import  db, app
 
 
 
@@ -36,6 +38,51 @@ class Chimiste(db.Model, UserMixin):
     
     def get_id(self):
         return self.idChimiste
+    
+    def get_token(self):
+        # Utilisez URLSafeTimedSerializer avec expires_in pour définir l'expiration du token
+        serial = Serializer(app.config['SECRET_KEY']) 
+        # Sérialisez les données de l'utilisateur dans un token
+        token= serial.dumps({
+            'idChimiste': self.idChimiste,
+            'prenom': self.prenom,
+            'nom': self.nom,
+            'email': self.email,
+            'mdp': self.mdp,
+            'preparateur': self.estPreparateur
+        })
+        return token
+    
+    @staticmethod
+    def verify_mdp_token(token, time_in_link):
+        time_limit = 60*15 # 15 min
+        if (time.time() - float(time_in_link)) > time_limit:
+            return None
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = serial.loads(token)['idChimiste']
+        except:
+            return None
+        return Chimiste.query.get(user_id)
+    
+    @staticmethod
+    def verify_activation_token(token, time_in_link):
+        time_limit = 60*15 # 15 min
+        if (time.time() - float(time_in_link)) > time_limit:
+            return None
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            idChimiste = serial.loads(token)['idChimiste']
+            prenom =  serial.loads(token)['prenom']
+            nom = serial.loads(token)['nom']
+            email = serial.loads(token)['email'] 
+            mdp = serial.loads(token)['mdp']
+            estPreparateur=serial.loads(token)['preparateur']
+
+            return Chimiste(idChimiste=idChimiste, prenom=prenom, nom=nom, email=email, mdp=mdp, estPreparateur=estPreparateur)
+        except:
+            return None
+
 
 class Unite(db.Model):
 
@@ -107,7 +154,7 @@ class Commande(db.Model):
         self.dateCommande = dateCommande
         self.qteCommande = qteCommande
         self.idChimiste = idChimiste
-        self.idProduit = idProduit        
+        self.idProduit = idProduit
     
     def __str__(self):
         return str(self.idChimiste) + str(self.dateCommande) + str(self.qteCommande)  + str(self.idChimiste) + str(self.idProduit)
@@ -123,14 +170,13 @@ class Faire(db.Model):
     faireCom = relationship("Commande", back_populates="commandeFaire")
     faireChim = relationship("Chimiste", back_populates="chimisteFaire")
 
-    def __init__(self, idCommande, idChimiste, statutCommande= 'non commencé'):
+    def __init__(self, idCommande, idChimiste, statutCommande = 'non-commence'):
         self.idCommande = idCommande
         self.idChimiste = idChimiste
         self.statutCommande = statutCommande
     
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
-
 
 class Est_Stocker(db.Model):
 
@@ -202,7 +248,7 @@ class Fournisseur(db.Model):
         self.numTelFou = numTelFou
     
     def __str__(self):
-        return str(self.idFou) + self.nomFou + self.adresseFou + str(self.numTelFou)
+        return str(self.idFou) + str(self.nomFou) + str(self.adresseFou) + str(self.numTelFou)
 
     def to_dict(self):
         return {
@@ -362,6 +408,10 @@ def get_sample_prduit_qte(nb=20):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
+
+def get_all_chimiste():
+    return Chimiste.query.all()
+
 def get_pagination_produits(page=1, nb=15):
     liste_prod_qte = []
     liste_prod = Produit.query.order_by(Produit.nomProduit).all()
@@ -472,6 +522,44 @@ def search_famille_filter(q):
     results = results2
     return results
 
+def search_reserv_filter(q):
+    """renvoie une liste des reservation selon une requete q  
+
+    Args:
+        q (str): requete de l'utilisateur
+
+    Returns:
+        list: liste de reservation
+    """
+    results = get_all_prod()
+    results2 = []
+    for prod in results:
+        if q.upper() in prod.nomProduit.upper():
+            commandes = Commande.query.filter(Commande.idProduit == prod.idProduit)
+            for commande in commandes:
+                etat = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+                etat= etat.statutCommande
+                chimiste = Chimiste.query.filter(Chimiste.idChimiste == commande.idChimiste).first()
+                prod = Produit.query.filter(Produit.idProduit == commande.idProduit).first()
+                results2.append((commande,etat,chimiste,prod))
+    results = results2
+    return results
+
+def search_chimiste_filter(q):
+    results = get_all_chimiste()
+    results2 = []
+    for chimiste in results:
+        if q.upper() in chimiste.nom.upper() or q.upper() in chimiste.prenom.upper():
+            commandes = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste)
+            for commande in commandes:
+                etat = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+                etat= etat.statutCommande
+                chimiste = Chimiste.query.filter(Chimiste.idChimiste == commande.idChimiste).first()
+                prod = Produit.query.filter(Produit.idProduit == commande.idProduit).first()
+                results2.append((commande,etat,chimiste,prod))
+    results = results2
+    return results
+
 def edit_qte_commande(id_commande, new_qte):
     
     if new_qte >= 0:
@@ -523,8 +611,8 @@ def check_mdp(mdp):
         return False
 
     if len(mdp) >= 8 and contient_maj(mdp) and contient_special(mdp) and contient_chiffre(mdp):
-        return True
-    return False
+        return (True, "")
+    return (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères")
 
 def verif_fourn_existe(fournisseur):
     les_fours = Fournisseur.query.all()
@@ -545,16 +633,18 @@ def verif_lieu_existe(lieu):
 
 def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     produit = Produit.query.get(idProduit)
-    four = Fournisseur.query.get(produit.idFou)
+    four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+    produit.idFou = four.idFou
+    
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
-    le_lieu = Lieu_Stockage.query.get(stock.idLieu)
-
+    print(stock)
+    le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
+    print(le_lieu)
+    stock.idLieu = le_lieu.idLieu
+    print(stock)
+    
     if nom != "":
         produit.nomProduit = nom
-    
-    if nom_fournisseur == "":
-        produit.idFou = None
-    elif four is None or nom_fournisseur != four.nomFou:
 
         if verif_fourn_existe(nom_fournisseur) and four is not None:
             produit.idFou = four.idFou
@@ -569,16 +659,9 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     if fonction != "":
        produit.fonctionProduit = fonction
 
-    if  lieu != le_lieu.nomLieu:
 
-        if verif_lieu_existe(lieu):
-            stock.idLieu = le_lieu.idLieu
-        else:
-            add_lieu_stock(lieu)
-            res = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
-            stock.idLieu = res.idLieu
-    convertir_quantite(idProduit)
     db.session.commit()
+    print(stock)
     print("Commande mise à jour")
     return True
 
@@ -605,12 +688,15 @@ def check_mdp_validator(form, field):
     
     from .models import check_mdp
     from wtforms import ValidationError
-    result = check_mdp(field.data)
+    result = check_mdp(field.data)  # Appel de la fonction check_mdp
     if isinstance(result, bool):
-        is_valid, error_message = result, ""
+        is_valid = result
+        error_message = ""
     else:
         is_valid, error_message = result
-    if not is_valid:
+
+    if not is_valid:  # Si le mot de passe n'est pas valide
+        # Affiche le message d'erreur spécifique
         raise ValidationError(error_message)
 
 
@@ -768,3 +854,25 @@ def convertir_quantite(id_produit):
                     prod.nomUnite = "kg"
                     stock.quantiteStocke = quantite *10**-3
             db.session.commit()
+
+def update_etat(idCommande, idChimiste):
+    faire = Faire.query.filter(Faire.idCommande == idCommande).first()
+    match faire.statutCommande:
+        case 'non-commence':
+            faire.idChimiste = idChimiste
+            faire.statutCommande = 'en-cours'
+        case 'en-cours':
+            faire.statutCommande = 'termine'
+    db.session.commit()
+
+def delete_reservation(idCommande, idChimiste):
+    commande = Commande.query.get(idCommande)
+    faire = Faire.query.filter(Faire.idCommande == idCommande).first()
+    print(Chimiste.query.get(idChimiste).estPreparateur, faire.statutCommande)
+    if faire.statutCommande == 'non-commence' or (Chimiste.query.get(idChimiste).estPreparateur and faire.statutCommande == "en-cours"):
+        produit = Produit.query.get(commande.idProduit)
+        est_Stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+        est_Stocker.quantiteStocke += commande.qteCommande
+        db.session.delete(faire)
+        db.session.delete(commande)
+        db.session.commit()

@@ -18,10 +18,10 @@
                 <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
             </section>
             <section id="main_section">
-                <form role="form" method="POST" action = "{{ url_for ('connection') }}">
+                <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
                     {{ form.hidden_tag() }}
                     <ul>
-                        <li><h1>Connectez-vous</h1></li>
+                        <li><h1>Réinitilisez votre mot de passe</h1></li>
 
                         <!-- message informatif -->
                         {% with messages = get_flashed_messages(with_categories=True) %}
@@ -36,7 +36,6 @@
                         {% endif %}
                         {% endwith %}
 
-
                         <!-- Champ email -->
                         <li id="email">
                             {{ form.email(placeholder="Entrez votre email") }}
@@ -49,34 +48,18 @@
                             {% endif %}
                         </li>
                         
-                        <!-- Champ mot de passe -->
-                        <li id="pwd">
-                            {{ form.mdp(placeholder="Entrez votre mot de passe") }}
-                            {% if form.mdp.errors %}
-                                <ul class="errors">
-                                    {% for error in form.mdp.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
+                        <li>
+                            <button type="submit">Entrer</button>
+                            <a href="/connection">retour</a>
                         </li>
-
-                        <li id="li_reset_pwd"><a href="{{url_for('reset_pwd')}}">mot de passe oublié</a></li>
-
-                        <li id="paragraphe">
-                            <input type="checkbox">
-                            <p>Rester connecté</p>
-                            <button type="submit">Se connecter</button>
-                            
-                        </li>
-                        <li><a href="/inscription">Créer un compte</a></li>
-                    </ul>     
+                    </ul>
                 </form>
             </section>
             <section>
                 <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
-        </main>
+        </main>  
+
         <script src="app.js"></script>
     </body>
 </html>

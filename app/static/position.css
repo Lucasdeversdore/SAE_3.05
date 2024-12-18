@@ -251,8 +251,11 @@ th div button{
     margin: 0px;
     padding: 0px;
     width: fit-content;
-    margin-right: 0.5em;
 }
+.delete_reservation{
+    margin-right: 0.5em;    
+}
+
 th div img{
     height: 100%;
     display: block;
@@ -300,7 +303,6 @@ tbody{
 .popup-content > div > p, .popup-content > div > input {
     width: 40%;
     box-sizing: border-box;
-    padding: 10px;
 }
 
 #bouton_modif {

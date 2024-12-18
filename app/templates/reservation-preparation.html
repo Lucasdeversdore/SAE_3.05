@@ -19,7 +19,7 @@
 
 {% block top_main %}
     <h1>Liste des réservations</h1>
-    <form action="{{ url_for('search') }}" method="GET" class="barre_recherche">
+    <form action="{{ url_for('search_preparation') }}" method="GET" class="barre_recherche">
         {% if current_user.estPreparateur %}
             <input class="barre_recherche" type="search" placeholder="  Nom produit / étudiant" aria-label="Search" name="search" id="search">
         {% else %}
@@ -36,51 +36,40 @@
         {% set etat = reservation_etat[1] %}
         {% set chimiste = reservation_etat[2] %}
         {% set produit = reservation_etat[3] %}
+        {% if etat == "non-commence": %}
+            {% set texte_etat = "non commencé" %}
+        {% elif etat == "en-cours": %}
+            {% set texte_etat = "en cours" %}
+        {% elif etat == "termine": %}
+            {% set texte_etat = "terminé" %}
+        {% endif %}
         <tr>
             <th scope="row">
                 <p>{{reservation.qteCommande}}{{produit.nomUnite}} {{produit.nomProduit}} réserver par {{chimiste.prenom}} {{chimiste.nom}} le {{reservation.dateCommande}}</p>
-                {% if current_user.estPreparateur %}
-                <form> <!-- Faire en sorte que le bouton ouvre une popup pour que le préparateur puisse s'ocupper de la réservation -->
-                        {% if etat == "non commencé" %}
-                            <button type="submit" class ="non-commence">{{etat}}</button> 
-                        {% elif etat == "en cours" %}
-                            <button type="submit" class ="en-cours">{{etat}}</button>
-                        {% elif etat == "termine" %}
-                            <button type="submit" class ="termine">{{etat}}</button>
-                        {% else %}
-                            <button type="submit">{{etat}}</button>
-                        {% endif %}
-                    </form>
-                {% else %} <!-- Gérer la suppression d'une réservation -->
-                <form>
-                    {% if etat == "non commencé" %}
-                        <div class ="non-commence">
-                            <button type="submit">
-                                <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
-                            </button>
-                            {{etat}}
-                        </div>
-                    {% elif etat == "en cours" %}
-                        <div class ="en-cours">{{etat}}</div>
-                    {% elif etat == "termine" %}
-                        <div class ="termine">{{etat}}</div>
+                <div class ="{{ etat }}">
+                    {% if etat == "non-commence" or (current_user.estPreparateur and etat == "en-cours") %}
+                        <button class="delete_reservation" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" >
+                            <img src="{{url_for('static', filename='images/trash.png')}}" alt="Bouton de suppression">
+                        </button>
+                    {% endif %}
+                    {% if current_user.estPreparateur %}
+                        <button class="Etat" idCommande="{{reservation.idCommande}}" idChimiste="{{current_user.idChimiste}}" etat="{{etat}}" >{{ texte_etat }}</button>
                     {% else %}
-                        <div>{{etat}}</div>
-                    {% endif %} 
-                </form>
-                {% endif %}
+                        {{texte_etat}}
+                    {% endif %}
+                </div>
             </th>
         </tr>
     {% endfor %}
 </table>
 {% if actu_id_page != None%}
-<div>
-    <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page - 1 ) }}", method="get">
-        <button type="submit"> Précédent </button>
-    </form>
-    <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page + 1 ) }}", method="get">
-        <button type="submit"> Suivant </button>
-    </form>
-</div>
+    <div>
+        <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page - 1 ) }}", method="get">
+            <button type="submit"> Précédent </button>
+        </form>
+        <form action="{{ url_for('preparation_reservation_page', id_page = actu_id_page + 1 ) }}", method="get">
+            <button type="submit"> Suivant </button>
+        </form>
+    </div>
 {% endif %}
 {% endblock %}
