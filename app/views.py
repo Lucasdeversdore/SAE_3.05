@@ -2,7 +2,7 @@ from hashlib import sha256
 from flask_login import login_required, login_user, logout_user, current_user
 from .app import app, db
 from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
-from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
+from .models import Chimiste, Produit, Est_Stocker, Lieu_Stockage, Fournisseur, get_sample_prduit_qte, get_sample_reservation, get_sample_reservation_chimiste, ajout_fournisseur_sauvegarde, ajout_lieu_sauvegarde, next_chimiste_id, next_prod_id, search_filter, search_famille_filter, reserver_prod, modif_sauvegarde, ajout_sauvegarde, get_pagination_produits, get_nb_page_max_produits, get_pagination_reservations, get_nb_page_max_reservations
 from .form import *
 
 @app.route("/")
@@ -183,7 +183,6 @@ def searchByButton(id_produit):
 
 @app.route('/ajout/sauvegarder/', methods=['POST'])
 def sauvegarder_ajout():
-   
     data = request.get_json()
     nom = data.get("textNom")
     four = data.get("textFournisseur")
@@ -199,6 +198,39 @@ def sauvegarder_ajout():
     else:
         print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
+    
+@app.route('/ajoutLieu/sauvegarder', methods=['POST'])
+def sauvegarder_ajout_lieu():
+    data = request.get_json()
+    nom_lieu = data.get("nomLieu")
+
+    if not nom_lieu:
+        return jsonify(success=False, message="Nom du lieu requis"), 400
+
+    if ajout_lieu_sauvegarde(nom_lieu):
+        return jsonify(success=True, message="Lieu ajouté avec succès !"), 200
+    else:
+        return jsonify(success=False, message="Le lieu existe déjà ou une erreur est survenue."), 400
+
+
+@app.route('/ajoutFournisseur/sauvegarder', methods=['POST'])
+def sauvegarder_ajout_fournisseur():
+    data = request.get_json()
+    nom_fou = data.get("nomFournisseur")
+    adresse_fou = data.get("adresseFournisseur")
+    num_tel_fou = data.get("telephoneFournisseur")
+
+    # Validation des données : seul le nom est obligatoire
+    if not nom_fou:
+        return jsonify(success=False, message="Nom du fournisseur requis"), 400
+
+    # Appel de la fonction pour sauvegarder le fournisseur
+    if ajout_fournisseur_sauvegarde(nom_fou, adresse_fou, num_tel_fou):
+        return jsonify(success=True, message="Fournisseur ajouté avec succès !"), 200
+    else:
+        return jsonify(success=False, message="Le fournisseur existe déjà ou une erreur est survenue."), 400
+
+
 
 @app.errorhandler(404)
 def internal_error(error):
