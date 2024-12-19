@@ -114,6 +114,9 @@ def settings():
         prenom = form.prenom.data
         nom = form.nom.data
         info = form.info.data
+        old_mdp = form.old_mdp.data
+        mdp = form.mdp.data
+        confirm_mdp = form.confirm_mdp.data
 
         if current_user.nom != nom:
             current_user.changer_nom(nom)
@@ -121,6 +124,18 @@ def settings():
             current_user.changer_prenom(prenom)
         if current_user.info != info:
             current_user.reception_notif()
+
+        if mdp != "":
+            m = sha256()
+            m.update(old_mdp.encode())
+            passwd = m.hexdigest()
+            if passwd == current_user.mdp:
+                m = sha256()
+                m.update(mdp.encode())
+                passwd = m.hexdigest()
+                current_user.mdp = passwd
+                db.session.commit()
+                flash("Votre mot de passe à été changé avec succès.","info" )
 
     return render_template("settings.html", form=form)
 

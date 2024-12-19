@@ -26,7 +26,7 @@ class LoginForm ( FlaskForm ):
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from .models import check_mdp_validator  # Import correct
+from .models import check_mdp_validator, password_change_validator
 
 class InscriptionForm(FlaskForm):
     prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
@@ -55,12 +55,12 @@ class ChangePasswordForm(FlaskForm):
 
 
 class SettingsForm(FlaskForm):
-    email = StringField('Email')
+    email = StringField('Email', render_kw={'disabled': 'disabled'})
     prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
     nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
-    old_mdp = PasswordField('Mot de passe') # validators=[DataRequired(), check_mdp_validator]
-    mdp = PasswordField('Nouveau mot de passe') # validators=[DataRequired(), check_mdp_validator]
-    confirm_mdp = PasswordField('Confirmer nouveau mot de passe') # validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')]
+    old_mdp = PasswordField('Mot de passe', validators=[password_change_validator])
+    mdp = PasswordField('Nouveau mot de passe', validators=[password_change_validator])
+    confirm_mdp = PasswordField('Confirmer nouveau mot de passe', validators=[password_change_validator, EqualTo('mdp', message='Les mots de passe doivent correspondre')])
     info = BooleanField("Je souhaite recevoir un e-mail lorsqu'une de mes commandes est prise en charge")
     submit = SubmitField("Enregistrer")
 

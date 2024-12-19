@@ -8,6 +8,7 @@ from .app import login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
 from .app import  db, app
+from wtforms import ValidationError
 
 
 
@@ -698,6 +699,19 @@ def check_mdp_validator(form, field):
     if not is_valid:  # Si le mot de passe n'est pas valide
         # Affiche le message d'erreur spécifique
         raise ValidationError(error_message)
+
+
+def password_change_validator(form, field):
+    # Champs à valider
+    old_mdp = form.old_mdp.data
+    mdp = form.mdp.data
+    confirm_mdp = form.confirm_mdp.data
+    if mdp:
+        if not old_mdp:
+            raise ValidationError("L'ancien mot de passe est requis pour changer le mot de passe.")
+        if not confirm_mdp:
+            raise ValidationError("Vous devez confirmer le nouveau mot de passe.")
+        return check_mdp_validator(form, field)
 
 
 def next_commande_id():

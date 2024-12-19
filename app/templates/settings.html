@@ -69,7 +69,7 @@
             </li>
             <!-- Champ nouveau mot de passe -->
             <li id="pwd">
-                {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
                 {% if form.mdp.errors %}
                     <ul class="errors">
                         {% for error in form.mdp.errors %}
@@ -80,7 +80,7 @@
             </li>
             <!-- Champ confirmation nouveau mot de passe -->
             <li id="pwd">
-                {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                {{ form.confirm_mdp(placeholder="Confirmez votre nouveau mot de passe") }}
                 {% if form.confirm_mdp.errors %}
                     <ul class="errors">
                         {% for error in form.confirm_mdp.errors %}
@@ -90,7 +90,7 @@
                 {% endif %}
             </li>
             <!-- Champ reception email status commande -->
-            <li id="pwd">
+            <li id="info">
                 {{ form.info(checked=current_user.info) }}
                 {% if form.info.errors %}
                     <ul class="errors">
@@ -102,7 +102,7 @@
                 Recevoir un email quand ma commande change de status
             </li>
             <!-- Bouton submit -->
-            <li id="inscrire"><button type="submit">Enregistrer</button></li>
+            <li id="Enregistrer"><button type="submit">Enregistrer</button></li>
         </ul>
     </form>
     {% endblock %}
