@@ -117,11 +117,14 @@ class Produit(db.Model):
 
     def __init__(self, idProduit, nomProduit, nomUnite, fonctionProduit, idfou):
         self.idProduit = idProduit
+
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
         self.fonctionProduit = fonctionProduit
         self.idFou = idfou
         self.afficher = True
+        if self.idProduit == 1:
+            self.afficher = False
 
     def __str__(self):
         return str(self.idProduit) + self.nomProduit + str(self.nomUnite) + str(self.afficher) 
@@ -413,8 +416,12 @@ def get_all_chimiste():
     return Chimiste.query.all()
 
 def get_pagination_produits(page=1, nb=15):
+    # Pour les produits non caché
+    print("testergdfgdfg")
     liste_prod_qte = []
-    liste_prod = Produit.query.order_by(Produit.nomProduit).all()
+    liste_prod = Produit.query.filter(Produit.afficher == 1).all()
+    liste_prod_cacher = Produit.query.filter(Produit.afficher == False).all()
+    liste_prod = liste_prod + liste_prod_cacher
     liste_prod = liste_prod[(page-1)*nb:page*nb]
     for produit in liste_prod:
         est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
@@ -424,6 +431,21 @@ def get_pagination_produits(page=1, nb=15):
             qte = est_stocker.quantiteStocke
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
+
+# def get_pagination_produits_cacher(page=1, nb=15):
+#     # Pour les produits caché
+#     print("test")
+#     liste_prod_cacher_qte = []
+#     liste_prod_cacher = Produit.query.filter(Produit.afficher == 1).all()
+#     liste_prod_cacher = liste_prod_cacher[(page-1)*nb:page*nb]
+#     for produit in liste_prod_cacher:
+#         est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+#         if est_stocker is None:
+#             qte = 0
+#         else:
+#             qte = est_stocker.quantiteStocke
+#         liste_prod_cacher_qte.append((produit, qte))
+#     return liste_prod_cacher
 
 def get_nb_page_max_produits(nb):
     return len(Produit.query.all())//nb+1
@@ -664,6 +686,19 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     db.session.commit()
     print(stock)
     print("Commande mise à jour")
+    return True
+
+
+def cacher_le_produit(idProduit):
+    produit = Produit.query.get(idProduit)
+    produit.afficher = False
+    db.session.commit()
+    return True
+
+def montrer_le_produit(idProduit):
+    produit = Produit.query.get(idProduit)
+    produit.afficher = 1
+    db.session.commit()
     return True
 
 def cancel_commande(id_commande):
