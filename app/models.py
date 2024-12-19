@@ -314,13 +314,19 @@ def next_fou_id():
     next_id = (max_id or 0) + 1
     return next_id
 
-def add_fournisseur(nom):
+def add_fournisseur(nom, addr, tel):
+    if addr == "":
+        addr = None
+    if tel == "":
+        tel = None
     existing_fou = Fournisseur.query.filter_by(nomFou=nom).first()
     if not existing_fou:
         id = next_fou_id()
-        fou = Fournisseur(id, nom, None, None)
+        fou = Fournisseur(id, nom, addr, tel)
         db.session.add(fou)
         db.session.commit()
+        return True
+    return False
 
 
 def get_id_fournisseur(nom):
@@ -336,7 +342,7 @@ def add_prod(nom, unite, fonctionProd, four):
     id = next_prod_id()
     add_unite(unite)
     if four:
-        add_fournisseur(four)
+        add_fournisseur(four, None, None)
         id_fou = get_id_fournisseur(four)
     else:
         id_fou = None
@@ -358,6 +364,7 @@ def next_lieu_id():
 def add_lieu_stock(nom_lieu):
     existing_lieu = Lieu_Stockage.query.filter_by(nomLieu=nom_lieu).first()
     if not existing_lieu:
+        print("kk")
         id = next_lieu_id()
         lieu = Lieu_Stockage(id, nom_lieu)
         db.session.add(lieu)
@@ -653,6 +660,12 @@ def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     if nom != "":
         produit.nomProduit = nom
 
+        if verif_fourn_existe(nom_fournisseur) and four is not None:
+            produit.idFou = four.idFou
+        else:
+            add_fournisseur(nom_fournisseur, None, None)
+            res = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+            produit.idFou = res.idFou
 
     if quantite != "":
         stock.quantiteStocke = quantite
@@ -781,6 +794,56 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         db.session.commit()
         return True
     
+def ajout_lieu_sauvegarde(nom_lieu):
+    """Ajoute un lieu de stockage dans la base de données.
+
+    Args:
+        nom_lieu (String): Nom du lieu de stockage.
+
+    Returns:
+        bool: True si l'ajout se passe bien.
+    """
+    # Vérifie si le lieu existe déjà
+    lieu_existant = Lieu_Stockage.query.filter_by(nomLieu=nom_lieu).first()
+    if not lieu_existant:
+        # Ajoute le lieu
+        id_lieu = add_lieu_stock(nom_lieu)
+        if id_lieu:
+            add_lieu_stock(nom_lieu)
+            return True  # Ajout réussi
+        else:
+            db.session.rollback()
+            return False  # Échec lors de l'ajout
+    else:
+        return False  # Le lieu existe déjà
+
+def ajout_fournisseur_sauvegarde(nom_fou, adresse_fou=None, num_tel_fou=None):
+    """Ajoute un fournisseur dans la base de données.
+
+    Args:
+        nom_fou (String): Nom du fournisseur (obligatoire).
+        adresse_fou (String, optional): Adresse du fournisseur.
+        num_tel_fou (String, int, optional): Numéro de téléphone du fournisseur.
+
+    Returns:
+        bool: True si l'ajout se passe bien, False sinon.
+    """
+    # Vérifie si le fournisseur existe déjà
+    fournisseur_existant = Fournisseur.query.filter_by(nomFou=nom_fou).first()
+    if not fournisseur_existant:
+        id_fou = add_fournisseur(nom_fou, adresse_fou, num_tel_fou)
+        if id_fou:
+            return True # Ajout réussi
+        else:
+            db.session.rollback()
+            return False # Échec lors de l'ajout
+    else:
+        return False  # Le fournisseur existe déjà
+
+
+
+
+
 
 def convertir_quantite(id_produit):
     """convertis les unités tous en adaptant la quantite,
