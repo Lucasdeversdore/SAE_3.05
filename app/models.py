@@ -2,7 +2,7 @@
 import time
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship 
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
@@ -67,7 +67,7 @@ class Chimiste(db.Model, UserMixin):
     
     @staticmethod
     def verify_activation_token(token, time_in_link):
-        time_limit = 60*15 # 15 min
+        time_limit = 15*60 # 15 min
         if (time.time() - float(time_in_link)) > time_limit:
             return None
         serial = Serializer(app.config['SECRET_KEY'])
@@ -656,6 +656,7 @@ def verif_lieu_existe(lieu):
 def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
     produit = Produit.query.get(idProduit)
     four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
+    print("four"+str(four))
     produit.idFou = four.idFou
     
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
