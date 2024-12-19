@@ -20,6 +20,7 @@ class Chimiste(db.Model, UserMixin):
     nom = Column(Text)
     email = Column(Text)
     mdp = Column(Text)
+    info = Column(Boolean)
     estPreparateur = Column(Boolean)
     chimisteCom = relationship("Commande", back_populates="commandeChim")
     chimisteFaire = relationship("Faire", back_populates="faireChim")
@@ -31,6 +32,7 @@ class Chimiste(db.Model, UserMixin):
         self.nom = nom
         self.email = email
         self.mdp = mdp
+        self.info = True
         self.estPreparateur = estPreparateur
         
     def __str__(self):
@@ -82,6 +84,14 @@ class Chimiste(db.Model, UserMixin):
             return Chimiste(idChimiste=idChimiste, prenom=prenom, nom=nom, email=email, mdp=mdp, estPreparateur=estPreparateur)
         except:
             return None
+    
+    def changer_nom(self, nom):
+        self.nom = nom
+        db.session.commit()
+
+    def changer_prenom(self, prenom):
+        self.prenom = prenom
+        db.session.commit()
 
 
 class Unite(db.Model):

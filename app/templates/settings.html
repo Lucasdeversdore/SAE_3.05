@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+    {% block head %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='position_page_co_ins.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_page_co_ins.css') }}">
+    {% endblock %}
+
     {% block header_nav%}
         <div class="liens_page">
             {% if current_user.estPreparateur %}
@@ -18,16 +23,12 @@
     {% endblock %}
 
     {% block content %}
-    <!-- Titre du formulaire -->
-    <!-- Formulaire de paramètres -->
-    <form role="form" method="POST" action = "{{ url_for ('settings_save') }}">
+    <form role="form" method="POST" action = "{{ url_for ('settings') }}">
         {{ form.hidden_tag() }}
         <ul>
             <li><h1>Vos paramètres</h1></li>
-
-            <!-- Champ email -->
             <li id="email">
-                {{ form.email(placeholder="Entrez votre email") }}
+                {{ form.email(value=current_user.email) }}
                 {% if form.email.errors %}
                     <ul class="errors">
                         {% for error in form.email.errors %}
@@ -36,8 +37,37 @@
                     </ul>
                 {% endif %}
             </li>
-            
+            <!-- Champs prénom et nom -->
+            <li id="prenom-nom">
+                {{ form.prenom(placeholder="Prénom", value=current_user.prenom) }}
+                {% if form.prenom.errors %}
+                    <ul class="errors">
+                        {% for error in form.prenom.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {{ form.nom(placeholder="Nom", value=current_user.nom) }}
+                {% if form.nom.errors %}
+                    <ul class="errors">
+                        {% for error in form.nom.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
             <!-- Champ mot de passe -->
+            <li id="pwd">
+                {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
+                {% if form.mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+            <!-- Champ nouveau mot de passe -->
             <li id="pwd">
                 {{ form.mdp(placeholder="Entrez votre mot de passe") }}
                 {% if form.mdp.errors %}
@@ -48,16 +78,31 @@
                     </ul>
                 {% endif %}
             </li>
-
-            <li id="li_reset_pwd"><a href="{{url_for('reset_pwd')}}">mot de passe oublié</a></li>
-
-            <li id="paragraphe">
-                <input type="checkbox">
-                <p>Rester connecté</p>
-                <button type="submit">Se connecter</button>
-                
+            <!-- Champ confirmation nouveau mot de passe -->
+            <li id="pwd">
+                {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                {% if form.confirm_mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.confirm_mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </li>
-            <li><a href="/inscription">Créer un compte</a></li>
-        </ul>     
+            <!-- Champ reception email status commande -->
+            <li id="pwd">
+                {{ form.email_update_status(checked=current_user.info) }}
+                {% if form.email_update_status.errors %}
+                    <ul class="errors">
+                        {% for error in form.email_update_status.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                Recevoir un email quand ma commande change de status
+            </li>
+            <!-- Bouton submit -->
+            <li id="inscrire"><button type="submit">Enregistrer</button></li>
+        </ul>
     </form>
     {% endblock %}

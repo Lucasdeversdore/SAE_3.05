@@ -53,5 +53,14 @@ class ChangePasswordForm(FlaskForm):
                                 validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')])
     submit = SubmitField("Changer de mot de passe")
 
+
 class SettingsForm(FlaskForm):
-    email_update_status = BooleanField("Je soujaite recevoir un e-mail lorsque ma ca")
+    email = StringField('Email')
+    prenom = StringField('Prénom', validators=[DataRequired(), Length(min=2, max=50)])
+    nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=50)])
+    old_mdp = PasswordField('Mot de passe') # validators=[DataRequired(), check_mdp_validator]
+    mdp = PasswordField('Nouveau mot de passe') # validators=[DataRequired(), check_mdp_validator]
+    confirm_mdp = PasswordField('Confirmer nouveau mot de passe') # validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')]
+    email_update_status = BooleanField("Je souhaite recevoir un e-mail lorsqu'une de mes commandes est prise en charge")
+    submit = SubmitField("Enregistrer")
+

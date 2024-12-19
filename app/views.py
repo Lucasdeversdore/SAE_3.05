@@ -106,6 +106,20 @@ def inscrire():
             return redirect(url_for('connection'))
     return render_template('inscription.html', form=form)
 
+@app.route("/settings", methods=('GET', 'POST'))
+@login_required
+def settings():
+    form = SettingsForm()
+    if form.validate_on_submit():
+        prenom = form.prenom.data
+        nom = form.nom.data
+
+        if current_user.nom != nom:
+            current_user.changer_nom(nom)
+        if current_user.prenom != prenom:
+            current_user.changer_prenom(prenom)
+
+    return render_template("settings.html", form=form)
 
 @app.route("/inscription-cgu")
 def cgu():
@@ -191,18 +205,6 @@ def send_mail_mdp(user: Chimiste):
     mail.send(msg)
 
 
-@app.route("/settings", methods=('GET', 'POST'))
-@login_required
-def settings():
-    form = SettingsForm()
-    # Logique des paramètres
-    return render_template("settings.html", form=form)
-
-@app.route("settings/save", methods=('GET', 'POST'))
-@login_required
-def settings_save():
-    # Sauvegarde des paramètres
-    return redirect(url_for("home"))
 
 @app.route("/reset_pwd", methods=('GET', 'POST'))
 def reset_pwd():
