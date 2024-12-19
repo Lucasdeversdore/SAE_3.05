@@ -48,7 +48,7 @@ header button{
   border-radius: 15px;
 }
 
-.supp_produit, .info_prod, #search{
+.supp_produit, .info_prod, #search, .remettre_produit{
   background: none;
   border: none;
   border-radius: 15px;

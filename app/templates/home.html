@@ -36,65 +36,133 @@
             {% for produit_qte in liste_produit_qte %}
                 {% set produit = produit_qte[0] %}
                 {% set qte = produit_qte[1] %}
-                <li class="objet_produit">
-                    <div class="produit">
-                        <section class="popup">
-                            
-                            
+                {% if current_user.estPreparateur %}
+                    <li class="objet_produit">
+                        <div class="produit">
+                            <section class="popup">
 
-                            <!-- popup supprimer un produit mot de passe -->
-                            <div id="popup-overlay" style="display: none;">
-                                <div id="popup-content">
-                                    
+
+
+                                <!-- popup supprimer un produit mot de passe -->
+                                <div id="popup-overlay" style="display: none;">
+                                    <div id="popup-content">
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- popup supprimer un produit confirmation -->
-                            <div id="popup-overlay" style="display: none;">
-                                <div id="popup-content">
-                                    
+                                <!-- popup supprimer un produit confirmation -->
+                                <div id="popup-overlay" style="display: none;">
+                                    <div id="popup-content">
+
+                                    </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section>
 
-                        {% if current_user.estPreparateur %}
-                            <button class="supp_produit"><img src="{{url_for('static', filename='images/supp_produit.png')}}"></button>
-                        {% endif %}
-                        <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
-                        {% if qte > 0 %}
-                            <p class="dispo">Disponible</p>
-                        {% else %}
-                            <p class="dispo">Indisponible</p>
-                        {% endif %}
-
-                        <div class="bouton">
-                            {% if current_user.estPreparateur %}
-                                <button class="Modifier" data-produit="{{ produit.idProduit }}">
-                                    Modifier 
-                                    <img src="{{ url_for('static', filename='images/modifier.png') }}" alt="">
-                                </button>
+                            {% if current_user.estPreparateur and produit.afficher == 1 %}
+                                <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
+                            {% elif current_user.estPreparateur and produit.afficher == False %}
+                                <button class="remettre_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/valider.png')}}" alt ="X"></button>
+                            {% endif %}
+                            <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
+                            {% if qte > 0 %}
+                                <p class="dispo">Disponible</p>
                             {% else %}
-                                {% if qte > 0 %}
-                                    <button class="Reserver" data-produit="{{ produit.idProduit }}">
-                                        Reserver 
-                                        <img src="{{ url_for('static', filename='images/reserver.png') }}" alt="">
+                                <p class="dispo">Indisponible</p>
+                            {% endif %}
+
+                            <div class="bouton">
+                                {% if current_user.estPreparateur %}
+                                    <button class="Modifier" data-produit="{{ produit.idProduit }}">
+                                        Modifier 
+                                        <img src="{{ url_for('static', filename='images/modifier.png') }}" alt="">
+                                    </button>
+                                {% else %}
+                                    {% if qte > 0 %}
+                                        <button class="Reserver" data-produit="{{ produit.idProduit }}">
+                                            Reserver 
+                                            <img src="{{ url_for('static', filename='images/reserver.png') }}" alt="">
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if produit.fonctionProduit is none %}
+                                    <button class="famille bdisabled" disabled>
+                                        Produits de la même famille
+                                    </button>
+                                {% else %}
+                                    <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                        Produits de la même famille
                                     </button>
                                 {% endif %}
-                            {% endif %}
+                            </div>
 
-                            {% if produit.fonctionProduit is none %}
-                                <button class="famille bdisabled" disabled>
-                                    Produits de la même famille
-                                </button>
-                            {% else %}
-                                <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
-                                    Produits de la même famille
-                                </button>
-                            {% endif %}
                         </div>
+                    </li>
+                {% else %}
+                    {% if current_user.estPreparateur == False and produit.afficher == 1 %}
+                    <li class="objet_produit">
+                        <div class="produit">
+                            <section class="popup">
 
-                    </div>
-                </li>
+
+
+                                <!-- popup supprimer un produit mot de passe -->
+                                <div id="popup-overlay" style="display: none;">
+                                    <div id="popup-content">
+
+                                    </div>
+                                </div>
+
+                                <!-- popup supprimer un produit confirmation -->
+                                <div id="popup-overlay" style="display: none;">
+                                    <div id="popup-content">
+
+                                    </div>
+                                </div>
+                            </section>
+
+                            {% if current_user.estPreparateur and produit.afficher == 1 %}
+                                <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
+                            {% elif current_user.estPreparateur and produit.afficher == False %}
+                                <button class="remettre_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/valider.png')}}" alt ="X"></button>
+                            {% endif %}
+                            <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
+                            {% if qte > 0 %}
+                                <p class="dispo">Disponible</p>
+                            {% else %}
+                                <p class="dispo">Indisponible</p>
+                            {% endif %}
+
+                            <div class="bouton">
+                                {% if current_user.estPreparateur %}
+                                    <button class="Modifier" data-produit="{{ produit.idProduit }}">
+                                        Modifier 
+                                        <img src="{{ url_for('static', filename='images/modifier.png') }}" alt="">
+                                    </button>
+                                {% else %}
+                                    {% if qte > 0 %}
+                                        <button class="Reserver" data-produit="{{ produit.idProduit }}">
+                                            Reserver 
+                                            <img src="{{ url_for('static', filename='images/reserver.png') }}" alt="">
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if produit.fonctionProduit is none %}
+                                    <button class="famille bdisabled" disabled>
+                                        Produits de la même famille
+                                    </button>
+                                {% else %}
+                                    <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                        Produits de la même famille
+                                    </button>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </li>
+                    {% endif %}
+                {% endif %}
             {% endfor %}
         </ul>
         {% if actu_id_page != None%}
@@ -108,4 +176,5 @@
         </div>
         {% endif %}
     {% endblock %}
-
+    
+    
