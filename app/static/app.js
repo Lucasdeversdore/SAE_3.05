@@ -19,28 +19,15 @@ function handleButtonInfoClick(produit, lieu) {
     // Crée le fond du popup
     const popup_overlay_info = document.createElement("div");
     popup_overlay_info.id = "popup-overlay-info";
-    popup_overlay_info.style.position = "fixed";
-    popup_overlay_info.style.top = "0";
-    popup_overlay_info.style.left = "0";
-    popup_overlay_info.style.width = "100%";
-    popup_overlay_info.style.height = "100%";
-    popup_overlay_info.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_info.style.display = "flex";
-    popup_overlay_info.style.justifyContent = "center";
-    popup_overlay_info.style.alignItems = "center";
-    popup_overlay_info.style.zIndex = "1000"; 
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     // Titre du popup
     const h3 = document.createElement("h3");
     h3.textContent = `Informations sur le produit: ${produit.nomProduit}`;
+    popup_content.appendChild(h3);
 
     // Informations du produit
     const pFonction = document.createElement("p");
@@ -51,20 +38,28 @@ function handleButtonInfoClick(produit, lieu) {
     else{
         pFonction.textContent = "Ce produit n'a pas de fonction assignée.";
     }
+    popup_content.appendChild(pFonction);
+
     const pLieuStockage = document.createElement("p");
     pLieuStockage.textContent = "Lieu de stockage: "+lieu.nomLieu; 
-
-    // Bouton OK pour fermer le popup
-    const bOk = document.createElement("button");
-    bOk.textContent = "OK";
-    bOk.id = "ok"; // Associez un ID pour le bouton
-    bOk.addEventListener("click", handleButtonOKClick);
-
-    // Assemble les éléments dans le popup
-    popup_content.appendChild(h3);
-    popup_content.appendChild(pFonction);
     popup_content.appendChild(pLieuStockage);
-    popup_content.appendChild(bOk);
+    // Bouton OK pour fermer le popup
+
+    const bOk = document.createElement("button");
+    const spanOk = document.createElement("span");
+    spanOk.textContent = "OK";
+    bOk.id = "ok"; // Associez un ID pour le bouton
+    bOk.className = "cssbuttons-io"
+    bOk.addEventListener("click", handleButtonOKClick);
+    bOk.appendChild(spanOk)
+
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bOk)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
+    
     popup_overlay_info.appendChild(popup_content);
     document.body.appendChild(popup_overlay_info); // Ajoute le popup au DOM
 }
@@ -593,46 +588,52 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction
 // }
 
 function handleButtonAjoutLieuClick() {
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-Lieu";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000";
+    const popup_overlay_ajouter_lieu = document.createElement("div");
+    popup_overlay_ajouter_lieu.id = "popup-overlay-lieu";
 
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     const h3 = document.createElement("h3");
     h3.textContent = `Ajout d'un lieu`;
 
+    popup_content.appendChild(h3);
+
+    // ligne nom du lieu
     const pNom = document.createElement("p");
     pNom.textContent = "Nom du lieu *";
+    pNom.className = "obligatoire";
+
     const textNom = document.createElement("input");
     textNom.type = "text";
     textNom.name = "textNomLieu";
+    textNom.placeholder = "Nom du lieu";
 
+    const ligne_nom_lieu = document.createElement("div");
+    ligne_nom_lieu.className = "inputGroup";
+    ligne_nom_lieu.appendChild(createDivObligatoire(pNom))
+    ligne_nom_lieu.appendChild(textNom)
+
+    popup_content.appendChild(ligne_nom_lieu);
+
+    // bouton annuler
     const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Annuler";
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Annuler";
     bAnnuler.id = "AnnulerLieu";
+    bAnnuler.className = "cssbuttons-io"
     bAnnuler.addEventListener("click", function () {
-        const popup = document.getElementById("popup-overlay-Lieu");
+        const popup = document.getElementById("popup-overlay-lieu");
         if (popup) popup.remove();
     });
+    bAnnuler.appendChild(spanAnnuler)
 
+    // bouton sauvegarder
     const bSauv = document.createElement("button");
-    bSauv.textContent = "Sauvegarder";
+    const spanSauv = document.createElement("span");
+    spanSauv.textContent = "Sauvegarder";
     bSauv.id = "sauvLieu";
+    bSauv.className = "cssbuttons-io"
     bSauv.addEventListener("click", function () {
         if (!textNom.value) {
             alert("Veuillez remplir le champ requis.");
@@ -640,14 +641,18 @@ function handleButtonAjoutLieuClick() {
         }
         sauvegarderAjoutLieu(textNom.value);
     });
+    bSauv.appendChild(spanSauv)
 
-    popup_content.appendChild(h3);
-    popup_content.appendChild(pNom);
-    popup_content.appendChild(textNom);
-    popup_content.appendChild(bAnnuler);
-    popup_content.appendChild(bSauv);
-    popup_overlay.appendChild(popup_content);
-    document.body.appendChild(popup_overlay);
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bSauv)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
+    popup_overlay_ajouter_lieu.appendChild(popup_content);
+    document.body.appendChild(popup_overlay_ajouter_lieu);
 }
 
 function sauvegarderAjoutLieu(nom) {
@@ -674,57 +679,83 @@ function sauvegarderAjoutLieu(nom) {
 
 function handleButtonAjoutFournisseurClick() {
     const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-Fournisseur";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000";
+    popup_overlay.id = "popup-overlay-fournisseur";
 
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     const h3 = document.createElement("h3");
     h3.textContent = `Ajout d'un fournisseur`;
 
+    popup_content.appendChild(h3);
+
+    // ligne nom du fournisseur
     const pNom = document.createElement("p");
     pNom.textContent = "Nom du fournisseur *";
+    pNom.className = "obligatoire";
+
     const textNom = document.createElement("input");
     textNom.type = "text";
     textNom.name = "textNomFournisseur";
+    textNom.placeholder = "Nom du fournisseur";
 
+    const ligne_nom_fournisseur = document.createElement("div");
+    ligne_nom_fournisseur.className = "inputGroup";
+    ligne_nom_fournisseur.appendChild(createDivObligatoire(pNom))
+    ligne_nom_fournisseur.appendChild(textNom)
+
+    popup_content.appendChild(ligne_nom_fournisseur);
+
+    // ligne adresse
     const pAdresse = document.createElement("p");
     pAdresse.textContent = "Adresse";
+
     const textAdresse = document.createElement("input");
     textAdresse.type = "text";
     textAdresse.name = "textAdresseFournisseur";
+    textAdresse.placeholder = "Adresse du fournisseur";
 
+    const ligne_adresse = document.createElement("div");
+    ligne_adresse.className = "inputGroup";
+    ligne_adresse.appendChild(pAdresse)
+    ligne_adresse.appendChild(textAdresse)
+
+    popup_content.appendChild(ligne_adresse);
+
+    // ligne numero de telephone
     const pTelephone = document.createElement("p");
     pTelephone.textContent = "Numéro de téléphone";
+
     const textTelephone = document.createElement("input");
     textTelephone.type = "text";
     textTelephone.name = "textTelephoneFournisseur";
+    textTelephone.placeholder = "Numéro de teléphone du fournisseur";
 
+    const ligne_numero = document.createElement("div");
+    ligne_numero.className = "inputGroup";
+    ligne_numero.appendChild(pTelephone)
+    ligne_numero.appendChild(textTelephone)
+
+    popup_content.appendChild(ligne_numero);
+
+    // boutton Annuler
     const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Annuler";
+    const spanOk = document.createElement("span");
+    spanOk.textContent = "Annuler";    
     bAnnuler.id = "AnnulerFournisseur";
+    bAnnuler.className = "cssbuttons-io"
     bAnnuler.addEventListener("click", function () {
-        const popup = document.getElementById("popup-overlay-Fournisseur");
+        const popup = document.getElementById("popup-overlay-fournisseur");
         if (popup) popup.remove();
     });
+    bAnnuler.appendChild(spanOk)
 
+    // boutton Sauvegarder
     const bSauv = document.createElement("button");
-    bSauv.textContent = "Sauvegarder";
+    const spanSauv = document.createElement("span");
+    spanSauv.textContent = "Sauvegarder";
     bSauv.id = "sauvFournisseur";
+    bSauv.className = "cssbuttons-io"
     bSauv.addEventListener("click", function () {
         if (!textNom.value) {
             alert("Veuillez rensigner le nom du fournisseur.");
@@ -732,16 +763,16 @@ function handleButtonAjoutFournisseurClick() {
         }
         sauvegarderAjoutFournisseur(textNom.value, textAdresse.value, textTelephone.value);
     });
+    bSauv.appendChild(spanSauv)
 
-    popup_content.appendChild(h3);
-    popup_content.appendChild(pNom);
-    popup_content.appendChild(textNom);
-    popup_content.appendChild(pAdresse);
-    popup_content.appendChild(textAdresse);
-    popup_content.appendChild(pTelephone);
-    popup_content.appendChild(textTelephone);
-    popup_content.appendChild(bAnnuler);
-    popup_content.appendChild(bSauv);
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bSauv)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay);
 }

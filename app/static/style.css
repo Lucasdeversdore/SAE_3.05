@@ -75,9 +75,9 @@ button:active {
     transform: scale(0.9);
 }
 
-button:hover{
+/* button:hover{
   outline: 2px solid #007BFF;
-}
+} */
 
 .bdisabled{
   background-color: grey;
