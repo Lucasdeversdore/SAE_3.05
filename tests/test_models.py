@@ -228,15 +228,15 @@ class Testing(unittest.TestCase):
         mdp7 = "klfneefn45*\\"
         mdp10 = "AERTS4/M"
         mdp11 = "ADjf45@f"
-        self.assertEqual(check_mdp(mdp1), False)
-        self.assertEqual(check_mdp(mdp2), False)
-        self.assertEqual(check_mdp(mdp3), False)
-        self.assertEqual(check_mdp(mdp4), False)
-        self.assertEqual(check_mdp(mdp5), False)
-        self.assertEqual(check_mdp(mdp6), False)
-        self.assertEqual(check_mdp(mdp7), False)
-        self.assertEqual(check_mdp(mdp10), True)
-        self.assertEqual(check_mdp(mdp11), True)
+        self.assertEqual(check_mdp(mdp1), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp2), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp3), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp4), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp5), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp6), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp7), (False, "mdp doit contenir au moins : 1 majuscule, 1 caractère spécial, 1 chiffre et doit faire au moins 8 caractères"))
+        self.assertEqual(check_mdp(mdp10), (True,""))
+        self.assertEqual(check_mdp(mdp11), (True,""))
 
     def test_convertir_quantite(self):
         with app.app_context():
