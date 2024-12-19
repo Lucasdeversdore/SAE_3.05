@@ -17,16 +17,7 @@
 
         <header>
             <nav class="header_nav">
-                {% block header_nav %}
-                {% endblock %}
-                <div class="utilisateur" >
-                    <form  action="{{ url_for('logout') }}" method="GET">
-                        <button id="lien_logout"><img src="{{url_for('static', filename='images/logout.png')}}" alt ="logout"> Logout</button>
-                    </form>
-                    <form  action="{{ url_for('settings') }}" method="GET">
-                        <button id="settings"><img src="{{url_for('static', filename='images/settings.png')}}" alt ="settings"> Paramètres</button>
-                    </form>
-                </div>
+                {% include 'header.html' %}
             </nav>
         </header>
         <main>

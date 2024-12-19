@@ -1,22 +1,5 @@
 {% extends "base.html" %}
 
-{% block header_nav%}
-    <div class="liens_page">
-            {% if current_user.estPreparateur %}
-            <form  action="{{ url_for('home') }}" method="GET">
-                <button> Gérer les stocks </button>
-            </form>
-            {% else %}
-            <form  action="{{ url_for('home') }}" method="GET">
-                <button> Liste des produits </button>
-            </form>
-            {% endif %}
-            <form  action="{{ url_for('preparation_reservation') }}" method="GET">
-                <button id="lien_reservation"> Liste des réservations </button>
-            </form>
-        </div>
-{% endblock %}
-
 {% block top_main %}
     <h1>Liste des réservations</h1>
     <form action="{{ url_for('search_preparation') }}" method="GET" class="barre_recherche">
