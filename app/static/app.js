@@ -720,3 +720,96 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
+// Fonction pour afficher la popup de montrer un produit
+function handleButtonMontrerProduit(produit, nomProduit) {
+    const popup_overlay_montrer = document.createElement("div");
+    popup_overlay_montrer.id = "popup-overlay-montrer";
+    popup_overlay_montrer.style.position = "fixed";
+    popup_overlay_montrer.style.top = "0";
+    popup_overlay_montrer.style.left = "0";
+    popup_overlay_montrer.style.width = "100%";
+    popup_overlay_montrer.style.height = "100%";
+    popup_overlay_montrer.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    popup_overlay_montrer.style.display = "flex";
+    popup_overlay_montrer.style.justifyContent = "center";
+    popup_overlay_montrer.style.alignItems = "center";
+    popup_overlay_montrer.style.zIndex = "1000";
+
+    // Contenu du popup
+    const popup_content = document.createElement("div");
+    popup_content.style.backgroundColor = "#fff";
+    popup_content.style.padding = "20px";
+    popup_content.style.borderRadius = "5px";
+    popup_content.style.width = "300px";
+    popup_content.style.textAlign = "center";
+
+    // Titre du popup
+    const h3 = document.createElement("h3");
+    h3.textContent = `Souhaitez vous montrer: ${nomProduit} ?`;
+
+    // Bouton Non pour fermer le popup
+    const bNon = document.createElement("button");
+    bNon.textContent = "Non";
+    bNon.id = "non"; // Associez un ID pour le bouton
+    bNon.addEventListener("click", handleButtonNonClick);
+
+
+    // Bouton Oui 
+    const bOui = document.createElement("button");
+    bOui.textContent = "Oui";
+    bOui.id = "oui"; // Associez un ID pour le bouton
+    bOui.data = produit
+    bOui.addEventListener("click", function (){
+        montrerProduit(produit)
+    });
+
+    popup_content.appendChild(h3);
+    popup_content.appendChild(bNon);
+    popup_content.appendChild(bOui);
+    popup_overlay_montrer.appendChild(popup_content);
+    document.body.appendChild(popup_overlay_montrer); 
+
+}
+
+// Fonction pour masquer le popup
+function handleButtonNonClick() {
+    const popup = document.getElementById("popup-overlay-montrer");
+    if (popup) {
+        popup.remove(); 
+    }
+}
+
+
+function montrerProduit(idProduit) {
+
+    fetch(`/montrer/${idProduit}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '/';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const les_buttons = document.getElementsByClassName('remettre_produit');
+    for (let button of les_buttons) {
+        const produitId = button.getAttribute('data-produit');
+        button.addEventListener('click', function() {
+            fetch(`/pop_up_montrer/${produitId}`)
+                .then(response => response.json())
+                .then(data => {
+                    handleButtonMontrerProduit(data.id_produit, data.nomProduit);
+
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+        });
+    }
+});

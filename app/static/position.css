@@ -130,7 +130,7 @@ header button{
     position: relative;
 }
 
-.supp_produit{
+.supp_produit, .remettre_produit{
     padding: 0px;
     width: 1.5em;
     height: 1.5em;
@@ -139,7 +139,7 @@ header button{
     top: 0.3em;
 }
 
-.supp_produit img{
+.supp_produit img, .remettre_produit img{
     width: 100%;
     height: 100%;
 }
