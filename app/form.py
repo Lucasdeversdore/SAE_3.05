@@ -61,6 +61,6 @@ class SettingsForm(FlaskForm):
     old_mdp = PasswordField('Mot de passe') # validators=[DataRequired(), check_mdp_validator]
     mdp = PasswordField('Nouveau mot de passe') # validators=[DataRequired(), check_mdp_validator]
     confirm_mdp = PasswordField('Confirmer nouveau mot de passe') # validators=[DataRequired(), EqualTo('mdp', message='Les mots de passe doivent correspondre')]
-    email_update_status = BooleanField("Je souhaite recevoir un e-mail lorsqu'une de mes commandes est prise en charge")
+    info = BooleanField("Je souhaite recevoir un e-mail lorsqu'une de mes commandes est prise en charge")
     submit = SubmitField("Enregistrer")
 

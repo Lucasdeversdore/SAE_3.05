@@ -93,6 +93,9 @@ class Chimiste(db.Model, UserMixin):
         self.prenom = prenom
         db.session.commit()
 
+    def reception_notif(self):
+        self.info = not self.info
+        db.session.commit()
 
 class Unite(db.Model):
 

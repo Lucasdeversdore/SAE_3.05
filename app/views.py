@@ -113,11 +113,14 @@ def settings():
     if form.validate_on_submit():
         prenom = form.prenom.data
         nom = form.nom.data
+        info = form.info.data
 
         if current_user.nom != nom:
             current_user.changer_nom(nom)
         if current_user.prenom != prenom:
             current_user.changer_prenom(prenom)
+        if current_user.info != info:
+            current_user.reception_notif()
 
     return render_template("settings.html", form=form)
 
