@@ -75,9 +75,9 @@ button:active {
     transform: scale(0.9);
 }
 
-button:hover{
+/* button:hover{
   outline: 2px solid #007BFF;
-}
+} */
 
 .bdisabled{
   background-color: grey;
@@ -98,10 +98,6 @@ a{
 
 img{
   pointer-events: none;
-}
-
-#popup-overlay-info, #popup-overlay-modif, #popup-overlay-Ajout{
-  background-color: rgba(0, 0, 0, 0.7);
 }
 
 #popup-overlay-info > div{
@@ -233,7 +229,7 @@ button{
 
 .hover-text {
   position: absolute;
-  bottom: 80%; /* Le texte apparaît au-dessus de l'élément */
+  bottom: 80%;
   left: 25%;
   transform: translateX(-50%);
   background-color: #555;
@@ -241,13 +237,13 @@ button{
   padding: 5px 10px;
   border-radius: 5px;
   white-space: nowrap;
-  visibility: hidden; /* Caché par défaut */
+  visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .containerObligatoire:hover .hover-text {
-  visibility: visible; /* Rendre visible lorsqu'on survole */
+  visibility: visible;
   opacity: 1;
 }
 
