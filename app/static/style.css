@@ -100,11 +100,6 @@ img{
   pointer-events: none;
 }
 
-#popup-overlay-info > div{
-  border-radius: 5px;
-  background-color: rgb(255, 255, 255);
-}
-
 tr{
     background-color: #f4f4f4;
 }
@@ -156,6 +151,7 @@ th p{
   cursor: pointer;
   padding: 0;
   margin: 0;
+  margin-right: 5%;
 }
 
 .cssbuttons-io span {

@@ -733,8 +733,8 @@ function handleButtonAjoutFournisseurClick() {
 
     const ligne_numero = document.createElement("div");
     ligne_numero.className = "inputGroup";
-    ligne_numero.appendChild(pTelephone)
-    ligne_numero.appendChild(textTelephone)
+    ligne_numero.appendChild(pTelephone);
+    ligne_numero.appendChild(textTelephone);
 
     popup_content.appendChild(ligne_numero);
 
@@ -743,7 +743,7 @@ function handleButtonAjoutFournisseurClick() {
     const spanOk = document.createElement("span");
     spanOk.textContent = "Annuler";    
     bAnnuler.id = "AnnulerFournisseur";
-    bAnnuler.className = "cssbuttons-io"
+    bAnnuler.className = "cssbuttons-io";
     bAnnuler.addEventListener("click", function () {
         const popup = document.getElementById("popup-overlay-fournisseur");
         if (popup) popup.remove();
@@ -820,70 +820,80 @@ function handleButtonReservation(produit, stock, erreur) {
     // Crée le fond du popup
     const popup_overlay = document.createElement("div");
     popup_overlay.id = "popup-overlay-resrev";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000"; 
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     // Titre du popup
     const h3 = document.createElement("h3");
     h3.textContent = `${produit.nomProduit}`;
 
+    popup_content.appendChild(h3);
+
+    // quantité en stock
     const perreur = document.createElement("p")
     perreur.textContent = erreur
-    const pQte = document.createElement("p");
-    pQte.textContent = "Quantite en stock : "+stock.quantiteStocke+produit.nomUnite
-    
-    const pQteReserv = document.createElement("p")
-    pQteReserv.textContent = "Quantite réservée :"
 
+    const pQte = document.createElement("p");
+    pQte.textContent = "Quantité en stock : "+stock.quantiteStocke+produit.nomUnite
+    
+    const ligne_quantite = document.createElement("div");
+    if (erreur){
+        popup_content.appendChild(createDivObligatoire(perreur))
+    }
+    ligne_quantite.appendChild(pQte)
+
+    popup_content.appendChild(ligne_quantite);
+
+    // quantité reservé
+    const pQteReserv = document.createElement("p")
+    pQteReserv.textContent = "Quantite réservée : *"
+    pQteReserv.className = "obligatoire";
 
     const inputQte = document.createElement("input")
     inputQte.id = "inputQte"
     inputQte.name = "inputQte"
     inputQte.type = "number"
     
+    const ligne_quantite_reserve = document.createElement("div");
+    ligne_quantite_reserve.className = "inputGroup";
+    ligne_quantite_reserve.appendChild(createDivObligatoire(pQteReserv))
+    ligne_quantite_reserve.appendChild(inputQte)
 
-    // Bouton Annuler pour fermer le popup
+    popup_content.appendChild(ligne_quantite_reserve);
+
+
+    // Bouton Annuler
     const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Annuler";
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Annuler";
+    bAnnuler.appendChild(spanAnnuler);
     bAnnuler.id = "annuler"; 
+    bAnnuler.className = "cssbuttons-io";
     bAnnuler.addEventListener("click", handleButtonAnnulerClick);
 
+
+    // Bouton Reserver
     const bResrever = document.createElement("button");
-    bResrever.textContent = "Réserver";
+    const spanReserver = document.createElement("span");
+    spanReserver.textContent = "Reserver";
+    bResrever.appendChild(spanReserver);
     bResrever.id = produit.idProduit; 
+    bResrever.className = "cssbuttons-io";
     bResrever.addEventListener("click", function () {
         const quantite = inputQte.value;
         reserverProduit(produit.idProduit, quantite);
     });
     
-    
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bResrever)
+    ligne_bouton.id = "bouton_modif"
 
-    // Assemble les éléments dans le popup
-    popup_content.appendChild(h3);
-    if (erreur){
-        popup_content.appendChild(perreur)
-    }
-    popup_content.appendChild(pQte);
-    popup_content.appendChild(pQteReserv);
-    popup_content.appendChild(inputQte);
-    popup_content.appendChild(bResrever);
-    popup_content.appendChild(bAnnuler);
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }
@@ -895,8 +905,6 @@ function handleButtonAnnulerClick() {
         popup.remove(); 
     }
 }
-
-
 
 // Ajoute un gestionnaire d'événements aux boutons 'info_prod'
 document.addEventListener('DOMContentLoaded', function() {
@@ -955,24 +963,10 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     // Crée le fond du popup
     const popup_overlay = document.createElement("div");
     popup_overlay.id = "popup-overlay-resrev";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000"; 
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     // Titre du popup
     const h3 = document.createElement("h3");
@@ -985,24 +979,34 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     else{
         h3.textContent = "Commande terminé";
     }
+    popup_content.appendChild(h3);
 
     // Bouton Annuler pour fermer le popup
     const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Non";
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Non";
+    bAnnuler.className = "cssbuttons-io";
     bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.appendChild(spanAnnuler)
 
-    const bResrever = document.createElement("button");
-    bResrever.textContent = "Oui";
-    bResrever.addEventListener("click", function() {
+    // Bouton Reserver
+    const bReserver = document.createElement("button");
+    const spanReserver = document.createElement("span");
+    spanReserver.textContent = "Oui";
+    bReserver.appendChild(spanReserver)
+    bReserver.className = "cssbuttons-io"
+    bReserver.addEventListener("click", function() {
         window.location.href = `/etat/commande/${idCommande}/${idChimiste}`;
     });
     
-    
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bReserver)
+    ligne_bouton.id = "bouton_modif"
 
-    // Assemble les éléments dans le popup
-    popup_content.appendChild(h3);
-    popup_content.appendChild(bResrever);
-    popup_content.appendChild(bAnnuler);
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }
@@ -1022,44 +1026,43 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
     // Crée le fond du popup
     const popup_overlay = document.createElement("div");
     popup_overlay.id = "popup-overlay-resrev";
-    popup_overlay.style.position = "fixed";
-    popup_overlay.style.top = "0";
-    popup_overlay.style.left = "0";
-    popup_overlay.style.width = "100%";
-    popup_overlay.style.height = "100%";
-    popup_overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay.style.display = "flex";
-    popup_overlay.style.justifyContent = "center";
-    popup_overlay.style.alignItems = "center";
-    popup_overlay.style.zIndex = "1000"; 
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
 
     // Titre du popup
     const h3 = document.createElement("h3");
     h3.textContent = "Voulez vous supprimer cette commande ?";
 
+    popup_content.appendChild(h3);
+
     // Bouton Annuler pour fermer le popup
     const bAnnuler = document.createElement("button");
-    bAnnuler.textContent = "Non";
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Non";
+    bAnnuler.className = "cssbuttons-io";
     bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.appendChild(spanAnnuler)
 
-    const bResrever = document.createElement("button");
-    bResrever.textContent = "Oui";
-    bResrever.addEventListener("click", function() {
+    // Bouton Reserver
+    const bReserver = document.createElement("button");
+    const spanReserver = document.createElement("span");
+    spanReserver.textContent = "Oui";
+    bReserver.appendChild(spanReserver)
+    bReserver.className = "cssbuttons-io"
+    bReserver.addEventListener("click", function() {
         window.location.href = `/supprimer/reservation/${idCommande}/${idChimiste}`;
     });
 
-    // Assemble les éléments dans le popup
-    popup_content.appendChild(h3);
-    popup_content.appendChild(bResrever);
-    popup_content.appendChild(bAnnuler);
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bReserver)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay.appendChild(popup_content);
     document.body.appendChild(popup_overlay); 
 }

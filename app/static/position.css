@@ -267,7 +267,12 @@ tbody{
     flex-direction: column;
 }
 
-#popup-overlay-modif, #popup-overlay-ajout, #popup-overlay-info, #popup-overlay-lieu, #popup-overlay-fournisseur{
+#popup-overlay-modif, 
+#popup-overlay-ajout, 
+#popup-overlay-info, 
+#popup-overlay-lieu, 
+#popup-overlay-fournisseur,
+#popup-overlay-resrev{
     position: fixed;
     top: 0;
     left: 0;
@@ -315,9 +320,6 @@ tbody{
     justify-content: end;
 }
 
-#okModif, #sauvModif, #AnnulerAjout, #sauvAjout, #AnnulerLieu, #sauvLieu, #AnnulerFournisseur, #sauvFournisseur{
-    margin-right: 5%;
-}
 
 .nomProduit {
     margin-top: 24px;
