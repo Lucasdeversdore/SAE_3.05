@@ -431,23 +431,24 @@ def sauvegarder_ajout_fournisseur():
 
 
 def send_mail_etat(user: Chimiste, commande: Commande):
-    produit = Produit.query.get(commande.idProduit)
-    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+    if user.info:
+        produit = Produit.query.get(commande.idProduit)
+        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
 
-    msg = Message(
-        'Avancement de votre commande de ' + produit.nomProduit,
-        recipients=[user.email],
-        sender='noreply@codejana.com'
-    )
+        msg = Message(
+            'Avancement de votre commande de ' + produit.nomProduit,
+            recipients=[user.email],
+            sender='noreply@codejana.com'
+        )
 
-    # Vérifier le statut de la commande et construire le contenu du message
-    if faire.statutCommande == 'en-cours':
-        # Contenu de l'e-mail en texte brut
-        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
-    else:
-        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
+        # Vérifier le statut de la commande et construire le contenu du message
+        if faire.statutCommande == 'en-cours':
+            # Contenu de l'e-mail en texte brut
+            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
+        else:
+            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
 
-    mail.send(msg)
+        mail.send(msg)
 
 
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
@@ -460,20 +461,21 @@ def etat_commande(idCommande, idChimiste):
 
 
 def send_mail_supp(user: Chimiste, commande:Commande):
-    produit = Produit.query.get(commande.idProduit)
-    faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+    if user.info:
+        produit = Produit.query.get(commande.idProduit)
+        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
 
-    msg = Message(
-        'Avancement de votre commande de ' + produit.nomProduit,
-        recipients=[user.email],
-        sender='noreply@codejana.com'
-    )
+        msg = Message(
+            'Avancement de votre commande de ' + produit.nomProduit,
+            recipients=[user.email],
+            sender='noreply@codejana.com'
+        )
 
-    # Vérifier le statut de la commande et construire le contenu du message
-        # Contenu de l'e-mail en texte brut
-    msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
+        # Vérifier le statut de la commande et construire le contenu du message
+            # Contenu de l'e-mail en texte brut
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
 
-    mail.send(msg)
+        mail.send(msg)
 
 @app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
 def suppr_reservation(idCommande, idChimiste):
