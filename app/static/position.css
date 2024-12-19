@@ -61,20 +61,21 @@ header button{
     margin-bottom: auto;
 }
 
-#ajouter_prod{
+.bouton-ajouter{
     min-width: 15em;
     height: 5em;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    justify-content: space-between;
     padding: 1em;
     margin-top: auto;
     margin-bottom: 1em;
+    text-align: left;
 }
 
-#ajouter_prod img{
+.bouton-ajouter img{
     height: 3em;
+    margin-right: 1em;
 }
 
 .top_main .barre_recherche{
@@ -250,8 +251,11 @@ th div button{
     margin: 0px;
     padding: 0px;
     width: fit-content;
-    margin-right: 0.5em;
 }
+.delete_reservation{
+    margin-right: 0.5em;    
+}
+
 th div img{
     height: 100%;
     display: block;
@@ -263,12 +267,13 @@ tbody{
     flex-direction: column;
 }
 
-#popup-overlay-modif {
+#popup-overlay-modif, #popup-overlay-ajout, #popup-overlay-info, #popup-overlay-lieu, #popup-overlay-fournisseur{
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -296,17 +301,21 @@ tbody{
     justify-content: space-evenly;
 }
 
-.popup-content > div > p, .popup-content > div > input {
+.popup-content > div > *{
     width: 40%;
     box-sizing: border-box;
-    padding: 10px;
+}
+
+.popup-content > div > button{
+    width: auto;
+    box-sizing: border-box;
 }
 
 #bouton_modif {
     justify-content: end;
 }
 
-#okModif, #sauvModif {
+#okModif, #sauvModif, #AnnulerAjout, #sauvAjout, #AnnulerLieu, #sauvLieu, #AnnulerFournisseur, #sauvFournisseur{
     margin-right: 5%;
 }
 
