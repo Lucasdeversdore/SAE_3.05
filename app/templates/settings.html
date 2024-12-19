@@ -2,6 +2,8 @@
 
     {% block head %}
         <link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
     {% endblock %}
 
     {% block header_nav%}
@@ -21,87 +23,96 @@
         </div>
     {% endblock %}
 
-    {% block content %}
-    <form role="form" method="POST" action = "{{ url_for ('settings') }}">
-        {{ form.hidden_tag() }}
-        <ul>
-            <li><h1>Vos paramètres</h1></li>
-            <li id="email">
-                {{ form.email(value=current_user.email) }}
-                {% if form.email.errors %}
-                    <ul class="errors">
-                        {% for error in form.email.errors %}
+    {% block body %}
+    <header>
+        <nav class="header_nav">
+            {% include 'header.html' %}
+        </nav>
+    </header>
+    <main>
+        <section class="content">
+            <form role="form" method="POST" action = "{{ url_for ('settings') }}">
+                {{ form.hidden_tag() }}
+                <ul>
+                    <li><h1>Vos paramètres</h1></li>
+                    <li id="email">
+                        {{ form.email(value=current_user.email) }}
+                        {% if form.email.errors %}
+                        <ul class="errors">
+                            {% for error in form.email.errors %}
                             <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-            <!-- Champs prénom et nom -->
-            <li id="prenom-nom">
-                {{ form.prenom(placeholder="Prénom", value=current_user.prenom) }}
-                {% if form.prenom.errors %}
-                    <ul class="errors">
-                        {% for error in form.prenom.errors %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    <!-- Champs prénom et nom -->
+                    <li id="prenom-nom">
+                        {{ form.prenom(placeholder="Prénom", value=current_user.prenom) }}
+                        {% if form.prenom.errors %}
+                        <ul class="errors">
+                            {% for error in form.prenom.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        {{ form.nom(placeholder="Nom", value=current_user.nom) }}
+                        {% if form.nom.errors %}
+                        <ul class="errors">
+                            {% for error in form.nom.errors %}
                             <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {{ form.nom(placeholder="Nom", value=current_user.nom) }}
-                {% if form.nom.errors %}
-                    <ul class="errors">
-                        {% for error in form.nom.errors %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    <!-- Champ mot de passe -->
+                    <li id="pwd">
+                        {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
+                        {% if form.mdp.errors %}
+                        <ul class="errors">
+                                {% for error in form.mdp.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                    <!-- Champ nouveau mot de passe -->
+                    <li id="pwd">
+                        {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
+                        {% if form.mdp.errors %}
+                        <ul class="errors">
+                            {% for error in form.mdp.errors %}
                             <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-            <!-- Champ mot de passe -->
-            <li id="pwd">
-                {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
-                {% if form.mdp.errors %}
-                    <ul class="errors">
-                        {% for error in form.mdp.errors %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    <!-- Champ confirmation nouveau mot de passe -->
+                    <li id="pwd">
+                        {{ form.confirm_mdp(placeholder="Confirmez votre nouveau mot de passe") }}
+                        {% if form.confirm_mdp.errors %}
+                        <ul class="errors">
+                            {% for error in form.confirm_mdp.errors %}
                             <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-            <!-- Champ nouveau mot de passe -->
-            <li id="pwd">
-                {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
-                {% if form.mdp.errors %}
-                    <ul class="errors">
-                        {% for error in form.mdp.errors %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    <!-- Champ reception email status commande -->
+                    <li id="info">
+                        {{ form.info(checked=current_user.info) }}
+                        {% if form.info.errors %}
+                        <ul class="errors">
+                            {% for error in form.info.errors %}
                             <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-            <!-- Champ confirmation nouveau mot de passe -->
-            <li id="pwd">
-                {{ form.confirm_mdp(placeholder="Confirmez votre nouveau mot de passe") }}
-                {% if form.confirm_mdp.errors %}
-                    <ul class="errors">
-                        {% for error in form.confirm_mdp.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-            <!-- Champ reception email status commande -->
-            <li id="info">
-                {{ form.info(checked=current_user.info) }}
-                {% if form.info.errors %}
-                    <ul class="errors">
-                        {% for error in form.info.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                Recevoir un email quand ma commande change de status
-            </li>
-            <!-- Bouton submit -->
-            <li id="Enregistrer"><button type="submit">Enregistrer</button></li>
-        </ul>
-    </form>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        Recevoir un email quand ma commande change de status
+                    </li>
+                    <!-- Bouton submit -->
+                    <li id="Enregistrer"><button type="submit">Enregistrer</button></li>
+                </ul>
+            </form>
+        </section>
+    </main>
     {% endblock %}

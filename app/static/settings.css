@@ -77,3 +77,11 @@ input {
 .errors li {
     margin-bottom: 2px;
 }
+
+.content{
+    align-items: center;
+}
+
+.content form {
+    width: 50%;
+}
