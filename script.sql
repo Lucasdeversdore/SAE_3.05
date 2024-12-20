@@ -77,6 +77,7 @@ CREATE TABLE CHIMISTE (
     nom VARCHAR(50),
     email VARCHAR(50) UNIQUE,
     mdp VARCHAR(50),
+    info boolean default true,
     estPreparateur boolean default false,
     CONSTRAINT PK_Chimiste PRIMARY KEY (idChimiste)
 );

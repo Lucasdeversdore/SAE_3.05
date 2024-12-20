@@ -8,6 +8,7 @@ from .app import login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
 from .app import  db, app
+from wtforms import ValidationError
 
 
 
@@ -20,17 +21,19 @@ class Chimiste(db.Model, UserMixin):
     nom = Column(Text)
     email = Column(Text)
     mdp = Column(Text)
+    info = Column(Boolean)
     estPreparateur = Column(Boolean)
     chimisteCom = relationship("Commande", back_populates="commandeChim")
     chimisteFaire = relationship("Faire", back_populates="faireChim")
 
 
-    def __init__(self, idChimiste, prenom, nom, email, mdp,  estPreparateur=False):
+    def __init__(self, idChimiste, prenom, nom, email, mdp, estPreparateur=False):
         self.idChimiste = idChimiste
         self.prenom = prenom
         self.nom = nom
         self.email = email
         self.mdp = mdp
+        self.info = True
         self.estPreparateur = estPreparateur
         
     def __str__(self):
@@ -82,7 +85,18 @@ class Chimiste(db.Model, UserMixin):
             return Chimiste(idChimiste=idChimiste, prenom=prenom, nom=nom, email=email, mdp=mdp, estPreparateur=estPreparateur)
         except:
             return None
+    
+    def changer_nom(self, nom):
+        self.nom = nom
+        db.session.commit()
 
+    def changer_prenom(self, prenom):
+        self.prenom = prenom
+        db.session.commit()
+
+    def reception_notif(self):
+        self.info = not self.info
+        db.session.commit()
 
 class Unite(db.Model):
 
@@ -734,6 +748,21 @@ def check_mdp_validator(form, field):
     if not is_valid:  # Si le mot de passe n'est pas valide
         # Affiche le message d'erreur spécifique
         raise ValidationError(error_message)
+
+
+def password_change_validator(form, field):
+    # Champs à valider
+    mdp = form.mdp.data
+    old_mdp = form.old_mdp.data
+    confirm_mdp = form.confirm_mdp.data
+    if mdp:
+        if field == form.old_mdp:
+            if not old_mdp:
+                raise ValidationError("L'ancien mot de passe est requis pour changer le mot de passe.")
+        if field == form.confirm_mdp:
+            if not confirm_mdp:
+                raise ValidationError("Vous devez confirmer le nouveau mot de passe.")
+        check_mdp_validator(form, field)
 
 
 def next_commande_id():

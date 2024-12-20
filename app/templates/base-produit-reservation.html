@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+    {% block head %}
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
+    {% endblock %}
+    
+    {% block body %}
+        <header>
+            <nav class="header_nav">
+                {% include 'header.html' %}
+            </nav>
+        </header>
+        <main>
+            <section class="top_main">
+                {% block top_main %}
+                {% endblock %}
+            </section>
+            <section class="content">
+                {% block content %}
+                {% endblock %}
+            </section>
+        </main>
+        <footer>
+            {% block footer %}
+            {% endblock %}
+        </footer>
+        <script src="{{ url_for('static', filename='app.js')}}"></script>
+    {% endblock %}
+</html>

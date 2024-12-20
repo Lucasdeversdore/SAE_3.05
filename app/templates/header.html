@@ -1,0 +1,23 @@
+
+<div class="liens_page">
+    {% if current_user.estPreparateur %}
+    <form  action="{{ url_for('home') }}" method="GET">
+        <button> Gérer les stocks </button>
+    </form>
+    {% else %}
+    <form  action="{{ url_for('home') }}" method="GET">
+        <button> Liste des produits </button>
+    </form>
+    {% endif %}
+    <form  action="{{ url_for('preparation_reservation') }}" method="GET">
+        <button id="lien_reservation"> Liste des réservations </button>
+    </form>
+</div>
+<div class="utilisateur" >
+    <form  action="{{ url_for('logout') }}" method="GET">
+        <button id="lien_logout"><img src="{{url_for('static', filename='images/logout.png')}}" alt ="logout"> Logout</button>
+    </form>
+    <form  action="{{ url_for('settings') }}" method="GET">
+        <button id="settings"><img src="{{url_for('static', filename='images/settings.png')}}" alt ="settings"> Paramètres</button>
+    </form>
+</div>
