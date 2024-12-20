@@ -1094,7 +1094,7 @@ function handleButtonCacherProduit(produit, nomProduit) {
     const bNon = document.createElement("button");
     bNon.textContent = "Non";
     bNon.id = "non"; // Associez un ID pour le bouton
-    bNon.addEventListener("click", handleButtonNonClick);
+    bNon.addEventListener("click", handleButtonNonSuppClick);
 
 
     // Bouton Oui 
@@ -1122,7 +1122,7 @@ function handleButtonCacherProduit(produit, nomProduit) {
 }
 
 // Fonction pour masquer le popup
-function handleButtonNonClick() {
+function handleButtonNonSuppClick() {
     const popup = document.getElementById("popup-overlay-cacher");
     if (popup) {
         popup.remove(); 
