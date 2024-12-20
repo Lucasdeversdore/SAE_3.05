@@ -29,4 +29,4 @@ loaddb:
 loaddb_test:
 	echo "nomDB = 'test.db'" > nomDB.py
 	sqlite3 test.db ".read script.sql"
-	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev && flask newuser email.dev2@gmail.com A1#45678 dev2 dev2"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev True && flask newuser email.dev2@gmail.com A1#45678 dev2 dev2 True"

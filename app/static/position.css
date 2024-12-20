@@ -135,7 +135,7 @@ header button{
     position: relative;
 }
 
-.supp_produit{
+.supp_produit, .remettre_produit{
     padding: 0px;
     width: 1.5em;
     height: 1.5em;
@@ -144,7 +144,7 @@ header button{
     top: 0.3em;
 }
 
-.supp_produit img{
+.supp_produit img, .remettre_produit img{
     width: 100%;
     height: 100%;
 }
@@ -271,7 +271,12 @@ tbody{
     flex-direction: column;
 }
 
-#popup-overlay-modif, #popup-overlay-ajout, #popup-overlay-info, #popup-overlay-lieu, #popup-overlay-fournisseur{
+#popup-overlay-modif, 
+#popup-overlay-ajout, 
+#popup-overlay-info, 
+#popup-overlay-lieu, 
+#popup-overlay-fournisseur,
+#popup-overlay-resrev{
     position: fixed;
     top: 0;
     left: 0;
@@ -319,9 +324,6 @@ tbody{
     justify-content: end;
 }
 
-#okModif, #sauvModif, #AnnulerAjout, #sauvAjout, #AnnulerLieu, #sauvLieu, #AnnulerFournisseur, #sauvFournisseur{
-    margin-right: 5%;
-}
 
 .nomProduit {
     margin-top: 24px;

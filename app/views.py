@@ -31,7 +31,10 @@ from .models import (
     update_etat,
     delete_reservation,
     ajout_fournisseur_sauvegarde,
-    ajout_lieu_sauvegarde
+    ajout_lieu_sauvegarde,
+    cacher_le_produit,
+    montrer_le_produit
+
 )
 
 from .form import *
@@ -45,6 +48,7 @@ def home():
 @app.route("/<int:id_page>", methods=['GET'])
 @login_required
 def home_page(id_page=1, nb=15):
+    print(1)
     if id_page < 1:
         return redirect("/")
     id_page_max = get_nb_page_max_produits(nb)
@@ -52,6 +56,7 @@ def home_page(id_page=1, nb=15):
         return redirect(url_for('home_page', id_page=id_page_max))
     liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
     return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
+
 
 
 # Route execptionnel pour ne pas afficher /1 comme adresse url
@@ -311,7 +316,6 @@ def popup_reserver_produit(id_produit, erreur=None):
 def reserver_produit(id_produit):
     
     qte = request.args.get("inputQte")
-    print(qte)
     if qte == "":
         qte = 0
     else:
@@ -323,6 +327,7 @@ def reserver_produit(id_produit):
         return jsonify(success=False, message="Quantité non valide"), 400   
 
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
+@login_required
 def get_modif_produit(id_produit):
     
     les_four = Fournisseur.query.all()
@@ -358,6 +363,7 @@ def get_modif_produit(id_produit):
     return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux)     
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
+@login_required
 def sauvegarder_modif(id_produit):
     nom = request.args.get("inputNom")
     four = request.args.get("textFournisseur")
@@ -379,6 +385,7 @@ def searchByButton(id_produit):
     return render_template("home.html", liste_produit_qte=results, actu_id_page=None)
 
 @app.route('/ajout/sauvegarder/', methods=['POST'])
+@login_required
 def sauvegarder_ajout():
     data = request.get_json()
     nom = data.get("textNom")
@@ -390,13 +397,12 @@ def sauvegarder_ajout():
 
     res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
     if res:
-        print("test")
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
-        print("test2")
         return jsonify(success=False, message="Quantité non valide"), 400
     
 @app.route('/ajoutLieu/sauvegarder', methods=['POST'])
+@login_required
 def sauvegarder_ajout_lieu():
     data = request.get_json()
     nom_lieu = data.get("nomLieu")
@@ -411,6 +417,7 @@ def sauvegarder_ajout_lieu():
 
 
 @app.route('/ajoutFournisseur/sauvegarder', methods=['POST'])
+@login_required
 def sauvegarder_ajout_fournisseur():
     data = request.get_json()
     nom_fou = data.get("nomFournisseur")
@@ -452,6 +459,7 @@ def send_mail_etat(user: Chimiste, commande: Commande):
 
 
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
+@login_required
 def etat_commande(idCommande, idChimiste):
     update_etat(idCommande, idChimiste)
     commande = Commande.query.get(idCommande)
@@ -478,6 +486,7 @@ def send_mail_supp(user: Chimiste, commande:Commande):
         mail.send(msg)
 
 @app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
+@login_required
 def suppr_reservation(idCommande, idChimiste):
     chimiste = Chimiste.query.get(idChimiste)
     if chimiste.estPreparateur:
@@ -487,6 +496,40 @@ def suppr_reservation(idCommande, idChimiste):
     delete_reservation(idCommande, idChimiste)
     return redirect(url_for("preparation_reservation"))
 
-# @app.errorhandler(404)
-# def internal_error(error):
-#     return redirect(url_for('home'))
+
+
+@app.route('/pop_up_cacher/<int:id_produit>',  methods=['GET'])
+def pop_up_cacher(id_produit):
+    produit = Produit.query.get(id_produit)
+    return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+
+@app.route('/cacher/<int:id_produit>',  methods=['GET'])
+def cacher(id_produit):
+    res = cacher_le_produit(id_produit)
+    if res:
+        return jsonify(success=True, message="Vous avez caché le produit !"), 200
+    else:
+        return jsonify(success=False, message="Vous n'avez pas caché le produit !"), 400
+    
+@app.route('/pop_up_montrer/<int:id_produit>',  methods=['GET'])
+def pop_up_montrer(id_produit):
+    produit = Produit.query.get(id_produit)
+    return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+
+@app.route('/montrer/<int:id_produit>',  methods=['GET'])
+def montrer(id_produit):
+    res = montrer_le_produit(id_produit)
+    if res:
+        return jsonify(success=True, message="Vous avez montré le produit !"), 200
+    else:
+        return jsonify(success=False, message="Vous n'avez pas montré le produit !"), 400
+    
+
+@app.errorhandler(404)
+def internal_error(error):
+     return redirect(url_for('home'))
+
+@app.errorhandler(405)
+def method_error(error):
+     return redirect(url_for('home'))
+
