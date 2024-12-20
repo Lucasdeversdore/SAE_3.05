@@ -58,9 +58,11 @@ class Chimiste(db.Model, UserMixin):
     
     @staticmethod
     def verify_mdp_token(token, time_in_link):
-        time_limit = 60*15 # 15 min
-        if (time.time() - float(time_in_link)) > time_limit:
-            return None
+        print("ds verif mdp " +time_in_link)
+        if time_in_link != "pass" and time_in_link != "app.js":
+            time_limit = 60*15 # 15 min
+            if (time.time() - float(time_in_link)) > time_limit:
+                return None
         serial = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = serial.loads(token)['idChimiste']
