@@ -384,7 +384,7 @@ function handleButtonAjoutProdfClick() {
 
     // ligne Quantité
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = "Quantiter('ER' MDRRRRRR) disponible *"
+    pQuantite.textContent = "Quantité disponible *"
     pQuantite.className = "obligatoire";
 
     const textQuantite = document.createElement("input");

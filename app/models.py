@@ -716,15 +716,17 @@ def check_mdp_validator(form, field):
 
 def password_change_validator(form, field):
     # Champs à valider
-    old_mdp = form.old_mdp.data
     mdp = form.mdp.data
+    old_mdp = form.old_mdp.data
     confirm_mdp = form.confirm_mdp.data
     if mdp:
-        if not old_mdp:
-            raise ValidationError("L'ancien mot de passe est requis pour changer le mot de passe.")
-        if not confirm_mdp:
-            raise ValidationError("Vous devez confirmer le nouveau mot de passe.")
-        return check_mdp_validator(form, field)
+        if field == form.old_mdp:
+            if not old_mdp:
+                raise ValidationError("L'ancien mot de passe est requis pour changer le mot de passe.")
+        if field == form.confirm_mdp:
+            if not confirm_mdp:
+                raise ValidationError("Vous devez confirmer le nouveau mot de passe.")
+        check_mdp_validator(form, field)
 
 
 def next_commande_id():

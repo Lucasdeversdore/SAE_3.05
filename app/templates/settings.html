@@ -67,9 +67,9 @@
                     <!-- Champ mot de passe -->
                     <li id="pwd">
                         {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
-                        {% if form.mdp.errors %}
+                        {% if form.old_mdp.errors %}
                         <ul class="errors">
-                                {% for error in form.mdp.errors %}
+                                {% for error in form.old_mdp.errors %}
                                 <li>{{ error }}</li>
                                 {% endfor %}
                             </ul>
@@ -107,7 +107,7 @@
                             {% endfor %}
                         </ul>
                         {% endif %}
-                        Recevoir un email quand ma commande change de status
+                        Recevoir les mails facultatifs (Ex: votre commande est prise en charge, votre commande est supprimé)
                     </li>
                     <!-- Bouton submit -->
                     <li id="Enregistrer"><button type="submit">Enregistrer</button></li>

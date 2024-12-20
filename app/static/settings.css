@@ -33,8 +33,8 @@ h1 {
 
 #email input {
     width: 99%;
-    background-clip: padding-box, border-box;
-    background-image: linear-gradient(white, white), linear-gradient(to right, #ff4fa4, #ff8cc4);
+    font-weight: bold;
+    background-color: #ffffff;
 }
 
 #prenom-nom {
@@ -79,7 +79,8 @@ input {
 }
 
 .content{
-    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 .content form {
