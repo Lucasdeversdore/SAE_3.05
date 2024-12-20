@@ -246,7 +246,7 @@ def reset_pwd():
         chimiste_existant = Chimiste.query.filter_by(email=email).first()
         if chimiste_existant:
             send_mail_mdp(chimiste_existant)
-            flash("Rgerdez vos mail pour réinitialiser votre mot de passe.", "info")
+            flash("Regardez vos mail pour réinitialiser votre mot de passe.", "info")
             return redirect(url_for('connection'))
         else:
             form.email.errors.append('Email invalid')
