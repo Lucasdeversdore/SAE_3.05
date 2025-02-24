@@ -53,8 +53,8 @@ ul{
 }
 
 .password-container {
-  position: relative;
-  padding-right: 40px;
+  display: flex;
+  align-items: center;
   border-radius: 6px;
   border: double 1px transparent;
   background-color: #ffdeee;
@@ -74,9 +74,6 @@ ul{
 }
 
 .password-container img {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   cursor: pointer;
   padding: 0.5em;
   width: 1.5em;
