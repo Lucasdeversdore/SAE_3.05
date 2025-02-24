@@ -89,6 +89,7 @@ CREATE TABLE PRODUIT (
     afficher boolean default true,
     fonctionProduit VARCHAR(100),
     idFou int,
+    seuilProduit int,
     CONSTRAINT PK_Produit PRIMARY KEY (idProduit),
     CONSTRAINT FK_Produit_Unite FOREIGN KEY (nomUnite) REFERENCES UNITE (nomUnite),
     CONSTRAINT FK_Produit_Fournisseur FOREIGN KEY (idFou) REFERENCES FOURNISSEUR (idFou)
