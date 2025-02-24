@@ -100,6 +100,7 @@ class Chimiste(db.Model, UserMixin):
         self.info = not self.info
         db.session.commit()
 
+
 class Unite(db.Model):
 
     __tablename__ = "UNITE"
@@ -114,6 +115,7 @@ class Unite(db.Model):
     def __str__(self):
         return self.nomUnite
 
+
 class Produit(db.Model):
 
     __tablename__ = "PRODUIT"
@@ -122,6 +124,7 @@ class Produit(db.Model):
     nomProduit = Column(Text)
     nomUnite = Column(Text, ForeignKey("UNITE.nomUnite"))
     afficher = Column(Boolean)
+    seuilProduit = Column(Integer)
     fonctionProduit = Column(Text)
     idFou = Column(Integer, ForeignKey("FOURNISSEUR.idFou"))
     produitUnite = relationship("Unite", back_populates="uniteProd")
@@ -131,11 +134,12 @@ class Produit(db.Model):
     produitFour = relationship("Fournisseur", back_populates="fournisseurProd")
 
 
-    def __init__(self, idProduit, nomProduit, nomUnite, fonctionProduit, idfou):
+    def __init__(self, idProduit, nomProduit, nomUnite, seuilProduit, fonctionProduit, idfou):
         self.idProduit = idProduit
 
         self.nomProduit = nomProduit
         self.nomUnite = nomUnite
+        self.seuilProduit = seuilProduit
         self.fonctionProduit = fonctionProduit
         self.idFou = idfou
         self.afficher = True
@@ -150,10 +154,12 @@ class Produit(db.Model):
             'idProduit': self.idProduit,
             'nomProduit': self.nomProduit,
             'nomUnite': self.nomUnite,
+            'seuilProduit' : self.seuilProduit,
             'afficher': self.afficher,
             'fonctionProduit' : self.fonctionProduit,
             'idFou':self.idFou
         }
+
 
 class Commande(db.Model):
 
@@ -177,6 +183,15 @@ class Commande(db.Model):
     
     def __str__(self):
         return str(self.idChimiste) + str(self.dateCommande) + str(self.qteCommande)  + str(self.idChimiste) + str(self.idProduit)
+    
+    def to_dict(self):
+        return {
+            'idCommande': self.idCommande,
+            'qteCommande': self.qteCommande,
+            'idChimiste': self.idChimiste,
+            'idProduit': self.idProduit,
+            'dateCommande' : self.dateCommande
+        }
 
 
 class Faire(db.Model):
@@ -196,6 +211,7 @@ class Faire(db.Model):
     
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
+
 
 class Est_Stocker(db.Model):
 
@@ -276,7 +292,8 @@ class Fournisseur(db.Model):
             'adresseFou': self.adresseFou,
             'numTelFou': self.numTelFou
         }
-    
+
+
 class Historique(db.Model):
     __tablename__ = "HISRORIQUE"
 
@@ -343,7 +360,7 @@ def next_prod_id():
     next_id = (max_id or 0) + 1
     return next_id
 
-def add_prod(nom, unite, fonctionProd, four):
+def add_prod(nom, unite, seuil, fonctionProd, four):
     id = next_prod_id()
     add_unite(unite)
     if four:
@@ -352,7 +369,7 @@ def add_prod(nom, unite, fonctionProd, four):
     else:
         id_fou = None
     if nom != "" and nom is not None:
-        prod = Produit(id, nom, unite, fonctionProd, id_fou)
+        prod = Produit(id, nom, unite, seuil, fonctionProd, id_fou)
         db.session.add(prod)
         db.session.commit()
         return id
@@ -772,6 +789,7 @@ def next_commande_id():
     next_id = (max_id or 0) + 1
     return next_id
 
+
 def reserver_prod(id_produit, qte, user):
     """Fonction qui permet de réserver une quantité d'un produit
 
@@ -798,7 +816,36 @@ def reserver_prod(id_produit, qte, user):
             convertir_quantite(id_produit)
             db.session.commit()
             return True
+        
+def save_modif_reserv(id_commande, qte, qte_base):
+    """Fonction qui permet de modifier la quantité d'une réservation
 
+    Args:
+        id_commande (int): l'id de la commande
+        qte (float): la quantité reservé modifié
+        qte_base (float): la quantité reservé de base
+    """
+    print(id_commande)
+    commande = Commande.query.get(id_commande)
+    prod = Produit.query.get(commande.idProduit)
+    if prod:
+        est_stocker =  Est_Stocker.query.filter(Est_Stocker.idProduit == commande.idProduit).first()
+        if est_stocker is None:
+            qte_dispo = qte_base
+        else:
+            qte_dispo = est_stocker.quantiteStocke + qte_base
+        if qte is not None and qte <= qte_dispo and qte > 0:
+            est_stocker.quantiteStocke = qte_dispo
+            db.session.commit()
+
+            qte_restante = qte_dispo-qte
+            est_stocker.quantiteStocke = qte_restante
+            #db.session.add(est_stocker)
+            commande.qteCommande = qte
+            db.session.add(commande)
+            convertir_quantite(commande.idProduit)
+            db.session.commit()
+            return True
 
 def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
     """Fonction qui permet d'ajouter un produit à la bd

@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
 // Fonction pour afficher le popup de modifications de produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
@@ -167,6 +166,24 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     ligne_quantite.appendChild(textQuantite)
 
     popup_content.appendChild(ligne_quantite);
+
+    // Ligne seuil
+    const pSeuil = document.createElement("p");
+    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || null} *`;
+    pSeuil.className = "obligatoire";
+
+    const textSeuil = document.createElement("input");
+    textSeuil.type = "number";
+    textSeuil.name = "textSeuil";
+    textSeuil.placeholder = "Seuil d'alerte";
+    textSeuil.value = produit.seuilProduit || 0;
+
+    const ligne_seuil = document.createElement("div");
+    ligne_seuil.className = "inputGroup";
+    ligne_seuil.appendChild(createDivObligatoire(pSeuil))
+    ligne_seuil.appendChild(textSeuil)
+
+    popup_content.appendChild(ligne_seuil);
 
     // ligne Fonction du produit
     const pFonction = document.createElement("p");
@@ -312,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/modifier/${produitId}`)
                 .then(response => response.json())
                 .then(data => {
-                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker, data.les_fournisseurs, data.les_fonctions, data.les_lieux);
+                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker, data.les_fournisseurs, data.les_fonctions, data.les_lieux, data.seuil);
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
         });
@@ -398,6 +415,24 @@ function handleButtonAjoutProdfClick() {
     ligne_quantite.appendChild(textQuantite)
 
     popup_content.appendChild(ligne_quantite);
+
+    // ligne Seuil
+
+    const pSeuil = document.createElement("p");
+    pSeuil.textContent = "Seuil d'alerte *"
+    pSeuil.className = "obligatoire";
+
+    const textSeuil = document.createElement("input");
+    textSeuil.type = "number";
+    textSeuil.name = "textNewSeuil";
+    textSeuil.placeholder = "Seuil d'alerte";
+
+    const ligne_seuil = document.createElement("div");
+    ligne_seuil.className = "inputGroup";
+    ligne_seuil.appendChild(createDivObligatoire(pSeuil))
+    ligne_seuil.appendChild(textSeuil)
+
+    popup_content.appendChild(ligne_seuil);
     
     // ligne Fonction du produit
     const pFonction = document.createElement("p");
@@ -1076,22 +1111,13 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
 function handleButtonCacherProduit(produit, nomProduit) {
     const popup_overlay_cacher = document.createElement("div");
     popup_overlay_cacher.id = "popup-overlay-cacher";
-    popup_overlay_cacher.style.position = "fixed";
-    popup_overlay_cacher.style.top = "0";
-    popup_overlay_cacher.style.left = "0";
-    popup_overlay_cacher.style.width = "100%";
-    popup_overlay_cacher.style.height = "100%";
-    popup_overlay_cacher.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_cacher.style.display = "flex";
-    popup_overlay_cacher.style.justifyContent = "center";
-    popup_overlay_cacher.style.alignItems = "center";
-    popup_overlay_cacher.style.zIndex = "1000";
 
     const h3 = document.createElement("h3");
     h3.textContent = `Souhaitez vous cacher: ${nomProduit} ?`;
 
     // Bouton Non pour fermer le popup
     const bNon = document.createElement("button");
+    bNon.className = "cssbuttons-io"
     bNon.textContent = "Non";
     bNon.id = "non"; // Associez un ID pour le bouton
     bNon.addEventListener("click", handleButtonNonSuppClick);
@@ -1099,6 +1125,7 @@ function handleButtonCacherProduit(produit, nomProduit) {
 
     // Bouton Oui 
     const bOui = document.createElement("button");
+    bOui.className = "cssbuttons-io"
     bOui.textContent = "Oui";
     bOui.id = "oui"; // Associez un ID pour le bouton
     bOui.data = produit
@@ -1253,3 +1280,134 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// modifier la quantité d'une réservation
+
+// Fonction pour afficher la popup de reservation
+function handleButtonModifReservation(commande, produit, stock, erreur) {
+    // Crée le fond du popup
+    const popup_overlay = document.createElement("div");
+    popup_overlay.id = "popup-overlay-resrev";
+
+    // Contenu du popup
+    const popup_content = document.createElement("div");
+    popup_content.classList.add("popup-content");
+
+    // Titre du popup
+    const h3 = document.createElement("h3");
+    h3.textContent = `${produit.nomProduit}`;
+
+    popup_content.appendChild(h3);
+
+    // quantité en stock
+    const perreur = document.createElement("p")
+    perreur.textContent = erreur
+
+    const pQte = document.createElement("p");
+    let quantite = stock.quantiteStocke + commande.qteCommande
+    pQte.textContent = "Quantité en stock : "+ quantite +produit.nomUnite
+    
+    const ligne_quantite = document.createElement("div");
+    if (erreur){
+        popup_content.appendChild(createDivObligatoire(perreur))
+    }
+    ligne_quantite.appendChild(pQte)
+
+    popup_content.appendChild(ligne_quantite);
+
+    // quantité reservé
+    const pQteReserv = document.createElement("p")
+    pQteReserv.textContent = "Quantite réservée : *"
+    pQteReserv.className = "obligatoire";
+
+    const inputQte = document.createElement("input")
+    inputQte.id = "inputQte"
+    inputQte.name = "inputQte"
+    inputQte.type = "number"
+    inputQte.value = commande.qteCommande
+    
+    const ligne_quantite_reserve = document.createElement("div");
+    ligne_quantite_reserve.className = "inputGroup";
+    ligne_quantite_reserve.appendChild(createDivObligatoire(pQteReserv))
+    ligne_quantite_reserve.appendChild(inputQte)
+
+    popup_content.appendChild(ligne_quantite_reserve);
+
+
+    // Bouton Annuler
+    const bAnnuler = document.createElement("button");
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Annuler";
+    bAnnuler.appendChild(spanAnnuler);
+    bAnnuler.id = "annuler"; 
+    bAnnuler.className = "cssbuttons-io";
+    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+
+
+    // Bouton modifier
+    const bModifier = document.createElement("button");
+    const spanReserver = document.createElement("span");
+    spanReserver.textContent = "Modifier";
+    bModifier.appendChild(spanReserver);
+    bModifier.id = produit.idProduit; 
+    bModifier.className = "cssbuttons-io";
+    bModifier.addEventListener("click", function () {
+        const quantite = inputQte.value;
+        ModifierQteProduit(commande.idCommande, quantite);
+    });
+    
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bModifier)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
+    popup_overlay.appendChild(popup_content);
+    document.body.appendChild(popup_overlay); 
+}
+
+// Fonction pour masquer le popup
+function handleButtonAnnulerClick() {
+    const popup = document.getElementById("popup-overlay-resrev");
+    if (popup) {
+        popup.remove(); 
+    }
+}
+
+// Ajoute un gestionnaire d'événements aux boutons 
+document.addEventListener('DOMContentLoaded', function() {
+    const les_buttons = document.getElementsByClassName('modif_reserv');
+
+    for (let button of les_buttons) {
+        const commandeId = button.getAttribute('data-commande');
+        console.log(commandeId)
+        button.addEventListener('click', function() {
+            // Effectuer la requête fetch au clic pour récupérer les données du produit
+            fetch(`/commande/${commandeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    handleButtonModifReservation(data.commande, data.produit, data.stock);
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+        });
+    }
+}); 
+
+function ModifierQteProduit(CommandeId, quantite) {
+    console.log(CommandeId)
+    fetch(`/commande/modif/${CommandeId}?inputQte=${quantite}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirigez ou mettez à jour l'interface si la réservation est réussie
+                alert(data.message);  // Affiche la confirmation
+                window.location.href = '/preparation/reservations';  
+            } else {
+                // Affiche une alerte en cas d'erreur
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}

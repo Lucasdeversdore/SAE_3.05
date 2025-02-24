@@ -109,12 +109,17 @@ tr:nth-of-type(even) {
 }
 
 th button{
-    border-radius: 15px;
-  font-size: 1em;
+  border-radius: 15px;
 }
 
 th p{
   font-size: 1.5em;
+  margin-bottom: 0.8em;
+}
+
+.modif_reserv{
+  background-color: #6a6a6a;
+  font-weight: bold;
 }
 
 .non-commence{
@@ -196,21 +201,21 @@ th p{
   border-radius: 20px;
 }
 
-th div{
+th > div > div{
   border-radius: 15px;
   user-select: none;
 }
 
-th div:hover{
+th > div > div:hover{
   outline: 2px solid #007BFF;
 }
 
-th div button{
+th div div button{
   background: none;
   border: none;
 }
 
-th div button:hover{
+th div div button:hover{
   outline: none;
 }
 
