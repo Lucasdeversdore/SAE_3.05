@@ -76,6 +76,7 @@
                         {% endif %}
                     </li>
                     <!-- Champ nouveau mot de passe -->
+                    <p>Le mot de passe doit contenir au minimum 8 caractères, 1 majuscule, 1 chiffre et 1 carractère spécial</p>
                     <li id="pwd">
                         {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
                         {% if form.mdp.errors %}

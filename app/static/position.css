@@ -217,11 +217,9 @@ header button{
 table{
     justify-content: center;
     display: flex;
+    width: 100%;
 }
 
-tr{
-    width: 80em;
-}
 
 th{
     padding: 1em;
@@ -230,7 +228,7 @@ th{
 }
 
 th p{
-    margin-bottom: 0px;
+    margin-bottom: 5px;
 }
 
 th form{
@@ -250,12 +248,24 @@ th div{
     height: 1.5em;
     align-items: center;
 }
-th div button{
+th div  button{
     height: 100%;
     margin: 0px;
     padding: 0px;
     width: fit-content;
+    overflow-x: auto;
 }
+
+.modif_reserv{
+    margin-right: 0.5em;
+    display: flex;
+}
+
+.modif_reserv img{
+    margin-right: 0.5em;
+}
+
+
 .delete_reservation{
     margin-right: 0.5em;    
 }
@@ -269,6 +279,7 @@ tbody{
     min-width:fit-content;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 #popup-overlay-modif, 
