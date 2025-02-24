@@ -100,6 +100,7 @@ class Chimiste(db.Model, UserMixin):
         self.info = not self.info
         db.session.commit()
 
+
 class Unite(db.Model):
 
     __tablename__ = "UNITE"
@@ -113,6 +114,7 @@ class Unite(db.Model):
 
     def __str__(self):
         return self.nomUnite
+
 
 class Produit(db.Model):
 
@@ -158,6 +160,7 @@ class Produit(db.Model):
             'idFou':self.idFou
         }
 
+
 class Commande(db.Model):
 
     __tablename__ = "COMMANDE"
@@ -199,6 +202,7 @@ class Faire(db.Model):
     
     def __str__(self):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
+
 
 class Est_Stocker(db.Model):
 
@@ -279,7 +283,8 @@ class Fournisseur(db.Model):
             'adresseFou': self.adresseFou,
             'numTelFou': self.numTelFou
         }
-    
+
+
 class Historique(db.Model):
     __tablename__ = "HISRORIQUE"
 
@@ -346,7 +351,7 @@ def next_prod_id():
     next_id = (max_id or 0) + 1
     return next_id
 
-def add_prod(nom, unite, fonctionProd, four):
+def add_prod(nom, unite, seuil, fonctionProd, four):
     id = next_prod_id()
     add_unite(unite)
     if four:
@@ -355,7 +360,7 @@ def add_prod(nom, unite, fonctionProd, four):
     else:
         id_fou = None
     if nom != "" and nom is not None:
-        prod = Produit(id, nom, unite, fonctionProd, id_fou)
+        prod = Produit(id, nom, unite, seuil, fonctionProd, id_fou)
         db.session.add(prod)
         db.session.commit()
         return id

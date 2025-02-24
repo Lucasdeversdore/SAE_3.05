@@ -276,7 +276,8 @@ tbody{
 #popup-overlay-info, 
 #popup-overlay-lieu, 
 #popup-overlay-fournisseur,
-#popup-overlay-resrev{
+#popup-overlay-resrev,
+#popup-overlay-cacher{
     position: fixed;
     top: 0;
     left: 0;

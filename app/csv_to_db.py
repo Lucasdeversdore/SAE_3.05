@@ -53,12 +53,13 @@ def csv_to_db(filename):
                     else: 
                         prod_fonction = row[3]
                     lieu = row[4]
-                    add_prod(nom_prod, unite, prod_fonction, nom_fou)
+                    seuil = row[5]
+                    add_prod(nom_prod, unite, seuil, prod_fonction, nom_fou)
                     add_lieu_stock(lieu)
                     id_prod = next_prod_id() -1
                     id_lieu= get_id_lieu(lieu)
                     add_est_stocker(id_prod, id_lieu, qte)
-                if row == ['Produits', 'Fournisseur', 'Quantité', 'Fonction', 'Lieu de stockage']:
+                if row == ['Produits', 'Fournisseur', 'Quantité', 'Fonction', 'Lieu de stockage', 'Seuil']:
                     demarer = True
         except csv.Error as e:
             sys.exit('file {}, line {}: {}'.format(filename, reader.line_num, e))
