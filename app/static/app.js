@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
 // Fonction pour afficher le popup de modifications de produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
@@ -167,6 +166,24 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     ligne_quantite.appendChild(textQuantite)
 
     popup_content.appendChild(ligne_quantite);
+
+    // Ligne seuil
+    const pSeuil = document.createElement("p");
+    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || null} *`;
+    pSeuil.className = "obligatoire";
+
+    const textSeuil = document.createElement("input");
+    textSeuil.type = "number";
+    textSeuil.name = "textSeuil";
+    textSeuil.placeholder = "Seuil d'alerte";
+    textSeuil.value = produit.seuilProduit || 0;
+
+    const ligne_seuil = document.createElement("div");
+    ligne_seuil.className = "inputGroup";
+    ligne_seuil.appendChild(createDivObligatoire(pSeuil))
+    ligne_seuil.appendChild(textSeuil)
+
+    popup_content.appendChild(ligne_seuil);
 
     // ligne Fonction du produit
     const pFonction = document.createElement("p");
@@ -272,8 +289,9 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bSauv)
+    ligne_bouton.appendChild(bAnnuler)
+
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -312,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/modifier/${produitId}`)
                 .then(response => response.json())
                 .then(data => {
-                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker, data.les_fournisseurs, data.les_fonctions, data.les_lieux);
+                    handleButtonModifClick(data.produit, data.lieu, data.fournisseur, data.est_stocker, data.les_fournisseurs, data.les_fonctions, data.les_lieux, data.seuil);
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
         });
@@ -398,6 +416,24 @@ function handleButtonAjoutProdfClick() {
     ligne_quantite.appendChild(textQuantite)
 
     popup_content.appendChild(ligne_quantite);
+
+    // ligne Seuil
+
+    const pSeuil = document.createElement("p");
+    pSeuil.textContent = "Seuil d'alerte *"
+    pSeuil.className = "obligatoire";
+
+    const textSeuil = document.createElement("input");
+    textSeuil.type = "number";
+    textSeuil.name = "textNewSeuil";
+    textSeuil.placeholder = "Seuil d'alerte";
+
+    const ligne_seuil = document.createElement("div");
+    ligne_seuil.className = "inputGroup";
+    ligne_seuil.appendChild(createDivObligatoire(pSeuil))
+    ligne_seuil.appendChild(textSeuil)
+
+    popup_content.appendChild(ligne_seuil);
     
     // ligne Fonction du produit
     const pFonction = document.createElement("p");
@@ -461,8 +497,8 @@ function handleButtonAjoutProdfClick() {
 
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bSauv)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -645,8 +681,8 @@ function handleButtonAjoutLieuClick() {
 
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bSauv)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -767,8 +803,8 @@ function handleButtonAjoutFournisseurClick() {
 
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bSauv)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -1076,22 +1112,13 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
 function handleButtonCacherProduit(produit, nomProduit) {
     const popup_overlay_cacher = document.createElement("div");
     popup_overlay_cacher.id = "popup-overlay-cacher";
-    popup_overlay_cacher.style.position = "fixed";
-    popup_overlay_cacher.style.top = "0";
-    popup_overlay_cacher.style.left = "0";
-    popup_overlay_cacher.style.width = "100%";
-    popup_overlay_cacher.style.height = "100%";
-    popup_overlay_cacher.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_cacher.style.display = "flex";
-    popup_overlay_cacher.style.justifyContent = "center";
-    popup_overlay_cacher.style.alignItems = "center";
-    popup_overlay_cacher.style.zIndex = "1000";
 
     const h3 = document.createElement("h3");
     h3.textContent = `Souhaitez vous cacher: ${nomProduit} ?`;
 
     // Bouton Non pour fermer le popup
     const bNon = document.createElement("button");
+    bNon.className = "cssbuttons-io"
     bNon.textContent = "Non";
     bNon.id = "non"; // Associez un ID pour le bouton
     bNon.addEventListener("click", handleButtonNonSuppClick);
@@ -1099,6 +1126,7 @@ function handleButtonCacherProduit(produit, nomProduit) {
 
     // Bouton Oui 
     const bOui = document.createElement("button");
+    bOui.className = "cssbuttons-io"
     bOui.textContent = "Oui";
     bOui.id = "oui"; // Associez un ID pour le bouton
     bOui.data = produit
