@@ -291,7 +291,6 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     const ligne_bouton = document.createElement("div");
     ligne_bouton.appendChild(bSauv)
     ligne_bouton.appendChild(bAnnuler)
-
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -924,8 +923,8 @@ function handleButtonReservation(produit, stock, erreur) {
     
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bResrever)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -1037,8 +1036,8 @@ function handleButtonEtatCommande(idCommande, idChimiste, etat) {
     
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bReserver)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -1096,8 +1095,8 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
 
     // ligne de bouton
     const ligne_bouton = document.createElement("div");
-    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.appendChild(bReserver)
+    ligne_bouton.appendChild(bAnnuler)
     ligne_bouton.id = "bouton_modif"
 
     popup_content.appendChild(ligne_bouton);
@@ -1142,8 +1141,8 @@ function handleButtonCacherProduit(produit, nomProduit) {
     popup_content.style.textAlign = "center";
 
     popup_content.appendChild(h3);
-    popup_content.appendChild(bNon);
     popup_content.appendChild(bOui);
+    popup_content.appendChild(bNon);
     popup_overlay_cacher.appendChild(popup_content);
     document.body.appendChild(popup_overlay_cacher); 
 
@@ -1235,8 +1234,8 @@ function handleButtonMontrerProduit(produit, nomProduit) {
     });
 
     popup_content.appendChild(h3);
-    popup_content.appendChild(bNon);
     popup_content.appendChild(bOui);
+    popup_content.appendChild(bNon);
     popup_overlay_montrer.appendChild(popup_content);
     document.body.appendChild(popup_overlay_montrer); 
 
