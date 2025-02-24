@@ -97,7 +97,8 @@ a{
 }
 
 img{
-  pointer-events: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
 }
 
 tr{

@@ -234,6 +234,7 @@ def send_mail_mdp(user: Chimiste):
                 '''
 
     mail.send(msg)
+    print(msg)
 
 
 

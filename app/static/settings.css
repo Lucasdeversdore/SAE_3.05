@@ -27,7 +27,7 @@ h1 {
     width: 99%;
 }
 
-#email, #pwd {
+#email, #pwd, #pwdNew, #pwdConf {
     margin-bottom: 4%;
 }
 
@@ -85,4 +85,36 @@ input {
 
 .content form {
     width: 50%;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  border: double 1px transparent;
+  background-color: #ffdeee;
+}
+  
+.password-container input {
+  background-color: #ffdeee;
+  border: none;
+}
+  
+.password-container input:focus{
+  outline: none;
+}
+  
+.password-container:focus-within {
+  outline: 2px solid;
+}
+  
+.password-container img {
+  cursor: pointer;
+  padding: 0.5em;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+#pwd input, #pwdConf input, #pwdNew input{
+    width: 99%
 }

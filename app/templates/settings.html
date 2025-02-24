@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
     {% block head %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
         <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
         <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
+        <script defer src="static/app.js"></script>
     {% endblock %}
 
     {% block header_nav%}
@@ -66,7 +67,10 @@
                     </li>
                     <!-- Champ mot de passe -->
                     <li id="pwd">
-                        {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
+                        <div class="password-container">
+                            {{ form.old_mdp(placeholder="Entrez votre mot de passe") }}
+                            <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                        </div>
                         {% if form.old_mdp.errors %}
                         <ul class="errors">
                                 {% for error in form.old_mdp.errors %}
@@ -77,8 +81,11 @@
                     </li>
                     <!-- Champ nouveau mot de passe -->
                     <p>Le mot de passe doit contenir au minimum 8 caractères, 1 majuscule, 1 chiffre et 1 carractère spécial</p>
-                    <li id="pwd">
-                        {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
+                    <li id="pwdNew">
+                        <div class="password-container">
+                            {{ form.mdp(placeholder="Entrez votre nouveau mot de passe") }}
+                            <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                        </div>
                         {% if form.mdp.errors %}
                         <ul class="errors">
                             {% for error in form.mdp.errors %}
@@ -88,8 +95,11 @@
                         {% endif %}
                     </li>
                     <!-- Champ confirmation nouveau mot de passe -->
-                    <li id="pwd">
-                        {{ form.confirm_mdp(placeholder="Confirmez votre nouveau mot de passe") }}
+                    <li id="pwdConf">
+                        <div class="password-container">
+                            {{ form.confirm_mdp(placeholder="Confirmez votre nouveau mot de passe") }}
+                            <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                        </div>
                         {% if form.confirm_mdp.errors %}
                         <ul class="errors">
                             {% for error in form.confirm_mdp.errors %}

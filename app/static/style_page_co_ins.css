@@ -7,17 +7,12 @@ ul{
       -webkit-background-clip: text; /* Clip le fond au texte pour les navigateurs Webkit */
       -webkit-text-fill-color: transparent; /* Rend le texte transparent pour laisser le dégradé apparaître */
   }
-  
-  
-  input{
+
+  #email input {
     border-radius: 6px;
     border: double 1px transparent;
     background-color: #ffdeee;
-  }
-  
-  
-  
-  #email input {
+    
     background-origin: border-box;
     background-clip: padding-box, border-box; 
     background-image: linear-gradient(white, white), 
@@ -25,6 +20,10 @@ ul{
   }
 
   #prenom-nom input {
+    border-radius: 6px;
+    border: double 1px transparent;
+    background-color: #ffdeee;
+    
     background-origin: border-box;
     background-clip: padding-box, border-box; 
     background-image: linear-gradient(white, white), 
@@ -33,6 +32,10 @@ ul{
   
   
   #paragraphe input{
+    border-radius: 6px;
+    border: double 1px transparent;
+    background-color: #ffdeee;
+    
     background-image: linear-gradient(to right, #ff4fa4, #ff8cc4), linear-gradient(white, white);
     background-origin: border-box;
     
@@ -49,3 +52,30 @@ ul{
     margin-bottom: 2px;
 }
 
+.password-container {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  border: double 1px transparent;
+  background-color: #ffdeee;
+}
+
+.password-container input {
+  background-color: #ffdeee;
+  border: none;
+}
+
+.password-container input:focus{
+  outline: none;
+}
+
+.password-container:focus-within {
+  outline: 2px solid;
+}
+
+.password-container img {
+  cursor: pointer;
+  padding: 0.5em;
+  width: 1.5em;
+  height: 1.5em;
+}

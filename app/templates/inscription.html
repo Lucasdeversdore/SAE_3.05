@@ -8,6 +8,7 @@
         {% endblock %}
         <link rel="stylesheet" href="{{ url_for('static', filename='position_page_co_ins.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='style_page_co_ins.css') }}">
+        <script defer src="static/app.js"></script>
     </head>
     <body>
         <main class="main_co_ins">
@@ -68,7 +69,10 @@
                         <!-- Champ mot de passe -->
                         <p>Le mot de passe doit contenir au minimum 8 caractères, 1 majuscule, 1 chiffre et 1 carractère spécial</p>
                         <li id="pwd">
-                            {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                            <div class="password-container">
+                                {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                                <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                            </div>
                             {% if form.mdp.errors %}
                                 <ul class="errors">
                                     {% for error in form.mdp.errors %}
@@ -79,8 +83,11 @@
                         </li>
 
                         <!-- Champ confirmation mot de passe -->
-                        <li id="pwd">
-                            {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                        <li id="pwdConf">
+                            <div class="password-container">
+                                {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                                <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                            </div>
                             {% if form.confirm_mdp.errors %}
                                 <ul class="errors">
                                     {% for error in form.confirm_mdp.errors %}
@@ -114,6 +121,5 @@
                 <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
             </section>
         </main>
-        <script src="app.js"></script>
     </body>
 </html>
