@@ -159,7 +159,10 @@ def cgu():
 def send_mail_activation(user:Chimiste):
     token=user.get_token()
     time_in_link = time.time()
-    reset_url = url_for('activation_token', token=token, time_in_link=time_in_link, _external=True)
+
+    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
+
+    reset_url = url_for('activation_token', token=token, time_in_link=encoded_time, _external=True)
     
     msg = Message(
         'Activation de votre compte Stockage Chimie',
@@ -184,7 +187,10 @@ def send_mail_activation(user:Chimiste):
 
 @app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
 def activation_token(token, time_in_link):
-    user=Chimiste.verify_activation_token(token, time_in_link)
+
+    decoded_time = base64.urlsafe_b64decode(time_in_link).decode()
+
+    user=Chimiste.verify_activation_token(token, decoded_time)
     if user is None:
         flash('Token invalide ou expiré. Veulliez réessayer de vous inscrire.', "info")
         return redirect(url_for('inscrire'))
