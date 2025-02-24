@@ -177,6 +177,7 @@ def send_mail_activation(user:Chimiste):
                 </html>
                 '''
     mail.send(msg)
+    print(msg)
 
 
 @app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
@@ -232,6 +233,7 @@ def send_mail_mdp(user: Chimiste):
                 '''
 
     mail.send(msg)
+    print(msg)
 
 
 

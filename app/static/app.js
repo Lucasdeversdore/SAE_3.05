@@ -1269,7 +1269,6 @@ function hideShowPassword(elem){
 
 let password = document.getElementById('pwd')
 if (password){
-    console.log(password);
     password.querySelector('.toggle').onclick = () => hideShowPassword(password);
 }
 
