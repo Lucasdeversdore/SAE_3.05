@@ -41,6 +41,9 @@
                         {{ texte_etat }}
                     {% endif %}
                 </div>
+                {% if not current_user.estPreparateur %}
+                    <button class="modif_reserv" data-commande="{{reservation.idCommande}}">modifier réservations</button>
+                {% endif %}
             </th>
         </tr>
     {% endfor %}

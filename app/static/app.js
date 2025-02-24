@@ -1253,3 +1253,134 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// modifier la quantité d'une réservation
+
+// Fonction pour afficher la popup de reservation
+function handleButtonModifReservation(commande, produit, stock, erreur) {
+    // Crée le fond du popup
+    const popup_overlay = document.createElement("div");
+    popup_overlay.id = "popup-overlay-resrev";
+
+    // Contenu du popup
+    const popup_content = document.createElement("div");
+    popup_content.classList.add("popup-content");
+
+    // Titre du popup
+    const h3 = document.createElement("h3");
+    h3.textContent = `${produit.nomProduit}`;
+
+    popup_content.appendChild(h3);
+
+    // quantité en stock
+    const perreur = document.createElement("p")
+    perreur.textContent = erreur
+
+    const pQte = document.createElement("p");
+    let quantite = stock.quantiteStocke + commande.qteCommande
+    pQte.textContent = "Quantité en stock : "+ quantite +produit.nomUnite
+    
+    const ligne_quantite = document.createElement("div");
+    if (erreur){
+        popup_content.appendChild(createDivObligatoire(perreur))
+    }
+    ligne_quantite.appendChild(pQte)
+
+    popup_content.appendChild(ligne_quantite);
+
+    // quantité reservé
+    const pQteReserv = document.createElement("p")
+    pQteReserv.textContent = "Quantite réservée : *"
+    pQteReserv.className = "obligatoire";
+
+    const inputQte = document.createElement("input")
+    inputQte.id = "inputQte"
+    inputQte.name = "inputQte"
+    inputQte.type = "number"
+    inputQte.value = commande.qteCommande
+    
+    const ligne_quantite_reserve = document.createElement("div");
+    ligne_quantite_reserve.className = "inputGroup";
+    ligne_quantite_reserve.appendChild(createDivObligatoire(pQteReserv))
+    ligne_quantite_reserve.appendChild(inputQte)
+
+    popup_content.appendChild(ligne_quantite_reserve);
+
+
+    // Bouton Annuler
+    const bAnnuler = document.createElement("button");
+    const spanAnnuler = document.createElement("span");
+    spanAnnuler.textContent = "Annuler";
+    bAnnuler.appendChild(spanAnnuler);
+    bAnnuler.id = "annuler"; 
+    bAnnuler.className = "cssbuttons-io";
+    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+
+
+    // Bouton modifier
+    const bModifier = document.createElement("button");
+    const spanReserver = document.createElement("span");
+    spanReserver.textContent = "Modifier";
+    bModifier.appendChild(spanReserver);
+    bModifier.id = produit.idProduit; 
+    bModifier.className = "cssbuttons-io";
+    bModifier.addEventListener("click", function () {
+        const quantite = inputQte.value;
+        ModifierQteProduit(commande.idCommande, quantite);
+    });
+    
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bAnnuler)
+    ligne_bouton.appendChild(bModifier)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
+    popup_overlay.appendChild(popup_content);
+    document.body.appendChild(popup_overlay); 
+}
+
+// Fonction pour masquer le popup
+function handleButtonAnnulerClick() {
+    const popup = document.getElementById("popup-overlay-resrev");
+    if (popup) {
+        popup.remove(); 
+    }
+}
+
+// Ajoute un gestionnaire d'événements aux boutons 
+document.addEventListener('DOMContentLoaded', function() {
+    const les_buttons = document.getElementsByClassName('modif_reserv');
+
+    for (let button of les_buttons) {
+        const commandeId = button.getAttribute('data-commande');
+        console.log(commandeId)
+        button.addEventListener('click', function() {
+            // Effectuer la requête fetch au clic pour récupérer les données du produit
+            fetch(`/commande/${commandeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    handleButtonModifReservation(data.commande, data.produit, data.stock);
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+        });
+    }
+}); 
+
+function ModifierQteProduit(CommandeId, quantite) {
+    console.log(CommandeId)
+    fetch(`/commande/modif/${CommandeId}?inputQte=${quantite}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirigez ou mettez à jour l'interface si la réservation est réussie
+                alert(data.message);  // Affiche la confirmation
+                window.location.href = '/preparation/reservations';  
+            } else {
+                // Affiche une alerte en cas d'erreur
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}
