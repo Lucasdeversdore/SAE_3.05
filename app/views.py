@@ -17,6 +17,7 @@ from .models import (
     get_sample_reservation_chimiste,
     next_chimiste_id,
     next_prod_id,
+    save_modif_reserv,
     search_filter,
     search_famille_filter,
     search_chimiste_filter,
@@ -329,6 +330,30 @@ def reserver_produit(id_produit):
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400   
+    
+
+@app.route('/commande/<int:id_commande>', methods=['GET'])
+@login_required
+def popup_modifier_commande(id_commande, erreur=None):
+    commande=Commande.query.get(id_commande).to_dict()
+    produit = Produit.query.get(commande["idProduit"]).to_dict()
+    stock=Est_Stocker.query.filter(Est_Stocker.idProduit == commande["idProduit"]).first().to_dict()
+    return jsonify(commande=commande, produit=produit, stock=stock, erreur=erreur)
+    
+@app.route('/commande/modif/<int:id_commande>', methods=('GET',))
+@login_required
+def modifier_reserv(id_commande):
+    commande = Commande.query.get(id_commande)
+    qte = request.args.get("inputQte")
+    if qte == "":
+        qte = 0
+    else:
+        qte = float(qte)
+    res = save_modif_reserv(id_commande, qte, commande.qteCommande)
+    if res:
+        return jsonify(success=True, message="Modification réussie !"), 200
+    else:
+        return jsonify(success=False, message="Quantité non valide"), 400 
 
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
 @login_required
@@ -359,7 +384,6 @@ def get_modif_produit(id_produit):
     lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
 
     id_fou = produit["idFou"]
-    print(id_fou)
     if id_fou is None:
         fournisseur = ""
     else:
