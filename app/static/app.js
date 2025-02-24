@@ -1254,10 +1254,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function hideShowPassword(){
-    let li = document.getElementById('pwd');
-    let input = li.querySelector('#mdp');
-    let img = li.querySelector('#toggle');
+function hideShowPassword(elem){
+    let input = elem.querySelector('#mdp');
+    if (!input){
+        input = elem.querySelector('#confirm_mdp')
+    }
+    let img = elem.querySelector('#toggle');
     if (input.type == "password"){
         input.type = "text"
         img.src = "/static/images/afficher.png"
@@ -1267,7 +1269,12 @@ function hideShowPassword(){
         img.src = "/static/images/cacher.png"
     }
 }
-let toggle = document.getElementById('toggle')
-if (toggle){
-    toggle.onclick = () => hideShowPassword();
+let password = document.getElementById('pwd')
+if (password){
+    password.querySelector('#toggle').onclick = () => hideShowPassword(password);
+}
+
+let passwordConf = document.getElementById('pwdConf')
+if (passwordConf){
+    passwordConf.querySelector('#toggle').onclick = () => hideShowPassword(passwordConf);
 }
