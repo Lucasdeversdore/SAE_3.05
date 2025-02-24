@@ -250,12 +250,23 @@ th div{
     height: 1.5em;
     align-items: center;
 }
-th div button{
+th div  button{
     height: 100%;
     margin: 0px;
     padding: 0px;
     width: fit-content;
 }
+
+.modif_reserv{
+    margin-right: 0.5em;
+    display: flex;
+}
+
+.modif_reserv img{
+    margin-right: 0.5em;
+}
+
+
 .delete_reservation{
     margin-right: 0.5em;    
 }
