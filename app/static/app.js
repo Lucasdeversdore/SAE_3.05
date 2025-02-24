@@ -1253,3 +1253,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function hideShowPassword(){
+    let li = document.getElementById('pwd');
+    let input = li.querySelector('#mdp');
+    let img = li.querySelector('#toggle');
+    if (input.type == "password"){
+        input.type = "text"
+        img.src = "/static/images/afficher.png"
+    }
+    else{
+        input.type = "password"
+        img.src = "/static/images/cacher.png"
+    }
+}
+let toggle = document.getElementById('toggle')
+if (toggle){
+    toggle.onclick = () => hideShowPassword();
+}
