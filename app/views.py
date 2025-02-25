@@ -1,4 +1,5 @@
 from hashlib import sha256
+import base64
 import time
 from .app import app, db, mail
 from flask_login import login_required, login_user, logout_user, current_user
@@ -158,7 +159,10 @@ def cgu():
 def send_mail_activation(user:Chimiste):
     token=user.get_token()
     time_in_link = time.time()
-    reset_url = url_for('activation_token', token=token, time_in_link=time_in_link, _external=True)
+
+    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
+
+    reset_url = url_for('activation_token', token=token, time_in_link=encoded_time, _external=True)
     
     msg = Message(
         'Activation de votre compte Stockage Chimie',
@@ -183,7 +187,10 @@ def send_mail_activation(user:Chimiste):
 
 @app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
 def activation_token(token, time_in_link):
-    user=Chimiste.verify_activation_token(token, time_in_link)
+
+    decoded_time = base64.urlsafe_b64decode(time_in_link).decode()
+
+    user=Chimiste.verify_activation_token(token, decoded_time)
     if user is None:
         flash('Token invalide ou expiré. Veulliez réessayer de vous inscrire.', "info")
         return redirect(url_for('inscrire'))
@@ -212,8 +219,11 @@ def connection():
 def send_mail_mdp(user: Chimiste):
     token = user.get_token()
     time_in_link = time.time()
+
+    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
+
     print("envoie mail " + str(time_in_link))
-    reset_url = url_for('reset_token', token=token, time_in_link=time_in_link, _external=True)
+    reset_url = url_for('reset_token', token=token, time_in_link=encoded_time, _external=True)
 
     msg = Message(
         'Demande de réinitialisation de mot de passe',
@@ -258,8 +268,12 @@ def reset_pwd():
 @app.route('/reset_pwd/<token>/<time_in_link>', methods=['GET', 'POST'])
 def reset_token(token, time_in_link):
     print(time_in_link)
+
+
+    # Décoder plus tard
+    decoded_time = base64.urlsafe_b64decode(time_in_link).decode()
     
-    user=Chimiste.verify_mdp_token(token=token, time_in_link=time_in_link)
+    user=Chimiste.verify_mdp_token(token=token, time_in_link=decoded_time)
     if user is None:
         flash('Token invalide ou expiré. Veulliez réessayer.', 'info')
         return redirect(url_for('reset_pwd'))
@@ -273,7 +287,7 @@ def reset_token(token, time_in_link):
         db.session.commit()
         flash("Votre mot de passe à été changé avec succès.","info" )
         return redirect(url_for("connection"))
-    print("page change password "+time_in_link)
+    print("page change password "+decoded_time)
     return render_template('change_password.html', form=form, token=token)
 
 @app.route("/logout/")
