@@ -5,22 +5,28 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo
 from wtforms import HiddenField, PasswordField, StringField
 from app.models import Chimiste
 
-class LoginForm ( FlaskForm ):
+class LoginForm(FlaskForm):
     email = StringField('email')
     mdp = PasswordField('Password')
     next = HiddenField()
+
     def get_authenticated_user(self):
         user = Chimiste.query.filter(Chimiste.email == self.email.data).first()
+        
         if user is None:
-            self.email.errors.append("Email incorrect")
+            self.email.errors = tuple(self.email.errors) + ("Email incorrect",)  # Ajout correct
             return False
+        
         m = sha256()
         m.update(self.mdp.data.encode())
         passwd = m.hexdigest()
+        
         if passwd == user.mdp:
-            return user  
-        self.mdp.errors.append("Mot de passe incorrect")
+            return user
+        
+        self.mdp.errors = tuple(self.mdp.errors) + ("Mot de passe incorrect",)  # Ajout correct
         return False
+
 
 
 from flask_wtf import FlaskForm

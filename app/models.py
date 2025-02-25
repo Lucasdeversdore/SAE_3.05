@@ -825,7 +825,6 @@ def save_modif_reserv(id_commande, qte, qte_base):
         qte (float): la quantité reservé modifié
         qte_base (float): la quantité reservé de base
     """
-    print(id_commande)
     commande = Commande.query.get(id_commande)
     prod = Produit.query.get(commande.idProduit)
     if prod:
@@ -847,7 +846,7 @@ def save_modif_reserv(id_commande, qte, qte_base):
             db.session.commit()
             return True
 
-def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+def ajout_sauvegarde(nom, nom_fournisseur,unite,seuil, quantite, fonction, lieu):
     """Fonction qui permet d'ajouter un produit à la bd
 
     Args:
@@ -862,7 +861,7 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         bool: True si l'ajout du produit se passe bien
     """
     
-    if add_prod(nom, unite, fonction, nom_fournisseur):
+    if add_prod(nom, unite, seuil, fonction, nom_fournisseur):
         prod = Produit.query.get(next_prod_id()-1)
         id_prod = prod.idProduit
         le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()

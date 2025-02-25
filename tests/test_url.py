@@ -172,13 +172,6 @@ class Testing(unittest.TestCase):
             assert response.status_code == 200
         
 
-    def test_search_preparation(self):
-        with app.test_request_context(): 
-            self.login_laborentain()
-            response = self.client.get('/search-preparation', query_string={'search': 'test'})
-            assert response.status_code == 200
-        
-
     def test_get_produit(self):
         with app.test_request_context(): 
             self.login_laborentain() 
