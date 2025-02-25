@@ -308,7 +308,7 @@ function handleButtonOKModifClick() {
 }
 
 function sauvegarderProduit(idProduit, nom, nom_fournisseur, quantite, fonction, lieu) {
-    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
+    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textSeuil=${encodeURIComponent(seuil)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -514,7 +514,7 @@ function handleButtonAnnulerAjoutClick() {
     }
 }
 
-function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction, lieu) {
+function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, seuil, quantite, fonction, lieu) {
     fetch('/ajout/sauvegarder', {
         method: 'POST',
         headers: {
@@ -524,6 +524,7 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction
             textNom: nom,
             textFournisseur: nom_fournisseur,
             textUnite: unite,
+            textSeuil: seuil,
             textQuantite: quantite,
             textFonction: fonction,
             textLieu: lieu

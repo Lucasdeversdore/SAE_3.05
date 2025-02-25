@@ -6,11 +6,16 @@ import os.path
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
-
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import time
+import logging
 import nomDB
+from flask_caching import Cache
 
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache'})
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 app.config['SECRET_KEY'] = "8e202471-f369-40b7-a917-516553e1b4c3"
 bootstrap = Bootstrap5(app)
@@ -22,15 +27,17 @@ login_manager = LoginManager(app)
 
 login_manager.login_view = "connection"
 
-
 app.config['MAIL_SERVER'] = 'localhost'
 app.config['MAIL_PORT'] = 25
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = None
 app.config['MAIL_PASSWORD'] = None
 
+
+
 mail = Mail()
 mail.init_app(app)
 mail=Mail(app)
+
 
 

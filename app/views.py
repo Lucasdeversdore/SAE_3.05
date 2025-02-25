@@ -1,7 +1,7 @@
 from hashlib import sha256
 import base64
 import time
-from .app import app, db, mail
+from .app import app, db, mail, cache
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
 from flask_mail import Message
@@ -422,6 +422,7 @@ def sauvegarder_modif(id_produit):
 
 @app.route("/search/famille/<int:id_produit>", methods=('GET',))
 @login_required
+@cache.cached(timeout=30)
 def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
@@ -434,12 +435,13 @@ def sauvegarder_ajout():
     data = request.get_json()
     nom = data.get("textNom")
     four = data.get("textFournisseur")
+    seuil = data.get("textSeuil")
     unite = data.get("textUnite")
     quantite = data.get("textQuantite")
     fonction = data.get("textFonction")
     lieu = data.get("textLieu")
 
-    res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
+    res = ajout_sauvegarde(nom, four, unite, seuil, quantite, fonction, lieu)
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
