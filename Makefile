@@ -33,6 +33,10 @@ loaddb_test:
 
 .PHONY: coverage
 coverage:
+	make loaddb_test 
+	echo "nomDB = 'test.db'" > nomDB.py
+	coverage run -m unittest discover -s tests -p "test_*.py"
 	coverage report
 	coverage html
+
 

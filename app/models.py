@@ -825,7 +825,6 @@ def save_modif_reserv(id_commande, qte, qte_base):
         qte (float): la quantité reservé modifié
         qte_base (float): la quantité reservé de base
     """
-    print(id_commande)
     commande = Commande.query.get(id_commande)
     prod = Produit.query.get(commande.idProduit)
     if prod:

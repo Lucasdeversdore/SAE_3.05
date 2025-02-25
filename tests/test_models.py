@@ -61,9 +61,22 @@ class Testing(unittest.TestCase):
             self.assertEqual(r4, None)
             
             
-    def test_modifier_qte_produit(self):
-        #TODO Terminer le test
-        pass
+    def test_save_modif_reserv(self):
+     with app.app_context():
+    
+        prod = Produit.query.filter(Produit.idProduit == 1).first()  
+        qte = 10
+        id_chimiste = 1
+        reserver_prod(prod.idProduit, qte, id_chimiste) 
+        r1 = Commande.query.get(1)
+        new_qte = qte + 10
+
+
+        self.assertEqual(r1.qteCommande, qte)
+        save_modif_reserv( r1.idCommande, new_qte, qte) 
+        r1 = Commande.query.get(1) 
+        self.assertEqual(r1.qteCommande, new_qte)
+
     def test_delete_reservation(self):
         #TODO Terminer le test
         pass
