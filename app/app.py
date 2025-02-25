@@ -6,10 +6,6 @@ import os.path
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
-from sqlalchemy import event
-from sqlalchemy.engine import Engine
-import time
-import logging
 import nomDB
 from flask_caching import Cache
 
