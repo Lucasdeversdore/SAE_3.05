@@ -943,7 +943,7 @@ def est_en_dessous_du_seuil():
         else:
             qte = est_stocker.quantiteStocke
         if qte < prod.seuilProduit:
-            liste_prod_seuil.append((prod, qte))
+            liste_prod_seuil.append((prod, qte, prod.nomUnite))
     return liste_prod_seuil
 
 def get_unique_filename(base_name="produits_seuil.pdf", folder="app"): # pragma: no cover
@@ -966,24 +966,37 @@ def get_unique_filename(base_name="produits_seuil.pdf", folder="app"): # pragma:
     return os.path.join(base_path, f"{filename}({i}){ext}")
 
 
-def creer_pdf_produit_en_dessous_du_seuil(): # pragma: no cover
-    """Crée un PDF avec un nom unique et retourne son chemin"""
-    
+def creer_pdf_produit_en_dessous_du_seuil():  # pragma: no cover
+    """Crée un PDF listant les produits sous leur seuil avec un tableau structuré"""
+
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    pdf.set_font("Arial", style="B", size=12)
     pdf.cell(200, 10, txt="Produits en dessous de leur seuil", ln=True, align='C')
 
     pdf.ln(10)
-    pdf.set_font("Arial", size=10)
 
+    # En-tête du tableau
+    pdf.set_font("Arial", style="B", size=10)
+    pdf.cell(90, 10, "Nom du produit", border=1, align='C')
+    pdf.cell(50, 10, "Quantité en stock", border=1, align='C')
+    pdf.cell(50, 10, "Unité", border=1, align='C')
+    pdf.ln()
+
+    # Remplissage du tableau avec les données
+    pdf.set_font("Arial", size=10)
     for prod in est_en_dessous_du_seuil():
         produit_nom = prod[0].nomProduit.encode('latin-1', 'replace').decode('latin-1')
-        quantite = prod[1]
-        pdf.cell(200, 10, txt=f"{produit_nom} : {quantite}", ln=True, align='L')
+        quantite = f"{prod[1]:.4f}".rstrip("0").rstrip(".")
+        unite = prod[2] if prod[2] is not None else "N/A"
+
+        pdf.cell(90, 10, produit_nom, border=1, align='L')
+        pdf.cell(50, 10, quantite, border=1, align='C')
+        pdf.cell(50, 10, unite, border=1, align='C')
+        pdf.ln()
 
     # Générer un nom unique pour éviter d'écraser les fichiers existants
     pdf_path = get_unique_filename()
     pdf.output(pdf_path)
-    
+
     return pdf_path
