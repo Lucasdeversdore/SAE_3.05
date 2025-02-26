@@ -3,7 +3,7 @@ import base64
 import time
 from .app import app, db, mail, cache
 from flask_login import login_required, login_user, logout_user, current_user
-from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
+from flask import jsonify, redirect, render_template, send_file, url_for, request, Flask, render_template, redirect, url_for, flash
 from flask_mail import Message
 from .models import (
     Chimiste,
@@ -35,7 +35,8 @@ from .models import (
     ajout_fournisseur_sauvegarde,
     ajout_lieu_sauvegarde,
     cacher_le_produit,
-    montrer_le_produit
+    montrer_le_produit,
+    creer_pdf_produit_en_dessous_du_seuil
 
 )
 
@@ -574,9 +575,15 @@ def montrer(id_produit):
 
 @app.errorhandler(404)
 def internal_error(error):
-     return redirect(url_for('home'))
+    return redirect(url_for('home'))
 
 @app.errorhandler(405)
 def method_error(error):
-     return redirect(url_for('home'))
+    return redirect(url_for('home'))
+
+@app.route('/generate_pdf', methods=['POST'])
+def generate_pdf():
+    pdf_file = creer_pdf_produit_en_dessous_du_seuil()
+    return send_file(pdf_file, as_attachment=True)
+
 

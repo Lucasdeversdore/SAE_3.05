@@ -844,6 +844,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
+    document.getElementById("search_seuil").addEventListener("click", function() {
+        fetch('/generate_pdf', { method: 'POST' })
+        .then(response => response.blob())
+        .then(blob => {
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "produits_seuil.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+        .catch(error => console.error("Erreur :", error));
+    });
 });
 
 
