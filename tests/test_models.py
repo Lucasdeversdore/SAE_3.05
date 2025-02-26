@@ -100,7 +100,7 @@ class Testing(unittest.TestCase):
         lieu3 = None
         seuil = 1
         with app.app_context():
-            ajout_sauvegarde(nom1, nom_four1, unite1, seuil, quantite1, fonction1, lieu1)
+            ajout_sauvegarde(nom1, nom_four1, unite1, quantite1, seuil, fonction1, lieu1)
             id_prod = next_prod_id()-1
             fournisseur = Fournisseur.query.filter_by(nomFou=nom_four1).first()
             prod1 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
@@ -118,7 +118,7 @@ class Testing(unittest.TestCase):
             testlieu1 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
 
 
-            ajout_sauvegarde(nom2, nom_four2, unite2, seuil, quantite2, fonction2, lieu2)
+            ajout_sauvegarde(nom2, nom_four2, unite2, quantite2, seuil, fonction2, lieu2)
             id_prod = next_prod_id()-1
             fournisseur = Fournisseur.query.filter_by(nomFou=nom_four2).first()
             prod2 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
@@ -135,7 +135,7 @@ class Testing(unittest.TestCase):
             testqte2 = stock.quantiteStocke
             testlieu2 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
             
-            ajout_sauvegarde(nom2, nom_four3, unite3, seuil, quantite3, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four3, unite3, quantite3, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod3 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod3 = {
@@ -151,7 +151,7 @@ class Testing(unittest.TestCase):
             testqte3 = stock.quantiteStocke
             testlieu3 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
 
-            ajout_sauvegarde(nom2, nom_four4, unite4, seuil, quantite4, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four4, unite4, quantite4, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod4 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod4 = {
@@ -166,7 +166,7 @@ class Testing(unittest.TestCase):
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte4 = stock.quantiteStocke
 
-            ajout_sauvegarde(nom2, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod5 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod5 = {
@@ -182,10 +182,10 @@ class Testing(unittest.TestCase):
             testqte5 = stock.quantiteStocke
 
             id_prod_av=  next_prod_id()-1
-            ajout_sauvegarde(nom3, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom3, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod_6 = next_prod_id()-1
 
-            ajout_sauvegarde(nom4, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom4, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod_7 = next_prod_id()-1
 
 
@@ -278,7 +278,7 @@ class Testing(unittest.TestCase):
             add_fournisseur("NouveauFournisseur", "addr", "030250503")
             add_lieu_stock("NouveauLieu")
             
-            success = modif_sauvegarde(produit.idProduit, "NouveauNom", "NouveauFournisseur", 50, "NouvelleFonction", "NouveauLieu")
+            success = modif_sauvegarde(produit.idProduit, "NouveauNom", "NouveauFournisseur", 50,1, "NouvelleFonction", "NouveauLieu")
 
             # Vérifier que la mise à jour a bien eu lieu
             produit_modif = Produit.query.get(produit.idProduit)

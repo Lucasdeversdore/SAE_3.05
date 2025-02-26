@@ -357,6 +357,7 @@ class Testing(unittest.TestCase):
                 'textFournisseur': 'FournisseurTest',
                 'textUnite': 'kg',
                 'textQuantite': 100,
+                'textSeuil':1,
                 'textFonction': 'Test',
                 'textLieu': 'LieuTest'
             }, follow_redirects=False)
@@ -369,6 +370,7 @@ class Testing(unittest.TestCase):
                 'textFournisseur': 'FournisseurTest',
                 'textUnite': 'kg',
                 'textQuantite': 100,
+                'textSeuil':1,
                 'textFonction': 'Test',
                 'textLieu': 'LieuTest'
             })
@@ -381,12 +383,122 @@ class Testing(unittest.TestCase):
                 'textFournisseur': 'FournisseurTest',
                 'textUnite': 'kg',
                 'textQuantite': 100,
+                'textSeuil':1,
                 'textFonction': 'Test',
                 'textLieu': 'LieuTest'
             })
             self.assertEqual(response.status_code, 200)  # Accès autorisé
             self.logout()
 
+
+    def test_etat_commande(self):
+        with app.test_request_context():
+            response = self.client.get('/etat/commande/1/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/etat/commande/1/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/preparation/reservations' in response.headers["Location"].encode()
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/etat/commande/1/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/preparation/reservations' in response.headers["Location"].encode()
+            self.logout()
+
+    
+    def test_suppr_reservation(self):
+        with app.test_request_context():
+            response = self.client.get('/supprimer/reservation/1/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/supprimer/reservation/1/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/preparation/reservations' in response.headers["Location"].encode()
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/supprimer/reservation/1/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/preparation/reservations' in response.headers["Location"].encode()
+            self.logout()
+
+    
+    def test_pop_up_cacher(self):
+        with app.test_request_context():
+            response = self.client.get('/pop_up_cacher/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/pop_up_cacher/1')
+            self.assertEqual(response.status_code, 200)  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/pop_up_cacher/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/' in response.headers["Location"].encode()
+            self.logout()
+
+
+    def test_cacher(self):
+        with app.test_request_context():
+            response = self.client.get('/cacher/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/cacher/1')
+            self.assertEqual(response.status_code, 200)  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/cacher/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/' in response.headers["Location"].encode()
+            self.logout()
+
+    
+    def test_montrer(self):
+        with app.test_request_context():
+            response = self.client.get('/montrer/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/montrer/1')
+            self.assertEqual(response.status_code, 200)  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/montrer/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/' in response.headers["Location"].encode()
+            self.logout()
+
+
+    def test_pop_up_montrer(self):
+        with app.test_request_context():
+            response = self.client.get('/pop_up_montrer/1', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            assert b'/connection' in response.headers["Location"].encode()
+
+            self.login_laborentain()
+            response = self.client.get('/pop_up_montrer/1')
+            self.assertEqual(response.status_code, 200)  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/pop_up_montrer/1')
+            self.assertEqual(response.status_code, 302)  
+            assert b'/' in response.headers["Location"].encode()
+            self.logout()
             
 
     
