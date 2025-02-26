@@ -686,12 +686,12 @@ def verif_lieu_existe(lieu):
     return False
 
 
-def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
+def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, seuil, fonction, lieu):
     produit = Produit.query.get(idProduit)
     four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
     print("four"+str(four))
     produit.idFou = four.idFou
-    
+    produit.seuilProduit = seuil
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
     print(stock)
     le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
@@ -846,7 +846,7 @@ def save_modif_reserv(id_commande, qte, qte_base):
             db.session.commit()
             return True
 
-def ajout_sauvegarde(nom, nom_fournisseur,unite,seuil, quantite, fonction, lieu):
+def ajout_sauvegarde(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu):
     """Fonction qui permet d'ajouter un produit à la bd
 
     Args:
