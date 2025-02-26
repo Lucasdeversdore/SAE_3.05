@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Fonction pour afficher la popup de ajouter produit
-function handleButtonAjoutProdfClick() {
+function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
     const popup_overlay_ajout = document.createElement("div");
     popup_overlay_ajout.id = "popup-overlay-ajout";
 
@@ -367,16 +367,27 @@ function handleButtonAjoutProdfClick() {
     popup_content.appendChild(ligne_nom);
 
     // ligne Fournisseur
+
     const pFournisseur = document.createElement("p");
-    pFournisseur.textContent = "Fournisseur";
-    
-    const selectFournisseur = document.createElement("input");
-    selectFournisseur.type = "text";
+    pFournisseur.textContent = "Fournisseur :";
+
+    const selectFournisseur = document.createElement("select");
     selectFournisseur.name = "textNewFournisseur";
-    selectFournisseur.placeholder = "Fournisseur";
+    selectFournisseur.className = "form-control";
+
+    const optionFournisseur = document.createElement("option");
+    optionFournisseur.value = ""
+    optionFournisseur.innerHTML = "";
+    selectFournisseur.appendChild(optionFournisseur);
+    for (let i = 0; i < les_fournisseurs.length; i++) {
+        let option = document.createElement("option");
+        option.value = les_fournisseurs[i].nomFou;
+        option.innerHTML = les_fournisseurs[i].nomFou;
+        selectFournisseur.appendChild(option);
+    }
 
     const ligne_fournisseur = document.createElement("div");
-    ligne_fournisseur.className = "inputGroup";
+    ligne_fournisseur.className = "selectGroup";
     ligne_fournisseur.appendChild(pFournisseur)
     ligne_fournisseur.appendChild(selectFournisseur)
 
@@ -452,20 +463,37 @@ function handleButtonAjoutProdfClick() {
     
     // ligne Lieu de stockage
     const pLieuStock = document.createElement("p");
-    pLieuStock.textContent = "Lieu de stockage *";
+    pLieuStock.textContent = "Lieu de stockage : *";
     pLieuStock.className = "obligatoire";
-
-    const selectLieuStock = document.createElement("input");
-    selectLieuStock.type = "text";
+    
+    const selectLieuStock = document.createElement("select");  
     selectLieuStock.name = "textNewLieu";
-    selectLieuStock.placeholder = "Lieu de stockage";
+    selectLieuStock.className = "form-control";
+
+    const optionLieuStock = document.createElement("option");
+    optionLieuStock.value = "";
+    optionLieuStock.innerHTML = "";
+    selectLieuStock.appendChild(optionLieuStock);
+    for (let i = 0; i < les_lieux.length; i++) {
+        if (les_lieux[i].nomLieu !== null) {
+            // Vérifie si l'option existe déjà dans le select
+            let existeDeja = Array.from(selectFournisseur.options).some(option => option.value === les_lieux[i].nomLieu);
+            
+            if (!existeDeja) {
+                let option = document.createElement("option");
+                option.value = les_lieux[i].nomLieu;
+                option.innerHTML = les_lieux[i].nomLieu;
+                selectLieuStock.appendChild(option);
+            }
+        }
+    }
 
     const ligne_lieu_stock = document.createElement("div");
-    ligne_lieu_stock.className = "inputGroup";
+    ligne_lieu_stock.className = "selectGroup";
     ligne_lieu_stock.appendChild(createDivObligatoire(pLieuStock))
     ligne_lieu_stock.appendChild(selectLieuStock)
 
-    popup_content.appendChild(ligne_lieu_stock);
+    popup_content.appendChild(ligne_lieu_stock)
 
     // boutton Annuler
     const bAnnuler = document.createElement("button");
@@ -513,6 +541,18 @@ function handleButtonAnnulerAjoutClick() {
         popup.remove();
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.querySelector('.ajouter');
+    button.addEventListener('click', function() {
+        fetch(`/ajouter`)
+            .then(response => response.json())
+            .then(data => {
+                    handleButtonAjoutProdClick(data.les_fournisseurs, data.les_lieux);
+            })
+            .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+    });
+});
 
 function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu) {
     fetch('/ajout/sauvegarder', {
@@ -840,7 +880,7 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdfClick);
+    document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdClick);
     // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);

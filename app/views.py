@@ -413,6 +413,21 @@ def get_modif_produit(id_produit):
         return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux) 
     return redirect("/")    
 
+@app.route('/ajouter', methods=['GET'])
+@login_required
+def get_fonction_lieux():
+
+    les_four = Fournisseur.query.all()
+    les_fournisseurs = []
+    for fourn in les_four:
+            les_fournisseurs.append(fourn.to_dict())
+    
+    les_li = Lieu_Stockage.query.all()
+    les_lieux = []
+    for li in les_li:
+        les_lieux.append(li.to_dict())
+    return jsonify(les_fournisseurs=les_fournisseurs, les_lieux=les_lieux)
+
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 @login_required
 def sauvegarder_modif(id_produit):
