@@ -151,7 +151,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     // ligne Quantité
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}) : *`;
+    pQuantite.textContent = `Quantité actuelle : ${est_stocker.quantiteStocke || 0} ${produit.nomUnite || ""} *`;
     pQuantite.className = "obligatoire";
 
     const textQuantite = document.createElement("input");
@@ -169,7 +169,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     // Ligne seuil
     const pSeuil = document.createElement("p");
-    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || null} *`;
+    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || ""} *`;
     pSeuil.className = "obligatoire";
 
     const textSeuil = document.createElement("input");
