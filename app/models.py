@@ -989,3 +989,21 @@ def delete_reservation(idCommande, idChimiste):
         db.session.delete(faire)
         db.session.delete(commande)
         db.session.commit()
+
+def est_en_dessous_du_seuil():
+    """Renvoie une liste des produits qui sont en dessous de leur seuil
+
+    Returns:
+        list: liste des produits qui sont en dessous de leur seuil
+    """
+    liste_prod = Produit.query.all()
+    liste_prod_seuil = []
+    for prod in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        if qte < prod.seuilProduit:
+            liste_prod_seuil.append((prod, qte))
+    return liste_prod_seuil
