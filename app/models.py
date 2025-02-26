@@ -367,7 +367,12 @@ def add_prod(nom, unite, seuil, fonctionProd, four):
         add_fournisseur(four, None, None)
         id_fou = get_id_fournisseur(four)
     else:
-        id_fou = None
+        four = Fournisseur.query.filter(Fournisseur.nomFou == "").first()
+        if four:
+            id_fou = four.idFou
+        else:
+            add_fournisseur("", "", "")
+            id_fou = next_fou_id()-1
     if nom != "" and nom is not None:
         prod = Produit(id, nom, unite, seuil, fonctionProd, id_fou)
         db.session.add(prod)
