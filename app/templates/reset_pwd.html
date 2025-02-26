@@ -1,4 +1,4 @@
-{% extends "base/base-inscription-connection.html" %}
+{% extends "base/base-inscription-connection-settings.html" %}
 
 {% block main %}
 <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
@@ -34,7 +34,7 @@
             {% endif %}
         </li>
         
-        <li>
+        <li id="button">
             <div class="row">
                 <a href="/connection">retour</a>
                 <button type="submit">Envoyer <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>

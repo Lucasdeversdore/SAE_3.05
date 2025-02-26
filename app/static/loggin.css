@@ -1,6 +1,7 @@
 body{
     font-family: 'Roboto', sans-serif;
     font-size: large;
+    margin: 0;
 }
 
 h1 {
@@ -28,7 +29,7 @@ section {
     justify-content: center;
 }
 
-img {
+section > img {
     padding: 25%;
 }
 
@@ -52,7 +53,7 @@ legend {
     margin: 0 1em;
 }
 
-.password fieldset, .password input, #pwdConf input{
+.password fieldset, .password input{
     background-color: #ffdeee;
 }
 
@@ -145,7 +146,7 @@ a:hover{
     font-size: 1em;
 }
 
-button{
+#button button{
     display: flex;
     align-items: center;
     border: none;
@@ -158,11 +159,11 @@ button{
     transition: transform 0.2s ease;
 }
 
-button:active {
+#button button:active {
     transform: scale(0.9);
 }
 
-button > img{
+#button button > img{
     padding: 0px;
     width: 2em;
     height: 2em;
@@ -185,4 +186,10 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Settings */
+#Enregistrer {
+    display: flex;
+    justify-content: right;
 }

@@ -3,14 +3,11 @@
     {% block head %}
         <link rel=" stylesheet " href="{{ url_for ('static', filename='position.css') }}">
         <link rel=" stylesheet " href="{{ url_for ('static', filename='style.css') }}">
+        <link rel=" stylesheet " href="{{ url_for ('static', filename='header.css') }}">
     {% endblock %}
     
     {% block body %}
-        <header>
-            <nav class="header_nav">
-                {% include 'header.html' %}
-            </nav>
-        </header>
+        {% include 'header.html' %}
         <main>
             <section class="top_main">
                 {% block top_main %}
