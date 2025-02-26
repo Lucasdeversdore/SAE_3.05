@@ -79,6 +79,40 @@ button:active {
   outline: 2px solid #007BFF;
 } */
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.pagination form {
+    display: inline;
+}
+
+.pagination button {
+    background-color: #ff8fc5;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.pagination button:hover {
+    background-color: #ff4fa4;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
 .bdisabled{
   background-color: grey;
 }
@@ -221,7 +255,7 @@ th div div button:hover{
 }
 
 .content > div > form > button{
-  background-color: white;
+  /* background-color: white; */
   border-radius: 15px;
 }
 

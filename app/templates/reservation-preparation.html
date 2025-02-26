@@ -56,18 +56,29 @@
             </tr>
         {% endfor %}
     </table>
-    {% endif %}
+    <div class="pagination">
 
-    {% if actu_id_page != None%}
-        <div>
-            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
-                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}>Précédent</button>
-            </form>
+        <!-- Page 1 -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=1) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> << </button>
+        </form>
+        
+        <!-- Bouton Précédent -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
+        </form>
+    
+        {{ actu_id_page }}
+    
+        <!-- Bouton Suivant -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
+            <button type="submit" {% if actu_id_page >= total_pages %}disabled{% endif %}> > </button>
+        </form>
 
-            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
-                <button type="submit" {% if reservations_etats|length < 5 %}disabled{% endif %}>Suivant</button>
-            </form>
-        </div>
-
-    {% endif %}
+        <!-- Dernière page -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=total_pages) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page == total_pages %}disabled{% endif %}> >> </button>
+        </form>
+    </div>
+{% endif %}
 {% endblock %}

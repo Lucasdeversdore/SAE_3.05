@@ -191,13 +191,29 @@
                 </section>
             {% endif %}
         </ul>
-        {% if actu_id_page != None%}
-        <div>
-            <form action="{{ url_for('home_page', id_page = actu_id_page - 1 ) }}", method="get">
-                <button type="submit"> Précédent </button>
+        {% if actu_id_page != None %}
+        <div class="pagination">
+
+            <!-- Page 1 -->
+            <form action="{{ url_for('home_page', id_page=1) }}" method="get" style="display: inline;">
+                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> << </button>
             </form>
-            <form action="{{ url_for('home_page', id_page = actu_id_page + 1 ) }}", method="get">
-                <button type="submit"> Suivant </button>
+            
+            <!-- Bouton Précédent -->
+            <form action="{{ url_for('home_page', id_page=actu_id_page - 1) }}" method="get">
+                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
+            </form>
+        
+            {{ actu_id_page }}
+        
+            <!-- Bouton Suivant -->
+            <form action="{{ url_for('home_page', id_page=actu_id_page + 1) }}" method="get">
+                <button type="submit" {% if actu_id_page >= total_pages %}disabled{% endif %}> > </button>
+            </form>
+    
+            <!-- Dernière page -->
+            <form action="{{ url_for('home_page', id_page=total_pages) }}" method="get" style="display: inline;">
+                <button type="submit" {% if actu_id_page == total_pages %}disabled{% endif %}> >> </button>
             </form>
         </div>
         {% endif %}

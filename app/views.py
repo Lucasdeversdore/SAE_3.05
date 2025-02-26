@@ -58,7 +58,7 @@ def home_page(id_page=1, nb=15):
     if id_page_max < id_page:
         return redirect(url_for('home_page', id_page=id_page_max))
     liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
-    return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
+    return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page, total_pages=id_page_max, nbmax=nb)
 
 
 
@@ -79,12 +79,24 @@ def preparation_reservation():
 @login_required
 def preparation_reservation_page(id_page=1, nb=5):
     if id_page < 1:
-        return redirect("/preparation/reservations")
+        return redirect(url_for('preparation_reservation_page', id_page=1))
+
     id_page_max = get_nb_page_max_reservations(nb, current_user)
-    if id_page_max < id_page:
+
+    if id_page > id_page_max:
         return redirect(url_for('preparation_reservation_page', id_page=id_page_max))
+
     reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
-    return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
+
+    return render_template(
+        "reservation-preparation.html",
+        reservations_etats=reservations_etats,
+        actu_id_page=id_page,
+        id_page_max=id_page_max,  # On garde cette variable
+        total_pages=id_page_max   # Ajout pour éviter l'erreur dans Jinja
+    )
+
+
 
 
 # Même chose que pour "/1"
