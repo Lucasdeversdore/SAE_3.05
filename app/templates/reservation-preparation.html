@@ -40,15 +40,24 @@
                             </div>
                         {% endif %}
                         <div class="{{ etat }}">
-                            {% if etat == "non-commence" or (current_user.estPreparateur and etat == "en-cours") %}
-                                <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
-                                    <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
-                                </button>
-                            {% endif %}
                             {% if current_user.estPreparateur %}
-                                <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
+                                {% if etat == "non-commence" or etat == "en-cours" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                    </button>
+                                    <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
+                                {% else %}
+                                    {{ texte_etat }}
+                                {% endif %}
                             {% else %}
-                                {{ texte_etat }}
+                                {% if etat == "non-commence" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                        {{ texte_etat }}
+                                    </button>
+                                {% else%}
+                                    {{ texte_etat }}
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
