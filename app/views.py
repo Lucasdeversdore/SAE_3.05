@@ -280,9 +280,6 @@ def reset_pwd():
 
 @app.route('/reset_pwd/<token>/<time_in_link>', methods=['GET', 'POST'])
 def reset_token(token, time_in_link):
-    print(time_in_link)
-
-
     # Décoder plus tard
     decoded_time = base64.urlsafe_b64decode(time_in_link).decode()
     
@@ -387,37 +384,38 @@ def modifier_reserv(id_commande):
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
 @login_required
 def get_modif_produit(id_produit):
-    
-    les_four = Fournisseur.query.all()
-    les_fournisseurs = []
-    cpt = 0
-    for fourn in les_four:
-        cpt +=1
-        if cpt != id_produit:
-            les_fournisseurs.append(fourn.to_dict())
-        cpt +=1
+    if current_user.estPreparateur:
+        les_four = Fournisseur.query.all()
+        les_fournisseurs = []
+        cpt = 0
+        for fourn in les_four:
+            cpt +=1
+            if cpt != id_produit:
+                les_fournisseurs.append(fourn.to_dict())
+            cpt +=1
 
-    les_fon = Produit.query.all()
-    les_fonctions = []
-    for fonc in les_fon:
-        les_fonctions.append(fonc.to_dict())
+        les_fon = Produit.query.all()
+        les_fonctions = []
+        for fonc in les_fon:
+            les_fonctions.append(fonc.to_dict())
 
-    les_li = Lieu_Stockage.query.all()
-    les_lieux = []
-    for li in les_li:
-        les_lieux.append(li.to_dict())
-    
-    produit = Produit.query.get(id_produit).to_dict()
-    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
-    id_lieu = est_stocker["idLieu"]
-    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+        les_li = Lieu_Stockage.query.all()
+        les_lieux = []
+        for li in les_li:
+            les_lieux.append(li.to_dict())
 
-    id_fou = produit["idFou"]
-    if id_fou is None:
-        fournisseur = ""
-    else:
-        fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
-    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux)     
+        produit = Produit.query.get(id_produit).to_dict()
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+        id_lieu = est_stocker["idLieu"]
+        lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+
+        id_fou = produit["idFou"]
+        if id_fou is None:
+            fournisseur = ""
+        else:
+            fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+        return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux) 
+    return redirect("/")    
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 @login_required
@@ -559,31 +557,45 @@ def suppr_reservation(idCommande, idChimiste):
 
 
 @app.route('/pop_up_cacher/<int:id_produit>',  methods=['GET'])
+@login_required
 def pop_up_cacher(id_produit):
-    produit = Produit.query.get(id_produit)
-    return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+    if current_user.estPreparateur:
+        produit = Produit.query.get(id_produit)
+        return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+    return redirect(url_for("home"))
+
 
 @app.route('/cacher/<int:id_produit>',  methods=['GET'])
+@login_required
 def cacher(id_produit):
-    res = cacher_le_produit(id_produit)
-    if res:
-        return jsonify(success=True, message="Vous avez caché le produit !"), 200
-    else:
-        return jsonify(success=False, message="Vous n'avez pas caché le produit !"), 400
-    
+    if current_user.estPreparateur:
+        res = cacher_le_produit(id_produit)
+        if res:
+            return jsonify(success=True, message="Vous avez caché le produit !"), 200
+        else:
+            return jsonify(success=False, message="Vous n'avez pas caché le produit !"), 400
+    return redirect(url_for("home"))
+
+
 @app.route('/pop_up_montrer/<int:id_produit>',  methods=['GET'])
+@login_required
 def pop_up_montrer(id_produit):
-    produit = Produit.query.get(id_produit)
-    return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+    if current_user.estPreparateur:
+        produit = Produit.query.get(id_produit)
+        return jsonify(id_produit=id_produit, nomProduit=produit.nomProduit)
+    return redirect(url_for("home"))
+
 
 @app.route('/montrer/<int:id_produit>',  methods=['GET'])
+@login_required
 def montrer(id_produit):
-    res = montrer_le_produit(id_produit)
-    if res:
-        return jsonify(success=True, message="Vous avez montré le produit !"), 200
-    else:
-        return jsonify(success=False, message="Vous n'avez pas montré le produit !"), 400
-    
+    if current_user.estPreparateur:
+        res = montrer_le_produit(id_produit)
+        if res:
+            return jsonify(success=True, message="Vous avez montré le produit !"), 200
+        else:
+            return jsonify(success=False, message="Vous n'avez pas montré le produit !"), 400
+    return redirect(url_for("home"))
 
 @app.errorhandler(404)
 def internal_error(error):

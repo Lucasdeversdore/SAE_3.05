@@ -402,13 +402,14 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
     if existing_stock is None:
         objet = Est_Stocker(idProduit, idLieu, quantiteStock)
         db.session.add(objet)
-        db.session.commit()
+        
     else:
         if quantiteStock is not None:
             if existing_stock.quantiteStocke is None:
                 existing_stock.quantiteStocke = quantiteStock
             else:
                 existing_stock.quantiteStocke += quantiteStock
+    db.session.commit()
 
 def next_chimiste_id():
     max_id = db.session.query(func.max(Chimiste.idChimiste)).scalar()
@@ -588,6 +589,8 @@ def search_reserv_filter(q):
     """
     results = get_all_prod()
     results2 = []
+    if q is None:
+        return []
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             commandes = Commande.query.filter(Commande.idProduit == prod.idProduit)
@@ -603,6 +606,8 @@ def search_reserv_filter(q):
 def search_chimiste_filter(q):
     results = get_all_chimiste()
     results2 = []
+    if q is None:
+        return []
     for chimiste in results:
         if q.upper() in chimiste.nom.upper() or q.upper() in chimiste.prenom.upper():
             commandes = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste)
@@ -689,15 +694,11 @@ def verif_lieu_existe(lieu):
 def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, seuil, fonction, lieu):
     produit = Produit.query.get(idProduit)
     four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
-    print("four"+str(four))
     produit.idFou = four.idFou
     produit.seuilProduit = seuil
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
-    print(stock)
     le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
-    print(le_lieu)
     stock.idLieu = le_lieu.idLieu
-    print(stock)
     
     if nom != "":
         produit.nomProduit = nom
@@ -839,7 +840,7 @@ def save_modif_reserv(id_commande, qte, qte_base):
 
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
-            #db.session.add(est_stocker)
+            db.session.add(est_stocker)
             commande.qteCommande = qte
             db.session.add(commande)
             convertir_quantite(commande.idProduit)
