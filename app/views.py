@@ -13,11 +13,7 @@ from .models import (
     Est_Stocker,
     Lieu_Stockage,
     Fournisseur,
-    get_sample_prduit_qte,
-    get_sample_reservation,
-    get_sample_reservation_chimiste,
     next_chimiste_id,
-    next_prod_id,
     save_modif_reserv,
     search_filter,
     search_famille_filter,
@@ -455,7 +451,7 @@ def sauvegarder_ajout():
 
     res = ajout_sauvegarde(nom, four, unite, quantite, seuil, fonction, lieu)
     if res:
-        return jsonify(success=True, message="Réservation réussie !"), 200
+        return jsonify(success=True, message="Produit créé !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
     
@@ -606,8 +602,11 @@ def method_error(error):
     return redirect(url_for('home'))
 
 @app.route('/generate_pdf', methods=['POST'])
+@login_required
 def generate_pdf():
-    pdf_file = creer_pdf_produit_en_dessous_du_seuil()
-    return send_file(pdf_file, as_attachment=True)
+    if current_user.estPreparateur:
+        pdf_file = creer_pdf_produit_en_dessous_du_seuil()
+        return send_file(pdf_file, as_attachment=True)
+    return redirect(url_for('home'))
 
 
