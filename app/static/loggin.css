@@ -117,14 +117,14 @@ a:hover{
     margin: 0px;
 }
 
-#button > div, .checkbox{
+#button > div, .row{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
 
-.checkbox input{
+.row input{
     height: 1.5em;
     width: 1.5em;
     appearance: none;
@@ -137,11 +137,11 @@ a:hover{
     background-clip: padding-box, border-box;
 }
 
-.checkbox input:checked {
+.row input:checked {
     background-image: linear-gradient(to right, #ff4fa4, #ff8cc4), linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
 
-.checkbox label a{
+.row label a{
     font-size: 1em;
 }
 
