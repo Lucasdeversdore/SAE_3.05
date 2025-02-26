@@ -183,6 +183,15 @@ class Commande(db.Model):
     
     def __str__(self):
         return str(self.idChimiste) + str(self.dateCommande) + str(self.qteCommande)  + str(self.idChimiste) + str(self.idProduit)
+    
+    def to_dict(self):
+        return {
+            'idCommande': self.idCommande,
+            'qteCommande': self.qteCommande,
+            'idChimiste': self.idChimiste,
+            'idProduit': self.idProduit,
+            'dateCommande' : self.dateCommande
+        }
 
 
 class Faire(db.Model):
@@ -780,6 +789,7 @@ def next_commande_id():
     next_id = (max_id or 0) + 1
     return next_id
 
+
 def reserver_prod(id_produit, qte, user):
     """Fonction qui permet de réserver une quantité d'un produit
 
@@ -806,7 +816,36 @@ def reserver_prod(id_produit, qte, user):
             convertir_quantite(id_produit)
             db.session.commit()
             return True
+        
+def save_modif_reserv(id_commande, qte, qte_base):
+    """Fonction qui permet de modifier la quantité d'une réservation
 
+    Args:
+        id_commande (int): l'id de la commande
+        qte (float): la quantité reservé modifié
+        qte_base (float): la quantité reservé de base
+    """
+    print(id_commande)
+    commande = Commande.query.get(id_commande)
+    prod = Produit.query.get(commande.idProduit)
+    if prod:
+        est_stocker =  Est_Stocker.query.filter(Est_Stocker.idProduit == commande.idProduit).first()
+        if est_stocker is None:
+            qte_dispo = qte_base
+        else:
+            qte_dispo = est_stocker.quantiteStocke + qte_base
+        if qte is not None and qte <= qte_dispo and qte > 0:
+            est_stocker.quantiteStocke = qte_dispo
+            db.session.commit()
+
+            qte_restante = qte_dispo-qte
+            est_stocker.quantiteStocke = qte_restante
+            #db.session.add(est_stocker)
+            commande.qteCommande = qte
+            db.session.add(commande)
+            convertir_quantite(commande.idProduit)
+            db.session.commit()
+            return True
 
 def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
     """Fonction qui permet d'ajouter un produit à la bd
