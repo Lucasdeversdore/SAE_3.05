@@ -1027,3 +1027,4 @@ def creer_pdf_produit_en_dessous_du_seuil():
         pdf.cell(200, 10, txt=f"{prod[0].nomProduit} : {prod[1]}",
                  ln=True, align='L')
     pdf.output("produits_seuil.pdf")
+    return "produits_seuil.pdf"
