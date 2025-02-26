@@ -6,9 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Stockage Chimie</title>
         {% endblock %}
-        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='position_page_co_ins.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style_page_co_ins.css') }}"> -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='inscription.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='loggin.css') }}">
         <script defer src="static/app.js"></script>
     </head>
     <body>
@@ -120,7 +118,7 @@
                         <!-- Champ CGU -->
                         <li id="button">
                             <div>
-                                <div id="connected">
+                                <div class="checkbox">
                                 {{ form.cgu }} <label> J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></label>
                                 {% if form.cgu.errors %}
                                     <ul class="errors">
