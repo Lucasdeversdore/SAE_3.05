@@ -424,7 +424,7 @@ def sauvegarder_modif(id_produit):
 
 @app.route("/search/famille/<int:id_produit>", methods=('GET',))
 @login_required
-@cache.cached(timeout=30)
+@cache.cached(timeout=300)
 def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
