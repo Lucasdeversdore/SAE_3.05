@@ -982,7 +982,11 @@ function reserverProduit(produitId, quantite) {
             if (data.success) {
                 // Redirigez ou mettez à jour l'interface si la réservation est réussie
                 alert(data.message);  // Affiche la confirmation
-                window.location.href = '/';  
+                const popup = document.getElementById("popup-overlay-resrev");
+                if (popup) {
+                    popup.remove(); 
+                }
+                // window.location.href = '/';
             } else {
                 // Affiche une alerte en cas d'erreur
                 alert(data.message);
