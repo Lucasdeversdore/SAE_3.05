@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import time
+import time, os
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship 
@@ -1008,23 +1008,44 @@ def est_en_dessous_du_seuil():
             liste_prod_seuil.append((prod, qte))
     return liste_prod_seuil
 
-def creer_pdf_produit_en_dessous_du_seuil():
-    """Crée un pdf des produits qui sont en dessous de leur seuil
+def get_unique_filename(base_name="produits_seuil.pdf", folder="app"):
+    """Génère un nom de fichier unique en évitant les doublons"""
+    base_path = os.path.join(os.getcwd(), folder)  # Chemin du dossier cible
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)  # Crée le dossier s'il n'existe pas
 
-    Returns:
-        str: le nom du fichier pdf
-    """
-    from fpdf import FPDF
-    liste_prod_seuil = est_en_dessous_du_seuil()
+    file_path = os.path.join(base_path, base_name)
+    
+    if not os.path.exists(file_path):
+        return file_path  # Si le fichier n'existe pas encore, on le retourne
+
+    # Sinon, on cherche un nom unique (produits_seuil(1).pdf, produits_seuil(2).pdf, ...)
+    filename, ext = os.path.splitext(base_name)
+    i = 1
+    while os.path.exists(os.path.join(base_path, f"{filename}({i}){ext}")):
+        i += 1
+    
+    return os.path.join(base_path, f"{filename}({i}){ext}")
+
+
+def creer_pdf_produit_en_dessous_du_seuil():
+    """Crée un PDF avec un nom unique et retourne son chemin"""
+    
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Produits en dessous de leur seuil",
-             ln=True, align='C')
+    pdf.cell(200, 10, txt="Produits en dessous de leur seuil", ln=True, align='C')
+
     pdf.ln(10)
     pdf.set_font("Arial", size=10)
-    for prod in liste_prod_seuil:
-        pdf.cell(200, 10, txt=f"{prod[0].nomProduit} : {prod[1]}",
-                 ln=True, align='L')
-    pdf.output("produits_seuil.pdf")
-    return "produits_seuil.pdf"
+
+    for prod in est_en_dessous_du_seuil():
+        produit_nom = prod[0].nomProduit.encode('latin-1', 'replace').decode('latin-1')
+        quantite = prod[1]
+        pdf.cell(200, 10, txt=f"{produit_nom} : {quantite}", ln=True, align='L')
+
+    # Générer un nom unique pour éviter d'écraser les fichiers existants
+    pdf_path = get_unique_filename()
+    pdf.output(pdf_path)
+    
+    return pdf_path
