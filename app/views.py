@@ -267,9 +267,6 @@ def reset_pwd():
 
 @app.route('/reset_pwd/<token>/<time_in_link>', methods=['GET', 'POST'])
 def reset_token(token, time_in_link):
-    print(time_in_link)
-
-
     # Décoder plus tard
     decoded_time = base64.urlsafe_b64decode(time_in_link).decode()
     
@@ -374,37 +371,38 @@ def modifier_reserv(id_commande):
 @app.route('/modifier/<int:id_produit>', methods=['GET'])
 @login_required
 def get_modif_produit(id_produit):
-    
-    les_four = Fournisseur.query.all()
-    les_fournisseurs = []
-    cpt = 0
-    for fourn in les_four:
-        cpt +=1
-        if cpt != id_produit:
-            les_fournisseurs.append(fourn.to_dict())
-        cpt +=1
+    if current_user.estPreparateur:
+        les_four = Fournisseur.query.all()
+        les_fournisseurs = []
+        cpt = 0
+        for fourn in les_four:
+            cpt +=1
+            if cpt != id_produit:
+                les_fournisseurs.append(fourn.to_dict())
+            cpt +=1
 
-    les_fon = Produit.query.all()
-    les_fonctions = []
-    for fonc in les_fon:
-        les_fonctions.append(fonc.to_dict())
+        les_fon = Produit.query.all()
+        les_fonctions = []
+        for fonc in les_fon:
+            les_fonctions.append(fonc.to_dict())
 
-    les_li = Lieu_Stockage.query.all()
-    les_lieux = []
-    for li in les_li:
-        les_lieux.append(li.to_dict())
-    
-    produit = Produit.query.get(id_produit).to_dict()
-    est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
-    id_lieu = est_stocker["idLieu"]
-    lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+        les_li = Lieu_Stockage.query.all()
+        les_lieux = []
+        for li in les_li:
+            les_lieux.append(li.to_dict())
 
-    id_fou = produit["idFou"]
-    if id_fou is None:
-        fournisseur = ""
-    else:
-        fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
-    return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux)     
+        produit = Produit.query.get(id_produit).to_dict()
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == id_produit).first().to_dict()
+        id_lieu = est_stocker["idLieu"]
+        lieu = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == id_lieu).first().to_dict()
+
+        id_fou = produit["idFou"]
+        if id_fou is None:
+            fournisseur = ""
+        else:
+            fournisseur = Fournisseur.query.filter(Fournisseur.idFou == id_fou).first().to_dict()
+        return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux) 
+    return redirect("/")    
 
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 @login_required

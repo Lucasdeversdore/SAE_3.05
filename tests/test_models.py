@@ -61,25 +61,8 @@ class Testing(unittest.TestCase):
             self.assertEqual(r4, None)
             
             
-    def test_save_modif_reserv(self):
-     with app.app_context():
     
-        prod = Produit.query.filter(Produit.idProduit == 1).first()  
-        qte = 10
-        id_chimiste = 1
-        reserver_prod(prod.idProduit, qte, id_chimiste) 
-        r1 = Commande.query.get(1)
-        new_qte = qte + 10
 
-
-        self.assertEqual(r1.qteCommande, qte)
-        save_modif_reserv( r1.idCommande, new_qte, qte) 
-        r1 = Commande.query.get(1) 
-        self.assertEqual(r1.qteCommande, new_qte)
-
-    def test_delete_reservation(self):
-        #TODO Terminer le test
-        pass
     def test_get_res_produit(self):
         #TODO Terminer le test
         pass
@@ -287,6 +270,71 @@ class Testing(unittest.TestCase):
             self.assertEqual(stock2.quantiteStocke, 100)
             self.assertEqual(prod2.nomUnite, "mL")
             stock2.quantiteStocke = stock_base
+
+    def test_modif_sauvegarde(self):
+        with app.app_context():
+       
+            produit = Produit.query.get(1)
+            add_fournisseur("NouveauFournisseur", "addr", "030250503")
+            add_lieu_stock("NouveauLieu")
+            
+            success = modif_sauvegarde(produit.idProduit, "NouveauNom", "NouveauFournisseur", 50, "NouvelleFonction", "NouveauLieu")
+
+            # Vérifier que la mise à jour a bien eu lieu
+            produit_modif = Produit.query.get(produit.idProduit)
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == produit_modif.idProduit).first()
+            
+            self.assertTrue(success)
+            self.assertEqual(produit_modif.nomProduit, "NouveauNom")
+            self.assertEqual(produit_modif.fonctionProduit, "NouvelleFonction")
+            self.assertEqual(stock.quantiteStocke, 50)
+            self.assertEqual(produit_modif.idFou, next_fou_id()-1)
+
+
+    def test_get_id_prod(self):
+        with app.app_context():
+            id = get_id_prod("Acide azélaic")
+            prod = Produit.query.get(id)
+            self.assertEqual(prod.nomProduit, "Acide azélaic")
+    
+    def test_get_id_lieu(self):
+        with app.app_context():
+            id = get_id_lieu("réserve")
+            lieu = Lieu_Stockage.query.get(id)
+            self.assertEqual(lieu.nomLieu, "réserve")
+
+    def test_add_est_stocker(self):
+        with app.app_context():
+            add_est_stocker(2,2,150)
+            stock1 = Est_Stocker.query.filter(Est_Stocker.idProduit == 2).first()
+            self.assertEqual(stock1.quantiteStocke, 350) # 200 de base + 150 = 350
+
+            add_prod("teststock", "L", 1, "teef", "Esperis")
+            add_est_stocker(next_prod_id()-1, 1, 50)
+            stock2 = Est_Stocker.query.filter(Est_Stocker.idProduit == next_prod_id()-1).first()
+            self.assertEqual(stock2.quantiteStocke, 50)
+
+    def test_get_sample_reservation(self):
+        with app.app_context():
+            reserver_prod(1,1,1)
+            chimiste = Chimiste.query.get(1)
+            prod = Produit.query.get(1)
+            res = get_sample_reservation(3)
+            #res = Commande.query.all()
+            c1 = Commande.query.get(1) 
+            li_commandes = [(c1, "non-commence", chimiste, prod)]
+            self.assertEqual(res, li_commandes)
+
+    def test_get_sample_reservation_chimiste(self):
+        with app.app_context():
+            reserver_prod(1,1,1)
+            chimiste = Chimiste.query.get(1)
+            prod = Produit.query.get(1)
+            res = get_sample_reservation_chimiste(chimiste)
+            #res = Commande.query.all()
+            c1 = Commande.query.get(1) 
+            li_commandes = [(c1, "non-commence", chimiste, prod)]
+            self.assertEqual(res, li_commandes)
 
 
 if __name__ == "__main__":
