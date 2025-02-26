@@ -290,12 +290,6 @@ class Testing(unittest.TestCase):
             self.assertEqual(stock.quantiteStocke, 50)
             self.assertEqual(produit_modif.idFou, next_fou_id()-1)
 
-
-    def test_get_id_prod(self):
-        with app.app_context():
-            id = get_id_prod("Acide azélaic")
-            prod = Produit.query.get(id)
-            self.assertEqual(prod.nomProduit, "Acide azélaic")
     
     def test_get_id_lieu(self):
         with app.app_context():
@@ -335,6 +329,20 @@ class Testing(unittest.TestCase):
             c1 = Commande.query.get(1) 
             li_commandes = [(c1, "non-commence", chimiste, prod)]
             self.assertEqual(res, li_commandes)
+
+
+    def test_next_chimiste_id(self):
+        with app.app_context():
+           nb_chimiste = db.session.query(func.max(Chimiste.idChimiste)).scalar()
+           self.assertEqual(nb_chimiste+1, next_chimiste_id()) 
+
+
+    def test_load_user(self):
+        with app.app_context():
+            email = "email.dev@gmail.com"
+            c = Chimiste.query.get(email)
+            self.assertEqual(c, load_user(email))
+
 
 
 if __name__ == "__main__":

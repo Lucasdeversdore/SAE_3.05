@@ -48,7 +48,7 @@ class InscriptionForm(FlaskForm):
 
 
 class ResetForm(FlaskForm):
-    email = StringField('email')
+    email = StringField('Email', validators=[DataRequired(), Email(message="Email incorrect")])
     next = HiddenField()
     submit = SubmitField("Réinitialiser votre mot de passe")
 
