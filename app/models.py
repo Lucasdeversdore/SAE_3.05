@@ -9,7 +9,7 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
 from .app import  db, app
 from wtforms import ValidationError
-
+from fpdf import FPDF
 
 
 class Chimiste(db.Model, UserMixin):
@@ -1007,3 +1007,23 @@ def est_en_dessous_du_seuil():
         if qte < prod.seuilProduit:
             liste_prod_seuil.append((prod, qte))
     return liste_prod_seuil
+
+def creer_pdf_produit_en_dessous_du_seuil():
+    """Crée un pdf des produits qui sont en dessous de leur seuil
+
+    Returns:
+        str: le nom du fichier pdf
+    """
+    from fpdf import FPDF
+    liste_prod_seuil = est_en_dessous_du_seuil()
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Produits en dessous de leur seuil",
+             ln=True, align='C')
+    pdf.ln(10)
+    pdf.set_font("Arial", size=10)
+    for prod in liste_prod_seuil:
+        pdf.cell(200, 10, txt=f"{prod[0].nomProduit} : {prod[1]}",
+                 ln=True, align='L')
+    pdf.output("produits_seuil.pdf")
