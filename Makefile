@@ -22,14 +22,14 @@ pylint:
 loaddb:
 	echo "nomDB = 'myapp.db'" > nomDB.py
 	sqlite3 myapp.db ".read script.sql"
-	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev True && flask newuser etudiant@gmail.com A1#45678 etu etu False"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev True && flask newuser etudiant@gmail.com A1#45678 etu etu False && flask newuser etudiant2@gmail.com A1#45678 etu2 etu2 False"
 	
 
 .PHONY: loaddb-test
 loaddb_test:
 	echo "nomDB = 'test.db'" > nomDB.py
 	sqlite3 test.db ".read script.sql"
-	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev True && flask newuser email.dev2@gmail.com A1#45678 dev2 dev2 True"
+	bash -c "source venv/bin/activate && flask loaddb bd.csv && flask newuser email.dev@gmail.com A1#45678 dev dev True && flask newuser email.dev2@gmail.com A1#45678 dev2 dev2 True && flask newuser etudiant@gmail.com A1#45678 etu etu False"
 
 .PHONY: coverage
 coverage:

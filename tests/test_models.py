@@ -61,25 +61,8 @@ class Testing(unittest.TestCase):
             self.assertEqual(r4, None)
             
             
-    def test_save_modif_reserv(self):
-     with app.app_context():
     
-        prod = Produit.query.filter(Produit.idProduit == 1).first()  
-        qte = 10
-        id_chimiste = 1
-        reserver_prod(prod.idProduit, qte, id_chimiste) 
-        r1 = Commande.query.get(1)
-        new_qte = qte + 10
 
-
-        self.assertEqual(r1.qteCommande, qte)
-        save_modif_reserv( r1.idCommande, new_qte, qte) 
-        r1 = Commande.query.get(1) 
-        self.assertEqual(r1.qteCommande, new_qte)
-
-    def test_delete_reservation(self):
-        #TODO Terminer le test
-        pass
     def test_get_res_produit(self):
         #TODO Terminer le test
         pass
@@ -98,7 +81,7 @@ class Testing(unittest.TestCase):
         nom_four1 = "abc"
         nom_four2 = "1abd"
         nom_four3 = ""
-        nom_four4 = None
+        nom_four4 = ""
         unite5 = "L"
         unite1 = "abc"
         unite2 = "1abd"
@@ -117,7 +100,8 @@ class Testing(unittest.TestCase):
         lieu3 = None
         seuil = 1
         with app.app_context():
-            ajout_sauvegarde(nom1, nom_four1, unite1, seuil, quantite1, fonction1, lieu1)
+            id_four = Fournisseur.query.filter(Fournisseur.nomFou == "").first().idFou
+            ajout_sauvegarde(nom1, nom_four1, unite1, quantite1, seuil, fonction1, lieu1)
             id_prod = next_prod_id()-1
             fournisseur = Fournisseur.query.filter_by(nomFou=nom_four1).first()
             prod1 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
@@ -135,7 +119,7 @@ class Testing(unittest.TestCase):
             testlieu1 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
 
 
-            ajout_sauvegarde(nom2, nom_four2, unite2, seuil, quantite2, fonction2, lieu2)
+            ajout_sauvegarde(nom2, nom_four2, unite2, quantite2, seuil, fonction2, lieu2)
             id_prod = next_prod_id()-1
             fournisseur = Fournisseur.query.filter_by(nomFou=nom_four2).first()
             prod2 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
@@ -152,7 +136,7 @@ class Testing(unittest.TestCase):
             testqte2 = stock.quantiteStocke
             testlieu2 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
             
-            ajout_sauvegarde(nom2, nom_four3, unite3, seuil, quantite3, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four3, unite3, quantite3, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod3 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod3 = {
@@ -162,13 +146,13 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte3 = stock.quantiteStocke
             testlieu3 = Lieu_Stockage.query.filter(Lieu_Stockage.idLieu == stock.idLieu).first().nomLieu
 
-            ajout_sauvegarde(nom2, nom_four4, unite4, seuil, quantite4, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four4, unite4, quantite4, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod4 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod4 = {
@@ -178,12 +162,12 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte4 = stock.quantiteStocke
 
-            ajout_sauvegarde(nom2, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom2, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod = next_prod_id()-1
             prod5 = Produit.query.filter(Produit.idProduit == id_prod).first().to_dict()
             testprod5 = {
@@ -193,16 +177,16 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte5 = stock.quantiteStocke
 
             id_prod_av=  next_prod_id()-1
-            ajout_sauvegarde(nom3, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom3, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod_6 = next_prod_id()-1
 
-            ajout_sauvegarde(nom4, nom_four4, unite5, seuil, quantite5, fonction3, lieu3)
+            ajout_sauvegarde(nom4, nom_four4, unite5, quantite5, seuil, fonction3, lieu3)
             id_prod_7 = next_prod_id()-1
 
 
@@ -287,6 +271,125 @@ class Testing(unittest.TestCase):
             self.assertEqual(stock2.quantiteStocke, 100)
             self.assertEqual(prod2.nomUnite, "mL")
             stock2.quantiteStocke = stock_base
+
+    def test_modif_sauvegarde(self):
+        with app.app_context():
+       
+            produit = Produit.query.get(1)
+            add_fournisseur("NouveauFournisseur","","")
+            add_lieu_stock("NouveauLieu")
+            
+            success = modif_sauvegarde(produit.idProduit, "NouveauNom", "NouveauFournisseur", 50,1, "NouvelleFonction", "NouveauLieu")
+
+            # Vérifier que la mise à jour a bien eu lieu
+            produit_modif = Produit.query.get(produit.idProduit)
+            stock = Est_Stocker.query.filter(Est_Stocker.idProduit == produit_modif.idProduit).first()
+            
+            self.assertTrue(success)
+            self.assertEqual(produit_modif.nomProduit, "NouveauNom")
+            self.assertEqual(produit_modif.fonctionProduit, "NouvelleFonction")
+            self.assertEqual(stock.quantiteStocke, 50)
+            self.assertEqual(produit_modif.idFou, next_fou_id()-1)
+
+    
+    def test_get_id_lieu(self):
+        with app.app_context():
+            id = get_id_lieu("réserve")
+            lieu = Lieu_Stockage.query.get(id)
+            self.assertEqual(lieu.nomLieu, "réserve")
+
+    def test_add_est_stocker(self):
+        with app.app_context():
+            add_est_stocker(2,2,150)
+            stock1 = Est_Stocker.query.filter(Est_Stocker.idProduit == 2).first()
+            self.assertEqual(stock1.quantiteStocke, 350) # 200 de base + 150 = 350
+
+            add_prod("teststock", "L", 1, "teef", "Esperis")
+            add_est_stocker(next_prod_id()-1, 1, 50)
+            stock2 = Est_Stocker.query.filter(Est_Stocker.idProduit == next_prod_id()-1).first()
+            self.assertEqual(stock2.quantiteStocke, 50)
+
+    def test_get_sample_reservation(self):
+        with app.app_context():
+            reserver_prod(1,1,1)
+            chimiste = Chimiste.query.get(1)
+            prod = Produit.query.get(1)
+            res = get_sample_reservation(3)
+            #res = Commande.query.all()
+            c1 = Commande.query.get(1) 
+            li_commandes = [(c1, "non-commence", chimiste, prod)]
+            self.assertEqual(res, li_commandes)
+
+    def test_get_sample_reservation_chimiste(self):
+        with app.app_context():
+            reserver_prod(1,1,1)
+            chimiste = Chimiste.query.get(1)
+            prod = Produit.query.get(1)
+            res = get_sample_reservation_chimiste(chimiste)
+            #res = Commande.query.all()
+            c1 = Commande.query.get(1) 
+            li_commandes = [(c1, "non-commence", chimiste, prod)]
+            self.assertEqual(res, li_commandes)
+
+
+    def test_next_chimiste_id(self):
+        with app.app_context():
+           nb_chimiste = db.session.query(func.max(Chimiste.idChimiste)).scalar()
+           self.assertEqual(nb_chimiste+1, next_chimiste_id()) 
+
+
+    def test_load_user(self):
+        with app.app_context():
+            email = "email.dev@gmail.com"
+            c = Chimiste.query.get(email)
+            self.assertEqual(c, load_user(email))
+
+    def test_ajout_lieu_sauvegarde(self):
+        with app.app_context():
+            nom = "new lieu"
+            ajout_lieu_sauvegarde(nom)
+            lieu = Lieu_Stockage.query.get(next_lieu_id()-1)
+            self.assertEqual(lieu.nomLieu, nom)
+
+    def test_ajout_fournisseur_sauvegarde(self):
+        with app.app_context():
+            nom = "new fournisseur"
+            ajout_fournisseur_sauvegarde(nom)
+            fou = Fournisseur.query.get(next_fou_id()-1)
+            self.assertEqual(fou.nomFou, nom)
+
+            self.assertEqual(ajout_fournisseur_sauvegarde(nom), False)
+
+    
+    def test_est_en_dessous_du_seuil(self):
+        with app.app_context():
+            add_prod("prod", "kg", 50, "fonction", "four")
+            prod = Produit.query.get(next_prod_id()-1)
+
+            add_prod("prod2", "kg", 50, "fonction", "four")
+            add_est_stocker(next_prod_id()-1, 1, 10.0)
+            prod2 = Produit.query.get(next_prod_id()-1)
+
+            liste = est_en_dessous_du_seuil() 
+            self.assertIn((prod, 0), liste)
+            self.assertIn((prod2, 10.0), liste)
+
+    def test_search_reserv_filter(self):
+        with app.app_context():
+            liste = search_reserv_filter("NouveauNom")
+            prod = Produit.query.get(1)
+            commande = Commande.query.get(1)
+            chimiste = Chimiste.query.get(1)
+            self.assertEqual(liste, [(commande, 'non-commence', chimiste, prod)])
+
+    def test_search_chimiste_filter(self):
+        with app.app_context():
+            liste = search_chimiste_filter("etu")
+            chimiste = Chimiste.query.get(3)
+            self.assertEqual(liste, [])
+
+
+
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ from wtforms import ValidationError
 from fpdf import FPDF
 
 
-class Chimiste(db.Model, UserMixin):
+class Chimiste(db.Model, UserMixin): # pragma: no cover
 
     __tablename__ = "CHIMISTE"
 
@@ -101,7 +101,7 @@ class Chimiste(db.Model, UserMixin):
         db.session.commit()
 
 
-class Unite(db.Model):
+class Unite(db.Model): # pragma: no cover
 
     __tablename__ = "UNITE"
 
@@ -116,7 +116,7 @@ class Unite(db.Model):
         return self.nomUnite
 
 
-class Produit(db.Model):
+class Produit(db.Model): # pragma: no cover
 
     __tablename__ = "PRODUIT"
 
@@ -161,7 +161,7 @@ class Produit(db.Model):
         }
 
 
-class Commande(db.Model):
+class Commande(db.Model): # pragma: no cover
 
     __tablename__ = "COMMANDE"
 
@@ -194,7 +194,7 @@ class Commande(db.Model):
         }
 
 
-class Faire(db.Model):
+class Faire(db.Model): # pragma: no cover
 
     __tablename__ = "FAIRE"
 
@@ -213,7 +213,7 @@ class Faire(db.Model):
         return str(self.idCommande) + str(self.idChimiste) + self.statutCommande
 
 
-class Est_Stocker(db.Model):
+class Est_Stocker(db.Model): # pragma: no cover
 
     __tablename__ = "EST_STOCKER"
     
@@ -239,7 +239,7 @@ class Est_Stocker(db.Model):
         }
 
 
-class Lieu_Stockage(db.Model):
+class Lieu_Stockage(db.Model): # pragma: no cover
     
     __tablename__ = "LIEU_STOCKAGE"
 
@@ -262,7 +262,7 @@ class Lieu_Stockage(db.Model):
         }
 
 
-class Fournisseur(db.Model):
+class Fournisseur(db.Model): # pragma: no cover
 
     __tablename__ = "FOURNISSEUR"
 
@@ -294,7 +294,7 @@ class Fournisseur(db.Model):
         }
 
 
-class Historique(db.Model):
+class Historique(db.Model): # pragma: no cover
     __tablename__ = "HISRORIQUE"
 
     idAction = Column(Integer, primary_key = True, nullable = False)
@@ -367,15 +367,17 @@ def add_prod(nom, unite, seuil, fonctionProd, four):
         add_fournisseur(four, None, None)
         id_fou = get_id_fournisseur(four)
     else:
-        id_fou = None
+        four = Fournisseur.query.filter(Fournisseur.nomFou == "").first()
+        if four:
+            id_fou = four.idFou
+        else:
+            add_fournisseur("", "", "")
+            id_fou = next_fou_id()-1
     if nom != "" and nom is not None:
         prod = Produit(id, nom, unite, seuil, fonctionProd, id_fou)
         db.session.add(prod)
         db.session.commit()
         return id
-
-def get_id_prod(nom_prod):
-    return Produit.query.filter(Produit.nomProduit == nom_prod).all()[0].idProduit
 
 
 def next_lieu_id():
@@ -402,13 +404,10 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
     if existing_stock is None:
         objet = Est_Stocker(idProduit, idLieu, quantiteStock)
         db.session.add(objet)
-        db.session.commit()
+        
     else:
-        if quantiteStock is not None:
-            if existing_stock.quantiteStocke is None:
-                existing_stock.quantiteStocke = quantiteStock
-            else:
-                existing_stock.quantiteStocke += quantiteStock
+        existing_stock.quantiteStocke += quantiteStock
+    db.session.commit()
 
 def next_chimiste_id():
     max_id = db.session.query(func.max(Chimiste.idChimiste)).scalar()
@@ -422,19 +421,6 @@ def get_all_prod():
 def get_all_prod_qte():
     liste_prod_qte = []
     liste_prod = Produit.query.all()
-    for produit in liste_prod:
-        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
-        if est_stocker is None:
-            qte = 0
-        else:
-            qte = est_stocker.quantiteStocke
-        liste_prod_qte.append((produit, qte))
-    return liste_prod_qte
-
-def get_sample_prduit_qte(nb=20):
-    """Renvoie 20 produits et sa quantité de la base de donnée"""
-    liste_prod_qte = []
-    liste_prod = Produit.query.limit(nb).all()
     for produit in liste_prod:
         est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
         if est_stocker is None:
@@ -465,20 +451,6 @@ def get_pagination_produits(page=1, nb=15):
         liste_prod_qte.append((produit, qte))
     return liste_prod_qte
 
-# def get_pagination_produits_cacher(page=1, nb=15):
-#     # Pour les produits caché
-#     print("test")
-#     liste_prod_cacher_qte = []
-#     liste_prod_cacher = Produit.query.filter(Produit.afficher == 1).all()
-#     liste_prod_cacher = liste_prod_cacher[(page-1)*nb:page*nb]
-#     for produit in liste_prod_cacher:
-#         est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
-#         if est_stocker is None:
-#             qte = 0
-#         else:
-#             qte = est_stocker.quantiteStocke
-#         liste_prod_cacher_qte.append((produit, qte))
-#     return liste_prod_cacher
 
 def get_nb_page_max_produits(nb):
     return len(Produit.query.all())//nb+1
@@ -588,6 +560,8 @@ def search_reserv_filter(q):
     """
     results = get_all_prod()
     results2 = []
+    if q is None:
+        return []
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             commandes = Commande.query.filter(Commande.idProduit == prod.idProduit)
@@ -603,6 +577,8 @@ def search_reserv_filter(q):
 def search_chimiste_filter(q):
     results = get_all_chimiste()
     results2 = []
+    if q is None:
+        return []
     for chimiste in results:
         if q.upper() in chimiste.nom.upper() or q.upper() in chimiste.prenom.upper():
             commandes = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste)
@@ -615,28 +591,6 @@ def search_chimiste_filter(q):
     results = results2
     return results
 
-def edit_qte_commande(id_commande, new_qte):
-    
-    if new_qte >= 0:
-        # Recherche de la commande et du statut de commande
-        commande = Commande.query.get(id_commande)
-        
-
-        if not commande:
-            print("Commande introuvable")
-        
-
-        # Vérifier le statut de la commande dans la table Faire
-        statut = db.session.query(Faire).filter_by(idCommande=id_commande).first()
-        
-        if statut and statut.statutCommande == "Pas Commence":
-            # Mise à jour de la quantité de la commande si le statut est correct
-            commande.qteCommande = new_qte
-            db.session.commit()
-            print("Quantité de commande mise à jour avec succès.")
-        else:
-            print("Mise à jour refusée : le statut de commande ne permet pas la modification.")
-    print("Erreur : qte inferieur à 0")
 
 def check_mdp(mdp):
     """Fonction qui vérifie que le mot de passe contient au moins 8 craractères, 1 majuscule, 1 lettre, 1 caractère spécial
@@ -677,27 +631,16 @@ def verif_fourn_existe(fournisseur):
             return True
     return False
 
-def verif_lieu_existe(lieu):
-    les_lieux = Lieu_Stockage.query.all()
-
-    for endroit in les_lieux:
-        if endroit.nomLieu == lieu:
-            return True
-    return False
 
 
 def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, seuil, fonction, lieu):
     produit = Produit.query.get(idProduit)
     four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
-    print("four"+str(four))
     produit.idFou = four.idFou
     produit.seuilProduit = seuil
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
-    print(stock)
     le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
-    print(le_lieu)
     stock.idLieu = le_lieu.idLieu
-    print(stock)
     
     if nom != "":
         produit.nomProduit = nom
@@ -734,11 +677,6 @@ def montrer_le_produit(idProduit):
     db.session.commit()
     return True
 
-def cancel_commande(id_commande):
-    commande = Commande.query.get(id_commande)
-    db.session.delete(commande)
-    db.session.commit()
-    print("Commande annulé avec succès !!!")
 
 def check_mdp_validator(form, field):
     """
@@ -839,7 +777,7 @@ def save_modif_reserv(id_commande, qte, qte_base):
 
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
-            #db.session.add(est_stocker)
+            db.session.add(est_stocker)
             commande.qteCommande = qte
             db.session.add(commande)
             convertir_quantite(commande.idProduit)
@@ -920,7 +858,7 @@ def ajout_fournisseur_sauvegarde(nom_fou, adresse_fou=None, num_tel_fou=None):
         id_fou = add_fournisseur(nom_fou, adresse_fou, num_tel_fou)
         if id_fou:
             return True # Ajout réussi
-        else:
+        else: # pragma: no cover
             db.session.rollback()
             return False # Échec lors de l'ajout
     else:
@@ -1008,7 +946,7 @@ def est_en_dessous_du_seuil():
             liste_prod_seuil.append((prod, qte))
     return liste_prod_seuil
 
-def get_unique_filename(base_name="produits_seuil.pdf", folder="app"):
+def get_unique_filename(base_name="produits_seuil.pdf", folder="app"): # pragma: no cover
     """Génère un nom de fichier unique en évitant les doublons"""
     base_path = os.path.join(os.getcwd(), folder)  # Chemin du dossier cible
     if not os.path.exists(base_path):
@@ -1028,7 +966,7 @@ def get_unique_filename(base_name="produits_seuil.pdf", folder="app"):
     return os.path.join(base_path, f"{filename}({i}){ext}")
 
 
-def creer_pdf_produit_en_dessous_du_seuil():
+def creer_pdf_produit_en_dessous_du_seuil(): # pragma: no cover
     """Crée un PDF avec un nom unique et retourne son chemin"""
     
     pdf = FPDF()

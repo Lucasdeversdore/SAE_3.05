@@ -1,5 +1,5 @@
 import csv, sys
-from .models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, get_id_prod, next_prod_id
+from .models import add_prod, add_lieu_stock, add_est_stocker, get_id_lieu, next_prod_id
 
 def get_nombre_unite(quantite):
     nb = ""
