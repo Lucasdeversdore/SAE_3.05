@@ -125,7 +125,21 @@
                                 {% elif current_user.estPreparateur and produit.afficher == False %}
                                     <button class="remettre_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/valider.png')}}" alt ="X"></button>
                                 {% endif %}
-                                <p class="nomProduit">{{produit.nomProduit}}   <button class="info_prod" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/info_produit.png')}}" alt ="i"></button></p>
+                                {% if produit.nomProduit | length <= 15 %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit }}   
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% else %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit | truncate(15, True) }}
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% endif %}
                                 {% if qte > 0 %}
                                     <p class="dispo">Disponible</p>
                                 {% else %}
