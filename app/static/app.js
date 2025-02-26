@@ -283,7 +283,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
         console
         sauvegarderProduit(produit.idProduit, inputNom.value, selectFournisseur.value,
-            textQuantite.value, selectFonction.value, selectLieuStock.value);
+            textSeuil.value, textQuantite.value, selectFonction.value, selectLieuStock.value);
     });
     bSauv.appendChild(spanSauv)
 
@@ -307,8 +307,8 @@ function handleButtonOKModifClick() {
     }
 }
 
-function sauvegarderProduit(idProduit, nom, nom_fournisseur, quantite, fonction, lieu) {
-    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textSeuil=${encodeURIComponent(seuil)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
+function sauvegarderProduit(idProduit, nom, nom_fournisseur, seuil, quantite, fonction, lieu) {
+    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textSeuil=${encodeURIComponent(seuil)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -483,12 +483,12 @@ function handleButtonAjoutProdfClick() {
     bSauv.id = "sauvAjout";
     bSauv.className = "cssbuttons-io"
     bSauv.addEventListener("click", function () {
-        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value) {
+        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value || !textSeuil.value) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
         sauvegarderAjoutProduit(textNom.value, 
-            selectFournisseur.value, textUnite.value, textQuantite.value, 
+            selectFournisseur.value, textUnite.value, textQuantite.value, textSeuil.value,
             textFonction.value, selectLieuStock.value)
         
     });
@@ -514,7 +514,7 @@ function handleButtonAnnulerAjoutClick() {
     }
 }
 
-function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, seuil, quantite, fonction, lieu) {
+function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu) {
     fetch('/ajout/sauvegarder', {
         method: 'POST',
         headers: {
@@ -524,8 +524,8 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, seuil, quantite, f
             textNom: nom,
             textFournisseur: nom_fournisseur,
             textUnite: unite,
-            textSeuil: seuil,
             textQuantite: quantite,
+            textSeuil: seuil,
             textFonction: fonction,
             textLieu: lieu
         })

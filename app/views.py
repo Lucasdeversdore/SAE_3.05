@@ -412,9 +412,10 @@ def sauvegarder_modif(id_produit):
     nom = request.args.get("inputNom")
     four = request.args.get("textFournisseur")
     quantite = request.args.get("textQuantite")
+    seuil = request.args.get("textSeuil")
     fonction = request.args.get("textFonction")
     lieu = request.args.get("textLieu")
-    res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
+    res = modif_sauvegarde(id_produit, nom, four, quantite, seuil, fonction, lieu)
     if res:
         return jsonify(success=True, message="Modification réussie !"), 200
     else:
@@ -422,7 +423,7 @@ def sauvegarder_modif(id_produit):
 
 @app.route("/search/famille/<int:id_produit>", methods=('GET',))
 @login_required
-@cache.cached(timeout=300)
+@cache.cached(timeout=30)
 def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
@@ -435,13 +436,13 @@ def sauvegarder_ajout():
     data = request.get_json()
     nom = data.get("textNom")
     four = data.get("textFournisseur")
-    seuil = data.get("textSeuil")
     unite = data.get("textUnite")
     quantite = data.get("textQuantite")
+    seuil = data.get("textSeuil")
     fonction = data.get("textFonction")
     lieu = data.get("textLieu")
 
-    res = ajout_sauvegarde(nom, four, unite, seuil, quantite, fonction, lieu)
+    res = ajout_sauvegarde(nom, four, unite, quantite, seuil, fonction, lieu)
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
