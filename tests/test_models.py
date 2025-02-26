@@ -81,7 +81,7 @@ class Testing(unittest.TestCase):
         nom_four1 = "abc"
         nom_four2 = "1abd"
         nom_four3 = ""
-        nom_four4 = None
+        nom_four4 = ""
         unite5 = "L"
         unite1 = "abc"
         unite2 = "1abd"
@@ -100,6 +100,7 @@ class Testing(unittest.TestCase):
         lieu3 = None
         seuil = 1
         with app.app_context():
+            id_four = Fournisseur.query.filter(Fournisseur.nomFou == "").first().idFou
             ajout_sauvegarde(nom1, nom_four1, unite1, quantite1, seuil, fonction1, lieu1)
             id_prod = next_prod_id()-1
             fournisseur = Fournisseur.query.filter_by(nomFou=nom_four1).first()
@@ -145,7 +146,7 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte3 = stock.quantiteStocke
@@ -161,7 +162,7 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte4 = stock.quantiteStocke
@@ -176,7 +177,7 @@ class Testing(unittest.TestCase):
                 'seuilProduit': 1,
                 'afficher': True,
                 'fonctionProduit' : fonction3,
-                'idFou': None
+                'idFou': id_four
             }
             stock = Est_Stocker.query.filter(Est_Stocker.idProduit == id_prod).first()
             testqte5 = stock.quantiteStocke
