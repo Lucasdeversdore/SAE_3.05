@@ -1,9 +1,9 @@
 from hashlib import sha256
 import base64
 import time
-from .app import app, db, mail
+from .app import app, db, mail, cache
 from flask_login import login_required, login_user, logout_user, current_user
-from flask import jsonify, redirect, render_template, url_for, request, Flask, render_template, redirect, url_for, flash
+from flask import jsonify, redirect, render_template, send_file, url_for, request, Flask, render_template, redirect, url_for, flash
 from flask_mail import Message
 from .models import (
     Chimiste,
@@ -35,7 +35,8 @@ from .models import (
     ajout_fournisseur_sauvegarde,
     ajout_lieu_sauvegarde,
     cacher_le_produit,
-    montrer_le_produit
+    montrer_le_produit,
+    creer_pdf_produit_en_dessous_du_seuil
 
 )
 
@@ -410,9 +411,10 @@ def sauvegarder_modif(id_produit):
     nom = request.args.get("inputNom")
     four = request.args.get("textFournisseur")
     quantite = request.args.get("textQuantite")
+    seuil = request.args.get("textSeuil")
     fonction = request.args.get("textFonction")
     lieu = request.args.get("textLieu")
-    res = modif_sauvegarde(id_produit, nom, four, quantite, fonction, lieu)
+    res = modif_sauvegarde(id_produit, nom, four, quantite, seuil, fonction, lieu)
     if res:
         return jsonify(success=True, message="Modification réussie !"), 200
     else:
@@ -420,6 +422,7 @@ def sauvegarder_modif(id_produit):
 
 @app.route("/search/famille/<int:id_produit>", methods=('GET',))
 @login_required
+@cache.cached(timeout=30)
 def searchByButton(id_produit):
     prod = Produit.query.get(id_produit)
     q = str(prod.fonctionProduit)
@@ -434,10 +437,11 @@ def sauvegarder_ajout():
     four = data.get("textFournisseur")
     unite = data.get("textUnite")
     quantite = data.get("textQuantite")
+    seuil = data.get("textSeuil")
     fonction = data.get("textFonction")
     lieu = data.get("textLieu")
 
-    res = ajout_sauvegarde(nom, four, unite, quantite, fonction, lieu)
+    res = ajout_sauvegarde(nom, four, unite, quantite, seuil, fonction, lieu)
     if res:
         return jsonify(success=True, message="Réservation réussie !"), 200
     else:
@@ -569,9 +573,15 @@ def montrer(id_produit):
 
 @app.errorhandler(404)
 def internal_error(error):
-     return redirect(url_for('home'))
+    return redirect(url_for('home'))
 
 @app.errorhandler(405)
 def method_error(error):
-     return redirect(url_for('home'))
+    return redirect(url_for('home'))
+
+@app.route('/generate_pdf', methods=['POST'])
+def generate_pdf():
+    pdf_file = creer_pdf_produit_en_dessous_du_seuil()
+    return send_file(pdf_file, as_attachment=True)
+
 

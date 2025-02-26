@@ -56,17 +56,18 @@
             </tr>
         {% endfor %}
     </table>
-{% endif %}
+    {% endif %}
 
-{% if actu_id_page != None%}
-    <div>
-        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
-            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}>Précédent</button>
-        </form>
+    {% if actu_id_page != None%}
+        <div>
+            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
+                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}>Précédent</button>
+            </form>
 
-        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
-            <button type="submit" {% if reservations_etats|length < 5 %}disabled{% endif %}>Suivant</button>
-        </form>
-    </div>
-{% endif %}
+            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
+                <button type="submit" {% if reservations_etats|length < 5 %}disabled{% endif %}>Suivant</button>
+            </form>
+        </div>
+
+    {% endif %}
 {% endblock %}
