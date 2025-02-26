@@ -151,7 +151,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     // ligne Quantité
     const pQuantite = document.createElement("p");
-    pQuantite.textContent = `Quantité actuelle (${est_stocker.quantiteStocke || 0} ${produit.nomUnite || null}) : *`;
+    pQuantite.textContent = `Quantité actuelle : ${est_stocker.quantiteStocke || 0} ${produit.nomUnite || ""} *`;
     pQuantite.className = "obligatoire";
 
     const textQuantite = document.createElement("input");
@@ -169,7 +169,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
     // Ligne seuil
     const pSeuil = document.createElement("p");
-    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || null} *`;
+    pSeuil.textContent = `Seuil d'alerte actuel : ${produit.seuilProduit || 0} ${produit.nomUnite || ""} *`;
     pSeuil.className = "obligatoire";
 
     const textSeuil = document.createElement("input");
@@ -283,7 +283,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
 
         console
         sauvegarderProduit(produit.idProduit, inputNom.value, selectFournisseur.value,
-            textQuantite.value, selectFonction.value, selectLieuStock.value);
+            textSeuil.value, textQuantite.value, selectFonction.value, selectLieuStock.value);
     });
     bSauv.appendChild(spanSauv)
 
@@ -307,8 +307,8 @@ function handleButtonOKModifClick() {
     }
 }
 
-function sauvegarderProduit(idProduit, nom, nom_fournisseur, quantite, fonction, lieu) {
-    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
+function sauvegarderProduit(idProduit, nom, nom_fournisseur, seuil, quantite, fonction, lieu) {
+    fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textSeuil=${encodeURIComponent(seuil)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -483,12 +483,12 @@ function handleButtonAjoutProdfClick() {
     bSauv.id = "sauvAjout";
     bSauv.className = "cssbuttons-io"
     bSauv.addEventListener("click", function () {
-        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value) {
+        if (!textNom.value || !textQuantite.value || !selectLieuStock.value || !textUnite.value || !textSeuil.value) {
             alert("Veuillez remplir tous les champs requis.");
             return;
         }
         sauvegarderAjoutProduit(textNom.value, 
-            selectFournisseur.value, textUnite.value, textQuantite.value, 
+            selectFournisseur.value, textUnite.value, textQuantite.value, textSeuil.value,
             textFonction.value, selectLieuStock.value)
         
     });
@@ -514,7 +514,7 @@ function handleButtonAnnulerAjoutClick() {
     }
 }
 
-function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction, lieu) {
+function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu) {
     fetch('/ajout/sauvegarder', {
         method: 'POST',
         headers: {
@@ -525,6 +525,7 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, fonction
             textFournisseur: nom_fournisseur,
             textUnite: unite,
             textQuantite: quantite,
+            textSeuil: seuil,
             textFonction: fonction,
             textLieu: lieu
         })
@@ -843,6 +844,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
+    document.getElementById("search_seuil").addEventListener("click", function() {
+        fetch('/generate_pdf', { method: 'POST' })
+        .then(response => response.blob())
+        .then(blob => {
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "produits_seuil.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+        .catch(error => console.error("Erreur :", error));
+    });
 });
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import time
+import time, os
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship 
@@ -9,7 +9,7 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
 from .app import  db, app
 from wtforms import ValidationError
-
+from fpdf import FPDF
 
 
 class Chimiste(db.Model, UserMixin):
@@ -402,13 +402,14 @@ def add_est_stocker(idProduit, idLieu, quantiteStock):
     if existing_stock is None:
         objet = Est_Stocker(idProduit, idLieu, quantiteStock)
         db.session.add(objet)
-        db.session.commit()
+        
     else:
         if quantiteStock is not None:
             if existing_stock.quantiteStocke is None:
                 existing_stock.quantiteStocke = quantiteStock
             else:
                 existing_stock.quantiteStocke += quantiteStock
+    db.session.commit()
 
 def next_chimiste_id():
     max_id = db.session.query(func.max(Chimiste.idChimiste)).scalar()
@@ -588,6 +589,8 @@ def search_reserv_filter(q):
     """
     results = get_all_prod()
     results2 = []
+    if q is None:
+        return []
     for prod in results:
         if q.upper() in prod.nomProduit.upper():
             commandes = Commande.query.filter(Commande.idProduit == prod.idProduit)
@@ -603,6 +606,8 @@ def search_reserv_filter(q):
 def search_chimiste_filter(q):
     results = get_all_chimiste()
     results2 = []
+    if q is None:
+        return []
     for chimiste in results:
         if q.upper() in chimiste.nom.upper() or q.upper() in chimiste.prenom.upper():
             commandes = Commande.query.filter(Commande.idChimiste == chimiste.idChimiste)
@@ -686,18 +691,14 @@ def verif_lieu_existe(lieu):
     return False
 
 
-def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, fonction, lieu):
+def modif_sauvegarde(idProduit, nom, nom_fournisseur, quantite, seuil, fonction, lieu):
     produit = Produit.query.get(idProduit)
     four = Fournisseur.query.filter(Fournisseur.nomFou == nom_fournisseur).first()
-    print("four"+str(four))
     produit.idFou = four.idFou
-    
+    produit.seuilProduit = seuil
     stock = Est_Stocker.query.filter(Est_Stocker.idProduit == idProduit).first()
-    print(stock)
     le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
-    print(le_lieu)
     stock.idLieu = le_lieu.idLieu
-    print(stock)
     
     if nom != "":
         produit.nomProduit = nom
@@ -825,7 +826,6 @@ def save_modif_reserv(id_commande, qte, qte_base):
         qte (float): la quantité reservé modifié
         qte_base (float): la quantité reservé de base
     """
-    print(id_commande)
     commande = Commande.query.get(id_commande)
     prod = Produit.query.get(commande.idProduit)
     if prod:
@@ -840,14 +840,14 @@ def save_modif_reserv(id_commande, qte, qte_base):
 
             qte_restante = qte_dispo-qte
             est_stocker.quantiteStocke = qte_restante
-            #db.session.add(est_stocker)
+            db.session.add(est_stocker)
             commande.qteCommande = qte
             db.session.add(commande)
             convertir_quantite(commande.idProduit)
             db.session.commit()
             return True
 
-def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
+def ajout_sauvegarde(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu):
     """Fonction qui permet d'ajouter un produit à la bd
 
     Args:
@@ -862,7 +862,7 @@ def ajout_sauvegarde(nom, nom_fournisseur,unite, quantite, fonction, lieu):
         bool: True si l'ajout du produit se passe bien
     """
     
-    if add_prod(nom, unite, fonction, nom_fournisseur):
+    if add_prod(nom, unite, seuil, fonction, nom_fournisseur):
         prod = Produit.query.get(next_prod_id()-1)
         id_prod = prod.idProduit
         le_lieu = Lieu_Stockage.query.filter(Lieu_Stockage.nomLieu == lieu).first()
@@ -990,3 +990,63 @@ def delete_reservation(idCommande, idChimiste):
         db.session.delete(faire)
         db.session.delete(commande)
         db.session.commit()
+
+def est_en_dessous_du_seuil():
+    """Renvoie une liste des produits qui sont en dessous de leur seuil
+
+    Returns:
+        list: liste des produits qui sont en dessous de leur seuil
+    """
+    liste_prod = Produit.query.all()
+    liste_prod_seuil = []
+    for prod in liste_prod:
+        est_stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == prod.idProduit).first()
+        if est_stocker is None:
+            qte = 0
+        else:
+            qte = est_stocker.quantiteStocke
+        if qte < prod.seuilProduit:
+            liste_prod_seuil.append((prod, qte))
+    return liste_prod_seuil
+
+def get_unique_filename(base_name="produits_seuil.pdf", folder="app"):
+    """Génère un nom de fichier unique en évitant les doublons"""
+    base_path = os.path.join(os.getcwd(), folder)  # Chemin du dossier cible
+    if not os.path.exists(base_path):
+        os.makedirs(base_path)  # Crée le dossier s'il n'existe pas
+
+    file_path = os.path.join(base_path, base_name)
+    
+    if not os.path.exists(file_path):
+        return file_path  # Si le fichier n'existe pas encore, on le retourne
+
+    # Sinon, on cherche un nom unique (produits_seuil(1).pdf, produits_seuil(2).pdf, ...)
+    filename, ext = os.path.splitext(base_name)
+    i = 1
+    while os.path.exists(os.path.join(base_path, f"{filename}({i}){ext}")):
+        i += 1
+    
+    return os.path.join(base_path, f"{filename}({i}){ext}")
+
+
+def creer_pdf_produit_en_dessous_du_seuil():
+    """Crée un PDF avec un nom unique et retourne son chemin"""
+    
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Produits en dessous de leur seuil", ln=True, align='C')
+
+    pdf.ln(10)
+    pdf.set_font("Arial", size=10)
+
+    for prod in est_en_dessous_du_seuil():
+        produit_nom = prod[0].nomProduit.encode('latin-1', 'replace').decode('latin-1')
+        quantite = prod[1]
+        pdf.cell(200, 10, txt=f"{produit_nom} : {quantite}", ln=True, align='L')
+
+    # Générer un nom unique pour éviter d'écraser les fichiers existants
+    pdf_path = get_unique_filename()
+    pdf.output(pdf_path)
+    
+    return pdf_path
