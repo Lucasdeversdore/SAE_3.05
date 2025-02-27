@@ -213,9 +213,18 @@ th div  button{
     margin-right: 0.5em;
 }
 
+.non-commence button {
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: bold;
+}
+
+.non-commence img {
+    margin-right: 6px;
+}
 
 .delete_reservation{
-    margin-right: 0.5em;    
+    margin-right: 0.5em;  
 }
 
 th div img{
@@ -236,7 +245,8 @@ tbody{
 #popup-overlay-lieu, 
 #popup-overlay-fournisseur,
 #popup-overlay-resrev,
-#popup-overlay-cacher{
+#popup-overlay-cacher,
+#popup-overlay-montrer{
     position: fixed;
     top: 0;
     left: 0;

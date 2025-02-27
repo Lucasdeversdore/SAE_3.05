@@ -40,15 +40,24 @@
                             </div>
                         {% endif %}
                         <div class="{{ etat }}">
-                            {% if etat == "non-commence" or (current_user.estPreparateur and etat == "en-cours") %}
-                                <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
-                                    <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
-                                </button>
-                            {% endif %}
                             {% if current_user.estPreparateur %}
-                                <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
+                                {% if etat == "non-commence" or etat == "en-cours" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                    </button>
+                                    <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
+                                {% else %}
+                                    {{ texte_etat }}
+                                {% endif %}
                             {% else %}
-                                {{ texte_etat }}
+                                {% if etat == "non-commence" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                        {{ texte_etat }}
+                                    </button>
+                                {% else%}
+                                    {{ texte_etat }}
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -56,18 +65,29 @@
             </tr>
         {% endfor %}
     </table>
-    {% endif %}
+    <div class="pagination">
 
-    {% if actu_id_page != None%}
-        <div>
-            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
-                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}>Précédent</button>
-            </form>
+        <!-- Page 1 -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=1) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> << </button>
+        </form>
+        
+        <!-- Bouton Précédent -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
+        </form>
+    
+        {{ actu_id_page }}
+    
+        <!-- Bouton Suivant -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
+            <button type="submit" {% if actu_id_page >= total_pages %}disabled{% endif %}> > </button>
+        </form>
 
-            <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
-                <button type="submit" {% if reservations_etats|length < 5 %}disabled{% endif %}>Suivant</button>
-            </form>
-        </div>
-
-    {% endif %}
+        <!-- Dernière page -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=total_pages) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page == total_pages %}disabled{% endif %}> >> </button>
+        </form>
+    </div>
+{% endif %}
 {% endblock %}

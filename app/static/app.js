@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 // Fonction pour afficher le popup de modifications de produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
@@ -299,7 +298,6 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     document.body.appendChild(popup_overlay_modif);
 }
 
-
 function handleButtonOKModifClick() {
     const popup = document.getElementById("popup-overlay-modif");
     if (popup) {
@@ -312,8 +310,8 @@ function sauvegarderProduit(idProduit, nom, nom_fournisseur, seuil, quantite, fo
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -337,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Fonction pour afficher la popup de ajouter produit
-function handleButtonAjoutProdfClick() {
+function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
     const popup_overlay_ajout = document.createElement("div");
     popup_overlay_ajout.id = "popup-overlay-ajout";
 
@@ -367,16 +365,27 @@ function handleButtonAjoutProdfClick() {
     popup_content.appendChild(ligne_nom);
 
     // ligne Fournisseur
+
     const pFournisseur = document.createElement("p");
-    pFournisseur.textContent = "Fournisseur";
-    
-    const selectFournisseur = document.createElement("input");
-    selectFournisseur.type = "text";
+    pFournisseur.textContent = "Fournisseur :";
+
+    const selectFournisseur = document.createElement("select");
     selectFournisseur.name = "textNewFournisseur";
-    selectFournisseur.placeholder = "Fournisseur";
+    selectFournisseur.className = "form-control";
+
+    const optionFournisseur = document.createElement("option");
+    optionFournisseur.value = ""
+    optionFournisseur.innerHTML = "";
+    selectFournisseur.appendChild(optionFournisseur);
+    for (let i = 0; i < les_fournisseurs.length; i++) {
+        let option = document.createElement("option");
+        option.value = les_fournisseurs[i].nomFou;
+        option.innerHTML = les_fournisseurs[i].nomFou;
+        selectFournisseur.appendChild(option);
+    }
 
     const ligne_fournisseur = document.createElement("div");
-    ligne_fournisseur.className = "inputGroup";
+    ligne_fournisseur.className = "selectGroup";
     ligne_fournisseur.appendChild(pFournisseur)
     ligne_fournisseur.appendChild(selectFournisseur)
 
@@ -452,20 +461,37 @@ function handleButtonAjoutProdfClick() {
     
     // ligne Lieu de stockage
     const pLieuStock = document.createElement("p");
-    pLieuStock.textContent = "Lieu de stockage *";
+    pLieuStock.textContent = "Lieu de stockage : *";
     pLieuStock.className = "obligatoire";
-
-    const selectLieuStock = document.createElement("input");
-    selectLieuStock.type = "text";
+    
+    const selectLieuStock = document.createElement("select");  
     selectLieuStock.name = "textNewLieu";
-    selectLieuStock.placeholder = "Lieu de stockage";
+    selectLieuStock.className = "form-control";
+
+    const optionLieuStock = document.createElement("option");
+    optionLieuStock.value = "";
+    optionLieuStock.innerHTML = "";
+    selectLieuStock.appendChild(optionLieuStock);
+    for (let i = 0; i < les_lieux.length; i++) {
+        if (les_lieux[i].nomLieu !== null) {
+            // Vérifie si l'option existe déjà dans le select
+            let existeDeja = Array.from(selectFournisseur.options).some(option => option.value === les_lieux[i].nomLieu);
+            
+            if (!existeDeja) {
+                let option = document.createElement("option");
+                option.value = les_lieux[i].nomLieu;
+                option.innerHTML = les_lieux[i].nomLieu;
+                selectLieuStock.appendChild(option);
+            }
+        }
+    }
 
     const ligne_lieu_stock = document.createElement("div");
-    ligne_lieu_stock.className = "inputGroup";
+    ligne_lieu_stock.className = "selectGroup";
     ligne_lieu_stock.appendChild(createDivObligatoire(pLieuStock))
     ligne_lieu_stock.appendChild(selectLieuStock)
 
-    popup_content.appendChild(ligne_lieu_stock);
+    popup_content.appendChild(ligne_lieu_stock)
 
     // boutton Annuler
     const bAnnuler = document.createElement("button");
@@ -514,6 +540,18 @@ function handleButtonAnnulerAjoutClick() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.querySelector('.ajouter');
+    button.addEventListener('click', function() {
+        fetch(`/ajouter`)
+            .then(response => response.json())
+            .then(data => {
+                    handleButtonAjoutProdClick(data.les_fournisseurs, data.les_lieux);
+            })
+            .catch(error => console.error('Erreur lors de la récupération des données du produit:', error));
+    });
+});
+
 function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, fonction, lieu) {
     fetch('/ajout/sauvegarder', {
         method: 'POST',
@@ -533,8 +571,8 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, f
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);  // Message de succès
-            window.location.href = '/';  // Redirection si ajout réussi
+            // alert(data.message);  // Message de succès
+            window.location.reload();
         } else {
             alert(data.message);  // Message d'erreur si ajout échoue
         }
@@ -704,8 +742,8 @@ function sauvegarderAjoutLieu(nom) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            window.location.href = '/'; 
+            // alert(data.message);
+            window.location.reload();
         } else {
             alert(data.message);
         }
@@ -828,8 +866,8 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            window.location.href = '/'; 
+            // alert(data.message);
+            window.location.reload();
         } else {
             alert(data.message);
         }
@@ -837,10 +875,8 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
     .catch(error => console.error('Erreur:', error));
 }
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdfClick);
+    document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdClick);
     // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
@@ -859,11 +895,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error("Erreur :", error));
     });
 });
-
-
-
-
-
 
 // Fonction pour afficher la popup de reservation
 function handleButtonReservation(produit, stock, erreur) {
@@ -981,8 +1012,8 @@ function reserverProduit(produitId, quantite) {
         .then(data => {
             if (data.success) {
                 // Redirigez ou mettez à jour l'interface si la réservation est réussie
-                alert(data.message);  // Affiche la confirmation
-                window.location.href = '/';  
+                // alert(data.message);  // Affiche la confirmation
+                window.location.reload();
             } else {
                 // Affiche une alerte en cas d'erreur
                 alert(data.message);
@@ -1120,8 +1151,6 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
     document.body.appendChild(popup_overlay); 
 }
 
-
-
 // Fonction pour afficher la popup de cacher un produit
 function handleButtonCacherProduit(produit, nomProduit) {
     // Crée le fond du popup
@@ -1145,7 +1174,6 @@ function handleButtonCacherProduit(produit, nomProduit) {
     bNon.addEventListener("click", handleButtonNonSuppClick);
     bNon.appendChild(spanNon)
     
-
     // Bouton Oui 
     const bOui = document.createElement("button");
     const spanOui = document.createElement("span");
@@ -1178,15 +1206,13 @@ function handleButtonNonSuppClick() {
     }
 }
 
-
 function cacherProduit(idProduit) {
-
     fetch(`/cacher/${idProduit}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -1210,54 +1236,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
 // Fonction pour afficher la popup de montrer un produit
 function handleButtonMontrerProduit(produit, nomProduit) {
     const popup_overlay_montrer = document.createElement("div");
     popup_overlay_montrer.id = "popup-overlay-montrer";
-    popup_overlay_montrer.style.position = "fixed";
-    popup_overlay_montrer.style.top = "0";
-    popup_overlay_montrer.style.left = "0";
-    popup_overlay_montrer.style.width = "100%";
-    popup_overlay_montrer.style.height = "100%";
-    popup_overlay_montrer.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_montrer.style.display = "flex";
-    popup_overlay_montrer.style.justifyContent = "center";
-    popup_overlay_montrer.style.alignItems = "center";
-    popup_overlay_montrer.style.zIndex = "1000";
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
+    
 
     // Titre du popup
     const h3 = document.createElement("h3");
     h3.textContent = `Souhaitez vous montrer: ${nomProduit} ?`;
+    popup_content.appendChild(h3);
 
     // Bouton Non pour fermer le popup
     const bNon = document.createElement("button");
-    bNon.textContent = "Non";
-    bNon.id = "non"; // Associez un ID pour le bouton
+    const spanNon = document.createElement("span");
+    spanNon.textContent = "Non";
+    bNon.className = "cssbuttons-io"
     bNon.addEventListener("click", handleButtonNonClick);
+    bNon.appendChild(spanNon)
 
 
     // Bouton Oui 
     const bOui = document.createElement("button");
-    bOui.textContent = "Oui";
-    bOui.id = "oui"; // Associez un ID pour le bouton
+    const spanOui = document.createElement("span");
+    spanOui.textContent = "Oui";
+    bOui.className = "cssbuttons-io"
     bOui.data = produit
     bOui.addEventListener("click", function (){
         montrerProduit(produit)
     });
+    bOui.appendChild(spanOui)
 
-    popup_content.appendChild(h3);
-    popup_content.appendChild(bOui);
-    popup_content.appendChild(bNon);
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bOui)
+    ligne_bouton.appendChild(bNon)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay_montrer.appendChild(popup_content);
     document.body.appendChild(popup_overlay_montrer); 
 
@@ -1271,15 +1292,13 @@ function handleButtonNonClick() {
     }
 }
 
-
 function montrerProduit(idProduit) {
-
     fetch(`/montrer/${idProduit}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -1424,8 +1443,9 @@ function ModifierQteProduit(CommandeId, quantite) {
         .then(data => {
             if (data.success) {
                 // Redirigez ou mettez à jour l'interface si la réservation est réussie
-                alert(data.message);  // Affiche la confirmation
-                window.location.href = '/preparation/reservations';  
+                // alert(data.message);  // Affiche la confirmation
+                window.location.reload();
+                // window.location.href = '/preparation/reservations';  
             } else {
                 // Affiche une alerte en cas d'erreur
                 alert(data.message);

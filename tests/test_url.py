@@ -220,7 +220,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/search-preparation', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/search-preparation', query_string={'q': 'test'})
@@ -237,7 +237,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/get/produit/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/get/produit/1')
@@ -253,7 +253,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/reserver/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/reserver/1')
@@ -269,7 +269,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/commande/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/commande/1')
@@ -285,7 +285,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/commande/modif/1?inputQte=1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()  # Vérifie la redirection vers la page de connexion
+            self.assertIn(b'/connection', response.headers["Location"].encode())  # Vérifie la redirection vers la page de connexion
 
             self.login_laborentain() 
             response = self.client.get('/commande/modif/1?inputQte=1')
@@ -303,7 +303,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/modifier/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()  
             response = self.client.get('/modifier/1')
@@ -320,7 +320,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/modifier/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/modifier/1')
@@ -338,7 +338,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/search/famille/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/search/famille/1')
@@ -362,7 +362,7 @@ class Testing(unittest.TestCase):
                 'textLieu': 'LieuTest'
             }, follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()  # Vérifie la redirection vers la page de connexion
+            self.assertIn(b'/connection', response.headers["Location"].encode())  # Vérifie la redirection vers la page de connexion
 
             self.login_laborentain()
             response = self.client.post('/ajout/sauvegarder/', json={
@@ -395,7 +395,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/etat/commande/1/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/etat/commande/1/1')
@@ -414,7 +414,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/supprimer/reservation/1/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/supprimer/reservation/1/1')
@@ -433,7 +433,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/pop_up_cacher/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/pop_up_cacher/1')
@@ -451,7 +451,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/cacher/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/cacher/1')
@@ -469,7 +469,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/montrer/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/montrer/1')
@@ -487,7 +487,7 @@ class Testing(unittest.TestCase):
         with app.test_request_context():
             response = self.client.get('/pop_up_montrer/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
-            assert b'/connection' in response.headers["Location"].encode()
+            self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
             response = self.client.get('/pop_up_montrer/1')
@@ -498,6 +498,24 @@ class Testing(unittest.TestCase):
             response = self.client.get('/pop_up_montrer/1')
             self.assertEqual(response.status_code, 302)  
             assert b'/' in response.headers["Location"].encode()
+            self.logout()
+
+    def test_generate_pdf(self):
+        with app.test_request_context():
+            response = self.client.get('/generate_pdf', follow_redirects=False)
+            self.assertEqual(response.status_code, 302)  # Redirection
+            self.assertIn(b'/', response.headers["Location"].encode())
+
+            self.login_laborentain()
+            response = self.client.get('/generate_pdf')
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(b'/', response.headers["Location"].encode())  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/generate_pdf')
+            self.assertEqual(response.status_code, 302)  
+            self.assertIn(b'/', response.headers["Location"].encode())
             self.logout()
             
 

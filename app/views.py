@@ -13,11 +13,7 @@ from .models import (
     Est_Stocker,
     Lieu_Stockage,
     Fournisseur,
-    get_sample_prduit_qte,
-    get_sample_reservation,
-    get_sample_reservation_chimiste,
     next_chimiste_id,
-    next_prod_id,
     save_modif_reserv,
     search_filter,
     search_famille_filter,
@@ -58,7 +54,7 @@ def home_page(id_page=1, nb=15):
     if id_page_max < id_page:
         return redirect(url_for('home_page', id_page=id_page_max))
     liste_produit_qte = get_pagination_produits(page=id_page, nb=nb)
-    return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page)
+    return render_template("home.html", liste_produit_qte=liste_produit_qte, actu_id_page=id_page, total_pages=id_page_max, nbmax=nb)
 
 
 
@@ -79,12 +75,24 @@ def preparation_reservation():
 @login_required
 def preparation_reservation_page(id_page=1, nb=5):
     if id_page < 1:
-        return redirect("/preparation/reservations")
+        return redirect(url_for('preparation_reservation_page', id_page=1))
+
     id_page_max = get_nb_page_max_reservations(nb, current_user)
-    if id_page_max < id_page:
+
+    if id_page > id_page_max:
         return redirect(url_for('preparation_reservation_page', id_page=id_page_max))
+
     reservations_etats = get_pagination_reservations(page=id_page, nb=nb, chimiste=current_user)
-    return render_template("reservation-preparation.html", reservations_etats=reservations_etats, actu_id_page=id_page)
+
+    return render_template(
+        "reservation-preparation.html",
+        reservations_etats=reservations_etats,
+        actu_id_page=id_page,
+        id_page_max=id_page_max,  # On garde cette variable
+        total_pages=id_page_max   # Ajout pour éviter l'erreur dans Jinja
+    )
+
+
 
 
 # Même chose que pour "/1"
@@ -405,6 +413,21 @@ def get_modif_produit(id_produit):
         return jsonify(produit=produit, lieu=lieu, fournisseur=fournisseur, est_stocker=est_stocker, les_fournisseurs=les_fournisseurs, les_fonctions=les_fonctions, les_lieux=les_lieux) 
     return redirect("/")    
 
+@app.route('/ajouter', methods=['GET'])
+@login_required
+def get_fonction_lieux():
+
+    les_four = Fournisseur.query.all()
+    les_fournisseurs = []
+    for fourn in les_four:
+            les_fournisseurs.append(fourn.to_dict())
+    
+    les_li = Lieu_Stockage.query.all()
+    les_lieux = []
+    for li in les_li:
+        les_lieux.append(li.to_dict())
+    return jsonify(les_fournisseurs=les_fournisseurs, les_lieux=les_lieux)
+
 @app.route('/sauvegarder/<int:id_produit>',  methods=['GET'])
 @login_required
 def sauvegarder_modif(id_produit):
@@ -443,7 +466,7 @@ def sauvegarder_ajout():
 
     res = ajout_sauvegarde(nom, four, unite, quantite, seuil, fonction, lieu)
     if res:
-        return jsonify(success=True, message="Réservation réussie !"), 200
+        return jsonify(success=True, message="Produit créé !"), 200
     else:
         return jsonify(success=False, message="Quantité non valide"), 400
     
@@ -594,8 +617,11 @@ def method_error(error):
     return redirect(url_for('home'))
 
 @app.route('/generate_pdf', methods=['POST'])
+@login_required
 def generate_pdf():
-    pdf_file = creer_pdf_produit_en_dessous_du_seuil()
-    return send_file(pdf_file, as_attachment=True)
+    if current_user.estPreparateur:
+        pdf_file = creer_pdf_produit_en_dessous_du_seuil()
+        return send_file(pdf_file, as_attachment=True)
+    return redirect(url_for('home'))
 
 
