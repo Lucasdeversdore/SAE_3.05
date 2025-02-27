@@ -2,52 +2,6 @@ body {
     margin: 0;
 }
 
-header{
-    height: 10em;
-    top: 0;
-    position: sticky;
-    padding-left: 9%;
-    padding-right: 9%;
-    z-index: 1000;
-    min-height:fit-content;
-}
-
-.header_nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    height: 100%;
-    min-height:fit-content;
-}
-
-.liens_page, .utilisateur{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-header button{
-    padding: 1em;
-    margin: 1em;
-}
-
-#lien_logout, #settings{
-    min-width: 8em;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-}
-
-#lien_logout img, #settings img{
-    height: 1.5em;
-}
-
-#settings{
-    min-width: 10em;
-}
-
 .top_main{
     margin-top: 2em;
     padding-left: 9%;
@@ -206,12 +160,6 @@ header button{
     padding: 20px;
     width: 300px;
     text-align: center;
-}
-
-#lien_logout img, #settings img{
-    height: 1.5em;
-    size: 100%;
-
 }
 
 table{
@@ -373,4 +321,8 @@ tbody{
     width: 10em;
     padding: 1em;
     margin: 1em;
+}
+
+.content {
+    min-height: 45vh;
 }

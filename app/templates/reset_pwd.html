@@ -1,65 +1,45 @@
-<!doctype html>
-<html>
-    <head>
-        {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>Stockage Chimie</title>
-        {% endblock %}
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='position_page_co_ins.css') }}">
-        <link rel=" stylesheet " href="{{ url_for ('static', filename='style_page_co_ins.css') }}">
-    </head>
-    
-    <body>
-        <main class="main_co_ins">
-            <section>
-                <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
-            </section>
-            <section id="main_section">
-                <form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
-                    {{ form.hidden_tag() }}
-                    <ul>
-                        <li><h1>Réinitilisez votre mot de passe</h1></li>
+{% extends "base/base-inscription-connection-settings.html" %}
 
-                        <!-- message informatif -->
-                        {% with messages = get_flashed_messages(with_categories=True) %}
-                        {% if messages %}
-                          <ul>
-                            {% for category, message in messages %}
-                                {% if category == "info" %}
-                                    <li><p>{{ message }}</p></li>
-                                {% endif %}
-                            {% endfor %}
-                          </ul>
-                        {% endif %}
-                        {% endwith %}
+{% block main %}
+<form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
+    {{ form.hidden_tag() }}
+    <ul>
+        <li><h1>Réinitilisez votre mot de passe</h1></li>
 
-                        <!-- Champ email -->
-                        <li id="email">
-                            {{ form.email(placeholder="Entrez votre email") }}
-                            {% if form.email.errors %}
-                                <ul class="errors">
-                                    {% for error in form.email.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                        
-                        <li>
-                            <button type="submit">Entrer</button>
-                            <a href="/connection">retour</a>
-                        </li>
-                    </ul>
-                </form>
-            </section>
-            <section>
-                <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
-            </section>
-        </main>  
+        <!-- message informatif -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+          <ul>
+            {% for category, message in messages %}
+                {% if category == "info" %}
+                    <li><p>{{ message }}</p></li>
+                {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
 
-        <script src="app.js"></script>
-    </body>
-</html>
+        <!-- Champ email -->
+        <li id="email" class="text">
+            <fieldset>
+                <legend>Email</legend>
+                {{ form.email(placeholder="Entrez votre email") }}
+            </fieldset>
+            {% if form.email.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+        
+        <li id="button">
+            <div class="row">
+                <a href="/connection">retour</a>
+                <button type="submit">Envoyer <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
+            </div>
+        </li>
+    </ul>
+</form>
+{% endblock %}
