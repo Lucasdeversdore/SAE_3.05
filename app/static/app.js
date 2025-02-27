@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 // Fonction pour afficher le popup de modifications de produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     const popup_overlay_modif = document.createElement("div");
@@ -299,7 +298,6 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     document.body.appendChild(popup_overlay_modif);
 }
 
-
 function handleButtonOKModifClick() {
     const popup = document.getElementById("popup-overlay-modif");
     if (popup) {
@@ -312,8 +310,8 @@ function sauvegarderProduit(idProduit, nom, nom_fournisseur, seuil, quantite, fo
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -573,8 +571,8 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, f
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);  // Message de succès
-            window.location.href = '/';  // Redirection si ajout réussi
+            // alert(data.message);  // Message de succès
+            window.location.reload();
         } else {
             alert(data.message);  // Message d'erreur si ajout échoue
         }
@@ -744,8 +742,8 @@ function sauvegarderAjoutLieu(nom) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            window.location.href = '/'; 
+            // alert(data.message);
+            window.location.reload();
         } else {
             alert(data.message);
         }
@@ -868,16 +866,14 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            window.location.href = '/'; 
+            // alert(data.message);
+            window.location.reload();
         } else {
             alert(data.message);
         }
     })
     .catch(error => console.error('Erreur:', error));
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdClick);
@@ -899,11 +895,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error("Erreur :", error));
     });
 });
-
-
-
-
-
 
 // Fonction pour afficher la popup de reservation
 function handleButtonReservation(produit, stock, erreur) {
@@ -1021,12 +1012,8 @@ function reserverProduit(produitId, quantite) {
         .then(data => {
             if (data.success) {
                 // Redirigez ou mettez à jour l'interface si la réservation est réussie
-                alert(data.message);  // Affiche la confirmation
-                const popup = document.getElementById("popup-overlay-resrev");
-                if (popup) {
-                    popup.remove(); 
-                }
-                // window.location.href = '/';
+                // alert(data.message);  // Affiche la confirmation
+                window.location.reload();
             } else {
                 // Affiche une alerte en cas d'erreur
                 alert(data.message);
@@ -1164,8 +1151,6 @@ function handleButtonDeleteReservation(idCommande, idChimiste) {
     document.body.appendChild(popup_overlay); 
 }
 
-
-
 // Fonction pour afficher la popup de cacher un produit
 function handleButtonCacherProduit(produit, nomProduit) {
     // Crée le fond du popup
@@ -1189,7 +1174,6 @@ function handleButtonCacherProduit(produit, nomProduit) {
     bNon.addEventListener("click", handleButtonNonSuppClick);
     bNon.appendChild(spanNon)
     
-
     // Bouton Oui 
     const bOui = document.createElement("button");
     const spanOui = document.createElement("span");
@@ -1222,15 +1206,13 @@ function handleButtonNonSuppClick() {
     }
 }
 
-
 function cacherProduit(idProduit) {
-
     fetch(`/cacher/${idProduit}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -1254,22 +1236,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
 // Fonction pour afficher la popup de montrer un produit
 function handleButtonMontrerProduit(produit, nomProduit) {
     const popup_overlay_montrer = document.createElement("div");
     popup_overlay_montrer.id = "popup-overlay-montrer";
-    popup_overlay_montrer.style.position = "fixed";
-    popup_overlay_montrer.style.top = "0";
-    popup_overlay_montrer.style.left = "0";
-    popup_overlay_montrer.style.width = "100%";
-    popup_overlay_montrer.style.height = "100%";
-    popup_overlay_montrer.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-    popup_overlay_montrer.style.display = "flex";
-    popup_overlay_montrer.style.justifyContent = "center";
-    popup_overlay_montrer.style.alignItems = "center";
-    popup_overlay_montrer.style.zIndex = "1000";
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -1315,15 +1285,13 @@ function handleButtonNonClick() {
     }
 }
 
-
 function montrerProduit(idProduit) {
-
     fetch(`/montrer/${idProduit}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
-                window.location.href = '/';
+                // alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
@@ -1468,8 +1436,9 @@ function ModifierQteProduit(CommandeId, quantite) {
         .then(data => {
             if (data.success) {
                 // Redirigez ou mettez à jour l'interface si la réservation est réussie
-                alert(data.message);  // Affiche la confirmation
-                window.location.href = '/preparation/reservations';  
+                // alert(data.message);  // Affiche la confirmation
+                window.location.reload();
+                // window.location.href = '/preparation/reservations';  
             } else {
                 // Affiche une alerte en cas d'erreur
                 alert(data.message);
