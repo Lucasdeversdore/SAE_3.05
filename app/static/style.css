@@ -2,15 +2,6 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 
-header{
-    background: linear-gradient(to right, #ff4fa4, #ff8cc4);
-}
-
-header button{
-  background-color: white;
-  border-radius: 15px;
-}
-
 .bouton-ajouter{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
@@ -64,15 +55,6 @@ header button{
   background-color: black;
   color: white;
   border-radius: 8px;
-}
-
-button{
-  transition: transform 0.1s ease, background-color 0.3s ease;
-  border: solid lightgrey 0.2em;
-}
-
-button:active {
-    transform: scale(0.9);
 }
 
 /* button:hover{
@@ -255,10 +237,6 @@ th div div button:hover{
   border-radius: 15px;
 }
 
-button{
-  font-size: 90%;
-}
-
 .hover-text {
   position: absolute;
   bottom: 80%;
@@ -281,4 +259,14 @@ button{
 
 .Etat{
   font-weight: bold;
+}
+
+main button{
+  transition: transform 0.1s ease, background-color 0.3s ease;
+  border: solid lightgrey 0.2em;
+  font-size: 90%;
+}
+
+main button:active {
+  transform: scale(0.9);
 }

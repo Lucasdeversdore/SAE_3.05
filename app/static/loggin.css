@@ -1,6 +1,6 @@
 body{
     font-family: 'Roboto', sans-serif;
-    font-size: large;
+    margin: 0;
 }
 
 h1 {
@@ -16,10 +16,11 @@ ul {
 }
 
 main {
+    font-size: large;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 5%;
     height: 100%;
+    margin: 7em;
 }
 
 section {
@@ -28,20 +29,19 @@ section {
     justify-content: center;
 }
 
-img {
-    padding: 25%;
+section > img {
+    padding-left: 25%;
 }
 
 .password, .text {
     margin-bottom: 4%;
 }
 
-.password fieldset, .text fieldset, .password input, .text input{
+fieldset, input{
     border-radius: 6px;
     padding: 0em;
     height: 4em;
 }
-
 
 .password fieldset:focus-within, .text fieldset:focus-within {
     border: 2px solid black;
@@ -52,7 +52,7 @@ legend {
     margin: 0 1em;
 }
 
-.password fieldset, .password input, #pwdConf input{
+.password fieldset, .password input{
     background-color: #ffdeee;
 }
 
@@ -94,6 +94,18 @@ legend {
     height: 1.5em;
 }
 
+.disabled fieldset {
+    border: solid 2px gray;
+    color: black;
+}
+
+.disabled fieldset, .disabled input{
+    font-style: italic;
+    background-color: white;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px,
+                                               rgb(238, 238, 238) 10px, rgb(238, 238, 238) 20px);
+}
+
 #prenom-nom{
     display: flex;
     gap: 1em;
@@ -113,20 +125,18 @@ a:hover{
     text-decoration: underline;
 }
 
-#button{
-    margin: 0px;
-}
-
-#button > div, .checkbox{
+#button > div, .row{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
 
-.checkbox input{
+.row input{
     height: 1.5em;
     width: 1.5em;
+    flex-shrink: 0;
+    box-sizing: border-box;
     appearance: none;
     border: 2px solid transparent;
     border-radius: 4px;
@@ -137,32 +147,33 @@ a:hover{
     background-clip: padding-box, border-box;
 }
 
-.checkbox input:checked {
+.row input:checked {
     background-image: linear-gradient(to right, #ff4fa4, #ff8cc4), linear-gradient(to right, #ff4fa4, #ff8cc4);
 }
 
-.checkbox label a{
+.row label a{
     font-size: 1em;
 }
 
-button{
+#button button{
     display: flex;
     align-items: center;
     border: none;
     font-weight: bold;
     border-radius: 15px;
     padding: 1em;
+    margin: 1em;
     gap: 0.5em;
     color: white;
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
     transition: transform 0.2s ease;
 }
 
-button:active {
+#button button:active {
     transform: scale(0.9);
 }
 
-button > img{
+#button button > img{
     padding: 0px;
     width: 2em;
     height: 2em;

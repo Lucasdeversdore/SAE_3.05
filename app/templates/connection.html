@@ -1,4 +1,4 @@
-{% extends "base/base-inscription-connection.html" %}
+{% extends "base/base-inscription-connection-settings.html" %}
 
 {% block main %}
     <form role="form" method="POST" action = "{{ url_for ('connection') }}">
@@ -55,7 +55,7 @@
             <li id="button">
                 <a id="reset_pwd" href="{{url_for('reset_pwd')}}">mot de passe oublié</a>
                 <div>
-                    <div class="checkbox">
+                    <div class="row">
                         <input type="checkbox">
                         <label>Rester connecté</laber>
                     </div>
