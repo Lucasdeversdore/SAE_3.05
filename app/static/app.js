@@ -1243,35 +1243,42 @@ function handleButtonMontrerProduit(produit, nomProduit) {
 
     // Contenu du popup
     const popup_content = document.createElement("div");
-    popup_content.style.backgroundColor = "#fff";
-    popup_content.style.padding = "20px";
-    popup_content.style.borderRadius = "5px";
-    popup_content.style.width = "300px";
-    popup_content.style.textAlign = "center";
+    popup_content.classList.add("popup-content");
+    
 
     // Titre du popup
     const h3 = document.createElement("h3");
     h3.textContent = `Souhaitez vous montrer: ${nomProduit} ?`;
+    popup_content.appendChild(h3);
 
     // Bouton Non pour fermer le popup
     const bNon = document.createElement("button");
-    bNon.textContent = "Non";
-    bNon.id = "non"; // Associez un ID pour le bouton
+    const spanNon = document.createElement("span");
+    spanNon.textContent = "Non";
+    bNon.className = "cssbuttons-io"
     bNon.addEventListener("click", handleButtonNonClick);
+    bNon.appendChild(spanNon)
 
 
     // Bouton Oui 
     const bOui = document.createElement("button");
-    bOui.textContent = "Oui";
-    bOui.id = "oui"; // Associez un ID pour le bouton
+    const spanOui = document.createElement("span");
+    spanOui.textContent = "Oui";
+    bOui.className = "cssbuttons-io"
     bOui.data = produit
     bOui.addEventListener("click", function (){
         montrerProduit(produit)
     });
+    bOui.appendChild(spanOui)
 
-    popup_content.appendChild(h3);
-    popup_content.appendChild(bOui);
-    popup_content.appendChild(bNon);
+    // ligne de bouton
+    const ligne_bouton = document.createElement("div");
+    ligne_bouton.appendChild(bOui)
+    ligne_bouton.appendChild(bNon)
+    ligne_bouton.id = "bouton_modif"
+
+    popup_content.appendChild(ligne_bouton);
+
     popup_overlay_montrer.appendChild(popup_content);
     document.body.appendChild(popup_overlay_montrer); 
 
