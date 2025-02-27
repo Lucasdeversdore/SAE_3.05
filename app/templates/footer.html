@@ -1,0 +1,34 @@
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>À propos</h4>
+            <p>Bienvenue sur notre plateforme de gestion des produits et réservations. Nous facilitons la gestion des stocks avec des outils intuitifs.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Navigation</h4>
+            <ul>
+                <li><a href="{{ url_for('home_page', id_page=1) }}">Accueil</a></li>
+                <li><a>Recherche</a></li>
+                <li><a>Contact</a></li>
+                <li><a>Politique de confidentialité</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Contact</h4>
+            <p>Email: support@tonsite.com</p>
+            <p>Téléphone: +33 6 12 34 56 78</p>
+            <p>Adresse: 123, Rue des Produits, Paris</p>
+        </div>
+        <div class="footer-section">
+            <h4>Suivez-nous</h4>
+            <div class="social-icons">
+                <a href="#"><img src="{{ url_for('static', filename='images/facebook.png') }}" alt="Facebook"></a>
+                <a href="#"><img src="{{ url_for('static', filename='images/x.png') }}" alt="X"></a>
+                <a href="#"><img src="{{ url_for('static', filename='images/Instagram.png') }}" alt="Instagram"></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Chimie. Tous droits réservés.</p>
+    </div>
+</footer>

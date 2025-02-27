@@ -23,8 +23,10 @@
         </main>
         <footer>
             {% block footer %}
+                {% include 'footer.html' %}
             {% endblock %}
         </footer>
         <script src="{{ url_for('static', filename='app.js')}}"></script>
     {% endblock %}
+    
 </html>
