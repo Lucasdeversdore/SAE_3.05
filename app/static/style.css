@@ -10,6 +10,11 @@ body{
   font-weight: bold;
 }
 
+button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 .top_main .barre_recherche{
   border-radius: 20px;
   border-style: solid;
