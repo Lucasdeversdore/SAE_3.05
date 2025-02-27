@@ -1,4 +1,4 @@
-{% extends "base-produit-reservation.html" %}
+{% extends "base/base-produit-reservation.html" %}
 
 {% block top_main %}
     <h1>Liste des réservations</h1>
@@ -14,7 +14,7 @@
 
 {% block content %}
 {% if reservations_etats|length == 0 %}
-    <p>Aucune réservation</p>
+    <p id="aucune-reserv">Aucune réservation</p>
 {% else %}
     <table>
         {% for reservation_etat in reservations_etats[:5] %}

@@ -2,20 +2,17 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 
-header{
-    background: linear-gradient(to right, #ff4fa4, #ff8cc4);
-}
-
-header button{
-  background-color: white;
-  border-radius: 15px;
-}
-
 .bouton-ajouter{
   background: linear-gradient(to right, #ff4fa4, #ff8cc4);
   border-radius: 18px;
   color: white;
   text-align: left;
+  font-weight: bold;
+}
+
+button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
 }
 
 .top_main .barre_recherche{
@@ -29,7 +26,7 @@ header button{
 }
 
 .top_main .barre_recherche:focus-within {
-  outline: 2px solid #007BFF;
+  outline: 2px solid #ff4fa4;
 }
 
 .top_main .barre_recherche input::placeholder{
@@ -64,15 +61,6 @@ header button{
   background-color: black;
   color: white;
   border-radius: 8px;
-}
-
-button{
-  transition: transform 0.1s ease, background-color 0.3s ease;
-  border: solid lightgrey 0.2em;
-}
-
-button:active {
-    transform: scale(0.9);
 }
 
 /* button:hover{
@@ -255,10 +243,6 @@ th div div button:hover{
   border-radius: 15px;
 }
 
-button{
-  font-size: 90%;
-}
-
 .hover-text {
   position: absolute;
   bottom: 80%;
@@ -281,4 +265,81 @@ button{
 
 .Etat{
   font-weight: bold;
+}
+
+main button{
+  transition: transform 0.1s ease, background-color 0.3s ease;
+  border: solid white 0.2em;
+  font-size: 90%;
+}
+
+main button:active {
+  transform: scale(0.9);
+}
+
+footer {
+  background-color: #222;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+}
+
+.footer-section h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.footer-section p, .footer-section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-section ul li {
+  margin: 5px 0;
+}
+
+.footer-section ul li a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-section ul li a:hover {
+  color: #ff8cc4;
+}
+
+.social-icons img {
+  width: 32px;  /* Taille uniforme */
+  height: 32px; /* Assure un carré parfait */
+  object-fit: contain; /* Évite la déformation */
+  margin: 5px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.social-icons img:hover {
+  transform: scale(1.1);
+}
+
+.footer-bottom {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #444;
 }

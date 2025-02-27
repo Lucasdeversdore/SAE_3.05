@@ -1,4 +1,4 @@
-{% extends "base/base-inscription-connection.html" %}
+{% extends "base/base-inscription-connection-settings.html" %}
 
 {% block main %}
     <form role="form" method="POST" action="{{ url_for('inscrire') }}">
@@ -104,15 +104,15 @@
             <!-- Champ CGU -->
             <li id="button">
                 <div>
-                    <div class="checkbox">
-                    {{ form.cgu }} <label> J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></label>
-                    {% if form.cgu.errors %}
-                        <ul class="errors">
-                            {% for error in form.cgu.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                    <div class="row">
+                        {{ form.cgu }} <label> J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></label>
+                        {% if form.cgu.errors %}
+                            <ul class="errors">
+                                {% for error in form.cgu.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
                     <!-- Bouton submit -->
                     <button type="submit">M'inscrire <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
