@@ -103,6 +103,7 @@ button:hover {
 
 .bdisabled{
   background-color: grey;
+  border: grey;
 }
 
 .bdisabled:active{
@@ -111,6 +112,8 @@ button:hover {
 
 .bdisabled:hover{
   outline: none;
+  cursor: not-allowed;
+  border: grey;
 }
 
 a{

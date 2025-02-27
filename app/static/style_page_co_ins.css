@@ -8,6 +8,11 @@ h1 {
     -webkit-text-fill-color: transparent; /* Rend le texte transparent pour laisser le dégradé apparaître */
 }
 
+button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 #email input {
   border-radius: 6px;
   border: double 1px transparent;

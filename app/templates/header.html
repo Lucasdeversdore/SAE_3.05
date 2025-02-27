@@ -30,13 +30,15 @@
                 <button>Liste des réservations</button>
             </form>
         </div>
-        <div>
-            <form action="{{ url_for('logout') }}" method="GET">
-                <button><img src="{{url_for('static', filename='images/logout.png')}}" alt ="logout">Logout</button>
-            </form>
-            <form action="{{ url_for('settings') }}" method="GET">
-                <button><img src="{{url_for('static', filename='images/settings.png')}}" alt ="settings">Paramètres</button>
-            </form>
+        <div class="user-menu">
+            <button class="user-button">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="user">
+                {{ current_user.prenom }} {{ current_user.nom }}
+            </button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('settings') }}">⚙️ Paramètres</a>
+                <a href="{{ url_for('logout') }}">🚪 Déconnexion</a>
+            </div>
         </div>
     </nav>
 </header>

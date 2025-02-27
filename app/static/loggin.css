@@ -10,6 +10,11 @@ h1 {
     margin-bottom: 10%;
 }
 
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
 ul {
     list-style-type: none;
     padding: 0%;
