@@ -285,6 +285,17 @@ tbody{
     box-sizing: border-box;
 }
 
+
+
+.popup-content > #div_csv > *{
+    width: 70%;
+}
+
+.popup-content > div > #ajouter_csv{
+    min-width: 2em;
+    width: 13em;
+}
+
 .popup-content > div > button{
     width: auto;
     box-sizing: border-box;
@@ -310,4 +321,8 @@ tbody{
     width: 10em;
     padding: 1em;
     margin: 1em;
+}
+
+.content {
+    min-height: 45vh;
 }
