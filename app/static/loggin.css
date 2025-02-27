@@ -7,7 +7,7 @@ h1 {
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10%;
+    margin-bottom: 1.5em;
 }
 
 ul {
@@ -19,18 +19,20 @@ main {
     font-size: large;
     display: flex;
     flex-wrap: wrap;
-    height: 100%;
+    align-items: center;
+    justify-content: center;
     margin: 7em;
 }
 
-section {
-    flex-basis: 3%;
-    flex-grow: 1;
-    justify-content: center;
+.content {
+    min-width: fit-content;
+    width: 30em;
+    padding: 0 3em;
 }
 
-section > img {
-    padding-left: 25%;
+main > img {
+    max-height: 15em;
+    width: auto;
 }
 
 .password, .text {
@@ -196,4 +198,19 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
+}
+
+@media screen and (max-width: 100em) {
+    main > img {
+        display: none;
+    }
+
+    /* Pour éviter que le gap ou la position reste bizarre */
+    main {
+        gap: 0;
+    }
+
+    .content {
+        padding: 0 1em;
+    }
 }
