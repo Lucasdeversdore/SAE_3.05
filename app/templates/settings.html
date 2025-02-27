@@ -1,8 +1,7 @@
 {% extends "base/base-inscription-connection-settings.html" %}
 
 {% block css %}
-    <link rel=" stylesheet " href="{{ url_for ('static', filename='header.css') }}">
-    <link rel=" stylesheet " href="{{ url_for ('static', filename='settings.css') }}">
+    <style>main{margin: 0px;}</style>
 {% endblock %}
 
 {% block header %}
@@ -14,7 +13,7 @@
         {{ form.hidden_tag() }}
         <ul>
             <li><h1>Vos paramètres</h1></li>
-            <li id="email" class="text">
+            <li id="email" class="text disabled">
                 <fieldset>
                     <legend>Email</legend>
                     {{ form.email(value=current_user.email) }}
@@ -109,19 +108,22 @@
                 {% endif %}
             </li>
             <!-- Champ reception email status commande -->
-            <li id="info">
-                {{ form.info(checked=current_user.info) }}
-                {% if form.info.errors %}
-                <ul class="errors">
-                    {% for error in form.info.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                Recevoir les mails facultatifs (Ex: votre commande est prise en charge, votre commande est supprimée)
+            <li id="button">
+                <div>
+                    <div class="row">
+                        {{ form.info(checked=current_user.info) }} <label>Recevoir les mails facultatifs (Notifications concernant vos commandes)</label>
+                        {% if form.info.errors %}
+                        <ul class="errors">
+                            {% for error in form.info.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Bouton submit -->
+                <button type="submit">Enregistrer <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
             </li>
-            <!-- Bouton submit -->
-            <li id="Enregistrer"><button type="submit">Enregistrer</button></li>
         </ul>
     </form>
 {% endblock %}

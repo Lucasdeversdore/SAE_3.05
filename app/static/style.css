@@ -230,3 +230,13 @@ th div div button:hover{
 .Etat{
   font-weight: bold;
 }
+
+main button{
+  transition: transform 0.1s ease, background-color 0.3s ease;
+  border: solid lightgrey 0.2em;
+  font-size: 90%;
+}
+
+main button:active {
+  transform: scale(0.9);
+}
