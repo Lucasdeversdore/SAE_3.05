@@ -311,3 +311,7 @@ tbody{
     padding: 1em;
     margin: 1em;
 }
+
+.content {
+    min-height: 45vh;
+}
