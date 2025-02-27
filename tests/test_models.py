@@ -371,8 +371,8 @@ class Testing(unittest.TestCase):
             prod2 = Produit.query.get(next_prod_id()-1)
 
             liste = est_en_dessous_du_seuil() 
-            self.assertIn((prod, 0), liste)
-            self.assertIn((prod2, 10.0), liste)
+            self.assertIn((prod, 0, "kg"), liste)
+            self.assertIn((prod2, 10.0, "kg"), liste)
 
     def test_search_reserv_filter(self):
         with app.app_context():

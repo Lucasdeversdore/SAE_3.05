@@ -493,6 +493,45 @@ function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
 
     popup_content.appendChild(ligne_lieu_stock)
 
+
+    // ligne csv
+    const divBCsv = document.createElement("div");
+    divBCsv.id = "div_csv";
+    
+    // Créer l'élément image
+    const imgCsv = document.createElement("img");
+    imgCsv.src = "/static/images/ajouter_prod.png";
+    imgCsv.alt = "i";
+    
+    // Créer le bouton
+    const bCsv = document.createElement("button");
+    bCsv.className = "bouton-ajouter";
+    bCsv.id = "ajouter_csv";
+    
+    // Ajouter l'image et le texte dans le bouton
+    bCsv.appendChild(imgCsv);
+    bCsv.appendChild(document.createTextNode(" Ajouter un csv"));
+    
+    // Ajouter un événement au bouton
+    bCsv.onclick = function () {
+        document.getElementById('fileInput').click();
+    };
+    
+    
+    const divTCsv = document.createElement("div");
+    const textCsv1 = document.createElement("p");
+    textCsv1.textContent = "Première ligne du fichier csv :"
+    divTCsv.appendChild(textCsv1)
+    const textCsv2 = document.createElement("p");
+    textCsv2.textContent = "Produits,Fournisseur,Quantité,Fonction,Lieu de stockage,Seuil"
+    divTCsv.appendChild(textCsv2)
+
+    divBCsv.appendChild(divTCsv)
+    divBCsv.appendChild(bCsv)
+    popup_content.appendChild(divBCsv)
+    
+
+
     // boutton Annuler
     const bAnnuler = document.createElement("button");
     const spanOk = document.createElement("span");
@@ -1480,4 +1519,35 @@ if (passwordConf){
 let passwordNew = document.getElementById('pwdNew')
 if (passwordNew){
     passwordNew.querySelector('.toggle').onclick = () => hideShowPassword(passwordNew);
+}
+
+// Ajout csv
+
+document.getElementById('fileInput').addEventListener('change', ajoutCSV);
+
+function ajoutCSV(event) {  // 'event' doit être en minuscule
+    let file = event.target.files[0]; // 'event' contient l'objet d'événement
+
+    if (file) {
+        let fileName = file.name; // Nom du fichier
+        let fileType = file.type; // Récupère le type du fichier
+        if (fileName.endsWith(".csv") || fileType === "text/csv") {
+            let chemin = `./${fileName}`;
+
+            // Envoi du fichier via fetch
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/ajout_csv", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert("Erreur lors de l'envoi, renvoyer le fichier"));
+        }
+        else{
+            alert("Veulliez choisir un fichier csv")
+        }
+    }
 }
