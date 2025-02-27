@@ -1,7 +1,9 @@
 from hashlib import sha256
 import base64
+import os
 import time
-from .app import app, db, mail, cache
+from app.csv_to_db import csv_to_db
+from .app import UPLOAD_FOLDER, app, db, mail, cache
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import jsonify, redirect, render_template, send_file, url_for, request, Flask, render_template, redirect, url_for, flash
 from flask_mail import Message
@@ -625,3 +627,20 @@ def generate_pdf():
     return redirect(url_for('home'))
 
 
+@app.route('/ajout_csv', methods=['POST'])
+@login_required
+def ajout_csv():
+    if 'file' not in request.files:
+        return "Aucun fichier envoyé", 400  # Erreur si aucun fichier
+
+    file = request.files['file']
+    chemin = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(chemin)
+    if current_user.estPreparateur:
+        if csv_to_db(chemin):
+            os.remove(chemin)
+            return jsonify(success=True, message="Données ajoutées !"), 200
+        else:
+            os.remove(chemin)
+            return jsonify(success=False, message="Il y a eu un problème, vérifier que le fichier csv est conforme."), 400
+    return redirect(url_for('home'))

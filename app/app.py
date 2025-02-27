@@ -36,4 +36,8 @@ mail.init_app(app)
 mail=Mail(app)
 
 
+# Répertoire de destination pour les fichiers téléchargés
+UPLOAD_FOLDER = "./uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Crée le dossier si nécessaire
+
 

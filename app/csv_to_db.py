@@ -61,9 +61,11 @@ def csv_to_db(filename):
                     add_est_stocker(id_prod, id_lieu, qte)
                 if row == ['Produits', 'Fournisseur', 'Quantité', 'Fonction', 'Lieu de stockage', 'Seuil']:
                     demarer = True
+            
         except csv.Error as e:
             sys.exit('file {}, line {}: {}'.format(filename, reader.line_num, e))
-
+            return False
+        return True
 
 
     
