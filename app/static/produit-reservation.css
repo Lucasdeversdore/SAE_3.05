@@ -72,7 +72,7 @@
 }
 
 .content > div > form > button{
-    width: 10em;
+    width: 100%;
     padding: 1em;
     margin: 1em;
     border-radius: 15px;
@@ -110,7 +110,10 @@
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    width: 100%;
+}
+
+.pagination p {
+    margin-left: 2em;
 }
 
 .pagination button:hover {

@@ -8,14 +8,13 @@
             <h4>Navigation</h4>
             <ul>
                 <li><a href="{{ url_for('home_page', id_page=1) }}">Accueil</a></li>
-                <li><a>Recherche</a></li>
-                <li><a>Contact</a></li>
-                <li><a>Politique de confidentialité</a></li>
+                <li><a href="{{ url_for('preparation_reservation') }}">Mes réservations</a></li>
+                <li><a href="{{ url_for('settings') }}">Paramètres</a></li>
+                <li><a href="/inscription-cgu">Politique de confidentialité</a></li>
             </ul>
         </div>
         <div class="footer-section">
             <h4>Contact</h4>
-            <p>Email: support@tonsite.com</p>
             <p>Téléphone: +33 2 38 49 44 00</p>
             <p>Adresse: IUT d'Orléans, rue d'Amboise, 45067 Orléans Cedex 2 - France</p>
         </div>
