@@ -78,8 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
 // Popup modifier produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
     let popup_overlay_modif = document.getElementById("popup-overlay-modif")
@@ -255,7 +253,7 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     spanOk.textContent = "Annuler";
     bAnnuler.id = "okModif";
     bAnnuler.className = "cssbuttons-io"
-    bAnnuler.addEventListener("click", handleButtonOKModifClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay_modif)
     bAnnuler.appendChild(spanOk)
 
     // boutton Sauvegarder
@@ -291,13 +289,6 @@ function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fou
     document.body.appendChild(popup_overlay_modif);
 }
 
-function handleButtonOKModifClick() {
-    const popup = document.getElementById("popup-overlay-modif");
-    if (popup) {
-        popup.remove();
-    }
-}
-
 function sauvegarderProduit(idProduit, nom, nom_fournisseur, seuil, quantite, fonction, lieu) {
     fetch(`/sauvegarder/${idProduit}?inputNom=${encodeURIComponent(nom)}&textFournisseur=${encodeURIComponent(nom_fournisseur)}&textQuantite=${encodeURIComponent(quantite)}&textSeuil=${encodeURIComponent(seuil)}&textFonction=${encodeURIComponent(fonction)}&textLieu=${encodeURIComponent(lieu)}`)
         .then(response => response.json())
@@ -326,8 +317,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-
 
 
 // Popup réserver
@@ -408,7 +397,7 @@ function handleButtonReservation(produit, stock, erreur) {
     bAnnuler.appendChild(spanAnnuler);
     bAnnuler.id = "annuler"; 
     bAnnuler.className = "cssbuttons-io";
-    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay);
 
 
     // Bouton Reserver
@@ -435,13 +424,6 @@ function handleButtonReservation(produit, stock, erreur) {
     document.body.appendChild(popup_overlay); 
 }
 
-function handleButtonAnnulerClick() {
-    const popup = document.getElementById("popup-overlay-resrev");
-    if (popup) {
-        popup.remove(); 
-    }
-}
-
 function reserverProduit(produitId, quantite) {
     fetch(`/reservation/${produitId}?inputQte=${quantite}`)
         .then(response => response.json())
@@ -457,8 +439,6 @@ function reserverProduit(produitId, quantite) {
         })
         .catch(error => console.error('Erreur:', error));
 }
-
-
 
 
 // Ppopup ajouter produit
@@ -669,7 +649,7 @@ function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
     spanOk.textContent = "Annuler";
     bAnnuler.id = "AnnulerAjout";
     bAnnuler.className = "cssbuttons-io"
-    bAnnuler.addEventListener("click", handleButtonAnnulerAjoutClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay_ajout);
     bAnnuler.appendChild(spanOk)
 
     // boutton Sauvegarder
@@ -700,13 +680,6 @@ function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
 
     popup_overlay_ajout.appendChild(popup_content);
     document.body.appendChild(popup_overlay_ajout);
-}
-
-function handleButtonAnnulerAjoutClick() {
-    const popup = document.getElementById("popup-overlay-ajout");
-    if (popup) {
-        popup.remove();
-    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -747,6 +720,36 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, f
         }
     })
     .catch(error => console.error('Erreur:', error));
+}
+
+// Ajout csv
+document.getElementById('fileInput').onchange = ajoutCSV;
+
+function ajoutCSV(event) {  // 'event' doit être en minuscule
+    let file = event.target.files[0]; // 'event' contient l'objet d'événement
+
+    if (file) {
+        let fileName = file.name; // Nom du fichier
+        let fileType = file.type; // Récupère le type du fichier
+        if (fileName.endsWith(".csv") || fileType === "text/csv") {
+            let chemin = `./${fileName}`;
+
+            // Envoi du fichier via fetch
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/ajout_csv", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert("Erreur lors de l'envoi, renvoyer le fichier"));
+        }
+        else{
+            alert("Veulliez choisir un fichier csv")
+        }
+    }
 }
 
 
@@ -791,10 +794,7 @@ function handleButtonAjoutLieuClick() {
     spanAnnuler.textContent = "Annuler";
     bAnnuler.id = "AnnulerLieu";
     bAnnuler.className = "cssbuttons-io"
-    bAnnuler.addEventListener("click", function () {
-        const popup = document.getElementById("popup-overlay-lieu");
-        if (popup) popup.remove();
-    });
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay_ajouter_lieu);
     bAnnuler.appendChild(spanAnnuler)
 
     // bouton sauvegarder
@@ -845,7 +845,6 @@ function sauvegarderAjoutLieu(nom) {
     })
     .catch(error => console.error('Erreur:', error));
 }
-
 
 
 // Ppopup ajouter fournisseur
@@ -920,10 +919,7 @@ function handleButtonAjoutFournisseurClick() {
     spanOk.textContent = "Annuler";    
     bAnnuler.id = "AnnulerFournisseur";
     bAnnuler.className = "cssbuttons-io";
-    bAnnuler.addEventListener("click", function () {
-        const popup = document.getElementById("popup-overlay-fournisseur");
-        if (popup) popup.remove();
-    });
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay);
     bAnnuler.appendChild(spanOk)
 
     // boutton Sauvegarder
@@ -978,11 +974,9 @@ function sauvegarderAjoutFournisseur(nom, adresse, telephone) {
 }
 
 
-
 // Listener boutons ajout produit, lieu, fournisseur et seuil
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ajouter_prod').addEventListener('click', handleButtonAjoutProdClick);
-    // document.getElementById('ajouter_fonction').addEventListener('click', handleButtonAjoutFonctionClick);
     document.getElementById('ajouter_lieu').addEventListener('click', handleButtonAjoutLieuClick);
     document.getElementById('ajouter_fournisseur').addEventListener('click', handleButtonAjoutFournisseurClick);
     document.getElementById("search_seuil").addEventListener("click", function() {
@@ -1000,7 +994,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error("Erreur :", error));
     });
 });
-
 
 
 // Popup cacher un produit
@@ -1027,7 +1020,7 @@ function handleButtonCacherProduit(produit, nomProduit) {
     const spanNon = document.createElement("span");
     spanNon.textContent = "Non";
     bNon.className = "cssbuttons-io"
-    bNon.addEventListener("click", handleButtonNonSuppClick);
+    bNon.onclick = () => handleButtonAnnulerClick(popup_overlay_cacher);
     bNon.appendChild(spanNon)
     
     // Bouton Oui 
@@ -1052,13 +1045,6 @@ function handleButtonCacherProduit(produit, nomProduit) {
     popup_overlay_cacher.appendChild(popup_content);
     document.body.appendChild(popup_overlay_cacher); 
 
-}
-
-function handleButtonNonSuppClick() {
-    const popup = document.getElementById("popup-overlay-cacher");
-    if (popup) {
-        popup.remove(); 
-    }
 }
 
 function cacherProduit(idProduit) {
@@ -1092,7 +1078,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
 // Popup de montrer un produit
 function handleButtonMontrerProduit(produit, nomProduit) {
     let popup_overlay_montrer = document.getElementById("popup-overlay-montrer")
@@ -1117,7 +1102,7 @@ function handleButtonMontrerProduit(produit, nomProduit) {
     const spanNon = document.createElement("span");
     spanNon.textContent = "Non";
     bNon.className = "cssbuttons-io"
-    bNon.addEventListener("click", handleButtonNonClick);
+    bNon.onclick = () => handleButtonAnnulerClick(popup_overlay_montrer);
     bNon.appendChild(spanNon)
 
 
@@ -1143,13 +1128,6 @@ function handleButtonMontrerProduit(produit, nomProduit) {
     popup_overlay_montrer.appendChild(popup_content);
     document.body.appendChild(popup_overlay_montrer); 
 
-}
-
-function handleButtonNonClick() {
-    const popup = document.getElementById("popup-overlay-montrer");
-    if (popup) {
-        popup.remove(); 
-    }
 }
 
 function montrerProduit(idProduit) {
@@ -1181,36 +1159,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-
-
-// Ajout csv
-
-document.getElementById('fileInput').addEventListener('change', ajoutCSV);
-
-function ajoutCSV(event) {  // 'event' doit être en minuscule
-    let file = event.target.files[0]; // 'event' contient l'objet d'événement
-
-    if (file) {
-        let fileName = file.name; // Nom du fichier
-        let fileType = file.type; // Récupère le type du fichier
-        if (fileName.endsWith(".csv") || fileType === "text/csv") {
-            let chemin = `./${fileName}`;
-
-            // Envoi du fichier via fetch
-            let formData = new FormData();
-            formData.append("file", file);
-
-            fetch("/ajout_csv", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => alert(data.message))
-            .catch(error => alert("Erreur lors de l'envoi, renvoyer le fichier"));
-        }
-        else{
-            alert("Veulliez choisir un fichier csv")
-        }
-    }
-}

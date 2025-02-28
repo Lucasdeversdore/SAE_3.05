@@ -32,7 +32,7 @@ function handleButtonDeleteReservation(idCommande) {
     const spanAnnuler = document.createElement("span");
     spanAnnuler.textContent = "Non";
     bAnnuler.className = "cssbuttons-io";
-    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay);
     bAnnuler.appendChild(spanAnnuler)
 
     // Bouton Reserver
@@ -106,7 +106,7 @@ function handleButtonEtatCommande(idCommande, etat) {
     const spanAnnuler = document.createElement("span");
     spanAnnuler.textContent = "Non";
     bAnnuler.className = "cssbuttons-io";
-    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay);
     bAnnuler.appendChild(spanAnnuler)
 
     // Bouton Reserver
@@ -196,7 +196,7 @@ function handleButtonModifReservation(commande, produit, stock, erreur) {
     bAnnuler.appendChild(spanAnnuler);
     bAnnuler.id = "annuler"; 
     bAnnuler.className = "cssbuttons-io";
-    bAnnuler.addEventListener("click", handleButtonAnnulerClick);
+    bAnnuler.onclick = () => handleButtonAnnulerClick(popup_overlay);
 
 
     // Bouton modifier
@@ -223,12 +223,12 @@ function handleButtonModifReservation(commande, produit, stock, erreur) {
     document.body.appendChild(popup_overlay); 
 }
 
-function handleButtonAnnulerClick() {
-    const popup = document.getElementById("popup-overlay-resrev");
-    if (popup) {
-        popup.remove(); 
-    }
-}
+// function handleButtonAnnulerClick() {
+//     const popup = document.getElementById("popup-overlay-resrev");
+//     if (popup) {
+//         popup.remove(); 
+//     }
+// }
 
 document.addEventListener('DOMContentLoaded', function() {
     const les_buttons = document.getElementsByClassName('modif_reserv');
