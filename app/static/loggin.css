@@ -169,6 +169,11 @@ a:hover{
     height: 2em;
 }
 
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
 .errors {
     color: red;
     font-size: 0.9em;
