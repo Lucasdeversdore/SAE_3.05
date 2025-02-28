@@ -1,13 +1,16 @@
 #!/usr/bin/python3
+import base64
 import time, os
+from flask import url_for
 from flask_login import UserMixin
+from flask_mail import Message
 from sqlalchemy import Column, Float, Integer, Text, Date, Boolean
 from sqlalchemy.orm import relationship 
 from sqlalchemy.sql.schema import ForeignKey
 from .app import login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import func
-from .app import  db, app
+from .app import  mail, db, app
 from wtforms import ValidationError
 from fpdf import FPDF
 
@@ -720,6 +723,105 @@ def password_change_validator(form, field):
             if not confirm_mdp:
                 raise ValidationError("Vous devez confirmer le nouveau mot de passe.")
         check_mdp_validator(form, field)
+
+
+def send_mail_activation(user:Chimiste):
+    token=user.get_token()
+    time_in_link = time.time()
+
+    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
+
+    reset_url = url_for('activation_token', token=token, time_in_link=encoded_time, _external=True)
+    
+    msg = Message(
+        'Activation de votre compte Stockage Chimie',
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Contenu de l'e-mail en HTML
+    msg.html = f'''
+                <!doctype html>
+                <html>
+                    <body>
+                        <p>Pour activez votre compte Stockage Chimie, cliquez sur le lien ci-dessous :</p>
+                        <p><a href="{reset_url}">Activez votre compte</a></p>
+                        <p>Si vous n'avez pas demandé cette activation, ignorez simplement cet e-mail.</p>
+                    </body>
+                </html>
+                '''
+    mail.send(msg)
+    print(msg)
+
+
+def send_mail_mdp(user: Chimiste):
+    token = user.get_token()
+    time_in_link = time.time()
+
+    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
+
+    print("envoie mail " + str(time_in_link))
+    reset_url = url_for('reset_token', token=token, time_in_link=encoded_time, _external=True)
+
+    msg = Message(
+        'Demande de réinitialisation de mot de passe',
+        recipients=[user.email],
+        sender='noreply@codejana.com'
+    )
+
+    # Contenu de l'e-mail en HTML
+    msg.html = f'''
+                <!doctype html>
+                <html>
+                    <body>
+                        <p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous :</p>
+                        <p><a href="{reset_url}">Réinitialiser votre mot de passe</a></p>
+                        <p>Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet e-mail.</p>
+                    </body>
+                </html>
+                '''
+
+    mail.send(msg)
+    print(msg)
+
+
+def send_mail_etat(user: Chimiste, commande: Commande):
+    if user.info:
+        produit = Produit.query.get(commande.idProduit)
+        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+        msg = Message(
+            'Avancement de votre commande de ' + produit.nomProduit,
+            recipients=[user.email],
+            sender='noreply@codejana.com'
+        )
+
+        # Vérifier le statut de la commande et construire le contenu du message
+        if faire.statutCommande == 'en-cours':
+            # Contenu de l'e-mail en texte brut
+            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
+        else:
+            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
+
+        mail.send(msg)
+
+
+def send_mail_supp(user: Chimiste, commande:Commande):
+    if user.info:
+        produit = Produit.query.get(commande.idProduit)
+        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
+
+        msg = Message(
+            'Avancement de votre commande de ' + produit.nomProduit,
+            recipients=[user.email],
+            sender='noreply@codejana.com'
+        )
+
+        # Vérifier le statut de la commande et construire le contenu du message
+            # Contenu de l'e-mail en texte brut
+        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
+
+        mail.send(msg)
 
 
 def next_commande_id():
