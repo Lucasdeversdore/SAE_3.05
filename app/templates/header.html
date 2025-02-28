@@ -19,11 +19,15 @@
             </form>
         </div>
         <div>
+            <h1>Chimie'O 😷</h1>
+        </div>
+        <div>
             <form action="{{ url_for('logout') }}" method="GET">
-                <button><img src="{{url_for('static', filename='images/logout.png')}}" alt ="logout">Logout</button>
+                <button><img src="{{url_for('static', filename='images/logout.png')}}" alt="logout">Logout</button>
             </form>
             <form action="{{ url_for('settings') }}" method="GET">
-                <button><img src="{{url_for('static', filename='images/settings.png')}}" alt ="settings">Paramètres</button>
+                <button><img src="{{url_for('static', filename='images/settings.png')}}"
+                        alt="settings">Paramètres</button>
             </form>
         </div>
     </nav>
