@@ -188,7 +188,7 @@
                 <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
             </form>
         
-            {{ actu_id_page }}
+            <p>{{ actu_id_page }}</p>
         
             <!-- Bouton Suivant -->
             <form action="{{ url_for('home_page', id_page=actu_id_page + 1) }}" method="get">
