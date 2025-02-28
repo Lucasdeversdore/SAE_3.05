@@ -206,7 +206,6 @@ La page de gestion des stocks permet de naviguer entre plusieurs sections telles
             "Sauvegarder" pour ajouter le produit.
             "Annuler" pour annuler l’action.
         Alternative :
-
             Ajouter un fichier CSV en appuyant sur le bouton "Ajouter un csv"
             Ce fichier devra respecter cette organisation :
             Produits,Fournisseur,Quantité,Fonction,Lieu de stockage,Seuil
