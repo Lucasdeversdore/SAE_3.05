@@ -56,7 +56,7 @@
                                 {% endif %}
                             {% else %}
                                 {% if etat == "non-commence" %}
-                                    <button class="delete_reservation Etat" idCommande="{{ reservation.idCommande }}">
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}">
                                         <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
                                         {{ texte_etat }}
                                     </button>
@@ -82,7 +82,7 @@
             <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
         </form>
     
-        {{ actu_id_page }}
+        <p>{{ actu_id_page }}</p>
     
         <!-- Bouton Suivant -->
         <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
