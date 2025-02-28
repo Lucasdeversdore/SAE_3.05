@@ -18,3 +18,5 @@ function clearContent(element){
         element.removeChild(element.firstChild);
     }
 }
+
+function handleButtonAnnulerClick(popup){if (popup) popup.remove()}
