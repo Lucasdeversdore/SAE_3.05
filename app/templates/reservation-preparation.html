@@ -55,7 +55,7 @@
                                 {% endif %}
                             {% else %}
                                 {% if etat == "non-commence" %}
-                                    <button class="delete_reservation Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
                                         <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
                                         {{ texte_etat }}
                                     </button>
