@@ -1008,25 +1008,27 @@ def convertir_quantite(id_produit):
 
 def update_etat(idCommande, idChimiste):
     faire = Faire.query.filter(Faire.idCommande == idCommande).first()
-    match faire.statutCommande:
-        case 'non-commence':
-            faire.idChimiste = idChimiste
-            faire.statutCommande = 'en-cours'
-        case 'en-cours':
-            faire.statutCommande = 'termine'
-    db.session.commit()
+    if faire is not None:
+        match faire.statutCommande:
+            case 'non-commence':
+                faire.idChimiste = idChimiste
+                faire.statutCommande = 'en-cours'
+            case 'en-cours':
+                faire.statutCommande = 'termine'
+        db.session.commit()
 
 def delete_reservation(idCommande, idChimiste):
     commande = Commande.query.get(idCommande)
-    faire = Faire.query.filter(Faire.idCommande == idCommande).first()
-    print(Chimiste.query.get(idChimiste).estPreparateur, faire.statutCommande)
-    if faire.statutCommande == 'non-commence' or (Chimiste.query.get(idChimiste).estPreparateur and faire.statutCommande == "en-cours"):
-        produit = Produit.query.get(commande.idProduit)
-        est_Stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
-        est_Stocker.quantiteStocke += commande.qteCommande
-        db.session.delete(faire)
-        db.session.delete(commande)
-        db.session.commit()
+    if commande is not None:
+        faire = Faire.query.filter(Faire.idCommande == idCommande).first()
+        if faire is not None:
+            if faire.statutCommande == 'non-commence' or (Chimiste.query.get(idChimiste).estPreparateur and faire.statutCommande == "en-cours"):
+                produit = Produit.query.get(commande.idProduit)
+                est_Stocker = Est_Stocker.query.filter(Est_Stocker.idProduit == produit.idProduit).first()
+                est_Stocker.quantiteStocke += commande.qteCommande
+                db.session.delete(faire)
+                db.session.delete(commande)
+                db.session.commit()
 
 def est_en_dessous_du_seuil():
     """Renvoie une liste des produits qui sont en dessous de leur seuil

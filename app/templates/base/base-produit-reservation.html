@@ -2,7 +2,8 @@
 
     {% block head %}
         <link rel="stylesheet" href="{{ url_for ('static', filename='produit-reservation.css') }}">
-        {% block css %}
+        <script src="{{ url_for('static', filename='app.js')}}"></script>
+        {% block css_js %}
         {% endblock %}
     {% endblock %}
     
@@ -23,6 +24,5 @@
                 {% include 'footer.html' %}
             {% endblock %}
         </footer>
-        <script src="{{ url_for('static', filename='app.js')}}"></script>
     {% endblock %}
 </html>

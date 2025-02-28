@@ -53,7 +53,6 @@ def home():
 @app.route("/<int:id_page>", methods=['GET'])
 @login_required
 def home_page(id_page=1, nb=15):
-    print(1)
     if id_page < 1:
         return redirect("/")
     id_page_max = get_nb_page_max_produits(nb)

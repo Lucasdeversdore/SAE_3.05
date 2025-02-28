@@ -34,7 +34,6 @@ header button {
   margin: 1em;
   background-color: white;
   border-radius: 15px;
-  transition: transform 0.1s ease, background-color 0.3s ease;
   border: solid white 0.2em;
   font-size: 90%;
   display: flex;
@@ -188,15 +187,12 @@ header>div:nth-child(15) {
 }
 
 .user-button {
-  background: white;
   border: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
   font-size: 16px;
   padding: 8px 12px;
   border-radius: 8px;
-  transition: background 0.3s ease;
 }
 
 .user-button img {
