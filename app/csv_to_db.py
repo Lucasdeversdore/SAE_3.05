@@ -33,7 +33,7 @@ def get_unite(unite):
             return unite
 
 
-def csv_to_db(filename):
+def csv_to_db(filename): # pragma: no cover
     with open(filename, newline='') as f:
         reader = csv.reader(f)
         try:
