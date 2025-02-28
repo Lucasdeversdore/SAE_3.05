@@ -11,8 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function handleButtonDeleteReservation(idCommande) {
     // Crée le fond du popup
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-resrev";
+    let popup_overlay = document.getElementById("popup-overlay-resrev")
+    if (!popup_overlay){
+        popup_overlay = document.createElement("div");
+        popup_overlay.id = "popup-overlay-resrev";
+    }
+    clearContent(popup_overlay);
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -73,8 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function handleButtonEtatCommande(idCommande, etat) {
     // Crée le fond du popup
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-resrev";
+    let popup_overlay = document.getElementById("popup-overlay-resrev")
+    if (!popup_overlay){
+        popup_overlay = document.createElement("div");
+        popup_overlay.id = "popup-overlay-resrev";
+    }
+    clearContent(popup_overlay);
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -129,8 +137,12 @@ function handleButtonEtatCommande(idCommande, etat) {
 // Popup modifier la quantité d'une réservation
 function handleButtonModifReservation(commande, produit, stock, erreur) {
     // Crée le fond du popup
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-resrev";
+    let popup_overlay = document.getElementById("popup-overlay-resrev")
+    if (!popup_overlay){
+        popup_overlay = document.createElement("div");
+        popup_overlay.id = "popup-overlay-resrev";
+    }
+    clearContent(popup_overlay);
 
     // Contenu du popup
     const popup_content = document.createElement("div");

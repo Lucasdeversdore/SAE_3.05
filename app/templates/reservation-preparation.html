@@ -2,7 +2,7 @@
 
 {% block css_js %}
     <link rel="stylesheet" href="{{ url_for ('static', filename='reservations.css') }}">
-    <script src="{{ url_for('static', filename='reservation.js')}}"></script>
+    <script defer src="{{ url_for('static', filename='reservation.js')}}"></script>
 {% endblock %}
 
 {% block top_main %}
@@ -47,7 +47,7 @@
                         <div class="{{ etat }}">
                             {% if current_user.estPreparateur %}
                                 {% if etat == "non-commence" or etat == "en-cours" %}
-                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}">
                                         <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
                                     </button>
                                     <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
@@ -56,7 +56,7 @@
                                 {% endif %}
                             {% else %}
                                 {% if etat == "non-commence" %}
-                                    <button class="delete_reservation Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}">
+                                    <button class="delete_reservation Etat" idCommande="{{ reservation.idCommande }}">
                                         <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
                                         {{ texte_etat }}
                                     </button>

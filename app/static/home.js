@@ -1,8 +1,12 @@
 // Popup info
 function handleButtonInfoClick(produit, lieu) {
     // Crée le fond du popup
-    const popup_overlay_info = document.createElement("div");
-    popup_overlay_info.id = "popup-overlay-info";
+    let popup_overlay_info = document.getElementById("popup-overlay-info")
+    if (!popup_overlay_info){
+        popup_overlay_info = document.createElement("div");
+        popup_overlay_info.id = "popup-overlay-info";
+    }
+    clearContent(popup_overlay_info);
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -78,9 +82,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Popup modifier produit
 function handleButtonModifClick(produit, lieu, fournisseur, est_stocker, les_fournisseurs, les_fonctions, les_lieux) {
-    const popup_overlay_modif = document.createElement("div");
-    popup_overlay_modif.id = "popup-overlay-modif";
-    popup_overlay_modif.classList.add("popup-overlay-modif");
+    let popup_overlay_modif = document.getElementById("popup-overlay-modif")
+    if (!popup_overlay_modif){
+        popup_overlay_modif = document.createElement("div");
+        popup_overlay_modif.id = "popup-overlay-modif";
+        popup_overlay_modif.classList.add("popup-overlay-modif");
+    }
+    clearContent(popup_overlay_modif);
 
     const popup_content = document.createElement("div");
     popup_content.classList.add("popup-content");
@@ -343,8 +351,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function handleButtonReservation(produit, stock, erreur) {
     // Crée le fond du popup
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-resrev";
+    let popup_overlay = document.getElementById("popup-overlay-resrev")
+    if (!popup_overlay){
+        popup_overlay = document.createElement("div");
+        popup_overlay.id = "popup-overlay-resrev";
+    }
+    clearContent(popup_overlay);
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -451,8 +463,12 @@ function reserverProduit(produitId, quantite) {
 
 // Ppopup ajouter produit
 function handleButtonAjoutProdClick(les_fournisseurs, les_lieux) {
-    const popup_overlay_ajout = document.createElement("div");
-    popup_overlay_ajout.id = "popup-overlay-ajout";
+    let popup_overlay_ajout = document.getElementById("popup-overlay-ajout")
+    if (!popup_overlay_ajout){
+        popup_overlay_ajout = document.createElement("div");
+        popup_overlay_ajout.id = "popup-overlay-ajout";
+    }
+    clearContent(popup_overlay_ajout);
 
     const popup_content = document.createElement("div");
     popup_content.classList.add("popup-content");
@@ -737,8 +753,12 @@ function sauvegarderAjoutProduit(nom, nom_fournisseur, unite, quantite, seuil, f
 
 // Ppopup ajouter lieu
 function handleButtonAjoutLieuClick() {
-    const popup_overlay_ajouter_lieu = document.createElement("div");
-    popup_overlay_ajouter_lieu.id = "popup-overlay-lieu";
+    let popup_overlay_ajouter_lieu = document.getElementById("popup-overlay-lieu")
+    if (!popup_overlay_ajouter_lieu){
+        popup_overlay_ajouter_lieu = document.createElement("div");
+        popup_overlay_ajouter_lieu.id = "popup-overlay-lieu";
+    }
+    clearContent(popup_overlay_ajouter_lieu);
 
     const popup_content = document.createElement("div");
     popup_content.classList.add("popup-content");
@@ -830,8 +850,12 @@ function sauvegarderAjoutLieu(nom) {
 
 // Ppopup ajouter fournisseur
 function handleButtonAjoutFournisseurClick() {
-    const popup_overlay = document.createElement("div");
-    popup_overlay.id = "popup-overlay-fournisseur";
+    let popup_overlay = document.getElementById("popup-overlay-fournisseur")
+    if (!popup_overlay){
+        popup_overlay = document.createElement("div");
+        popup_overlay.id = "popup-overlay-fournisseur";
+    }
+    clearContent(popup_overlay);
 
     const popup_content = document.createElement("div");
     popup_content.classList.add("popup-content");
@@ -982,8 +1006,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Popup cacher un produit
 function handleButtonCacherProduit(produit, nomProduit) {
     // Crée le fond du popup
-    const popup_overlay_cacher = document.createElement("div");
-    popup_overlay_cacher.id = "popup-overlay-cacher";
+    let popup_overlay_cacher = document.getElementById("popup-overlay-cacher")
+    if (!popup_overlay_cacher){
+        popup_overlay_cacher = document.createElement("div");
+        popup_overlay_cacher.id = "popup-overlay-cacher";
+    }
+    clearContent(popup_overlay_cacher);
 
     // Contenu du popup
     const popup_content = document.createElement("div");
@@ -1067,8 +1095,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Popup de montrer un produit
 function handleButtonMontrerProduit(produit, nomProduit) {
-    const popup_overlay_montrer = document.createElement("div");
-    popup_overlay_montrer.id = "popup-overlay-montrer";
+    let popup_overlay_montrer = document.getElementById("popup-overlay-montrer")
+    if (!popup_overlay_montrer){
+        popup_overlay_montrer = document.createElement("div");
+        popup_overlay_montrer.id = "popup-overlay-montrer";
+    }
+    clearContent(popup_overlay_montrer);
 
     // Contenu du popup
     const popup_content = document.createElement("div");

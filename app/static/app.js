@@ -12,3 +12,9 @@ function createDivObligatoire(elem) {
     divQuantite.appendChild(createDivTextCache());
     return divQuantite;
 }
+
+function clearContent(element){
+    while(element.firstChild){
+        element.removeChild(element.firstChild);
+    }
+}
