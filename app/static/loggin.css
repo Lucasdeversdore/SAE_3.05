@@ -1,4 +1,4 @@
-h1 {
+main h1 {
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
