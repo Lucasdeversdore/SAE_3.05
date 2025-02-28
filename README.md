@@ -148,7 +148,9 @@ La liste des réservations présente les détails des produits réservés, trié
         La réservation sera immédiatement supprimée de la liste.
 
 ### 4.3. Modifier la quantité d'une réservation
-    Appuyez sur la touche "modifier réservation", une pop-up s'ouvre et la quantité que vous avez réservé est affiché dans le champ "Quantite réservée". Pour modifier cette quantité changez la valeur de ce champ et appuyez sur "Modifier".
+    Appuyez sur la touche "modifier réservation", une pop-up s'ouvre et la quantité que vous avez 
+    réservé est affiché dans le champ "Quantite réservée". Pour modifier cette quantité changez 
+    la valeur de ce champ et appuyez sur "Modifier".
 
 ### 4.4. Recherche et Navigation
 
