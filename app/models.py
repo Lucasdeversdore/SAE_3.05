@@ -388,7 +388,6 @@ def next_lieu_id():
 def add_lieu_stock(nom_lieu):
     existing_lieu = Lieu_Stockage.query.filter_by(nomLieu=nom_lieu).first()
     if not existing_lieu:
-        print("kk")
         id = next_lieu_id()
         lieu = Lieu_Stockage(id, nom_lieu)
         db.session.add(lieu)
@@ -436,7 +435,6 @@ def get_all_chimiste():
 
 def get_pagination_produits(page=1, nb=15):
     # Pour les produits non caché
-    print("testergdfgdfg")
     liste_prod_qte = []
     liste_prod = Produit.query.filter(Produit.afficher == 1).all()
     liste_prod_cacher = Produit.query.filter(Produit.afficher == False).all()
