@@ -450,6 +450,7 @@ def sauvegarder_ajout_fournisseur():
 
 
 @app.route('/etat/commande/<int:idCommande>', methods=['GET', 'POST'])
+@login_required
 def etat_commande(idCommande):
     if current_user.estPreparateur:
         update_etat(idCommande, current_user.idChimiste)

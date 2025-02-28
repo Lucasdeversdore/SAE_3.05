@@ -393,18 +393,18 @@ class Testing(unittest.TestCase):
 
     def test_etat_commande(self):
         with app.test_request_context():
-            response = self.client.get('/etat/commande/1/1', follow_redirects=False)
+            response = self.client.get('/etat/commande/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
             self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
-            response = self.client.get('/etat/commande/1/1')
+            response = self.client.get('/etat/commande/1')
             self.assertEqual(response.status_code, 302)  
             assert b'/preparation/reservations' in response.headers["Location"].encode()
             self.logout()
 
             self.login_eleve()
-            response = self.client.get('/etat/commande/1/1')
+            response = self.client.get('/etat/commande/1')
             self.assertEqual(response.status_code, 302)  
             assert b'/preparation/reservations' in response.headers["Location"].encode()
             self.logout()
@@ -412,19 +412,19 @@ class Testing(unittest.TestCase):
     
     def test_suppr_reservation(self):
         with app.test_request_context():
-            response = self.client.get('/supprimer/reservation/1/1', follow_redirects=False)
+            response = self.client.get('/supprimer/reservation/1', follow_redirects=False)
             self.assertEqual(response.status_code, 302)  # Redirection
             self.assertIn(b'/connection', response.headers["Location"].encode())
 
             self.login_laborentain()
-            response = self.client.get('/supprimer/reservation/1/1')
+            response = self.client.get('/supprimer/reservation/1')
             self.assertEqual(response.status_code, 302)  
             assert b'/preparation/reservations' in response.headers["Location"].encode()
             self.logout()
 
             self.login_eleve()
-            response = self.client.get('/supprimer/reservation/1/1')
-            self.assertEqual(response.status_code, 302)  
+            response = self.client.get('/supprimer/reservation/2')
+            self.assertEqual(response.status_code, 302)
             assert b'/preparation/reservations' in response.headers["Location"].encode()
             self.logout()
 
