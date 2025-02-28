@@ -115,6 +115,7 @@
 .bdisabled {
     background-color: grey;
     cursor: not-allowed;
+    border: grey;
 }
 
 .bdisabled:active {
@@ -123,6 +124,8 @@
 
 .bdisabled:hover {
     outline: none;
+    cursor: not-allowed;
+    border: grey;
 }
   
 .bdisabled:hover {
@@ -131,4 +134,9 @@
 
 .bdisabled:active {
     transform: none;
+}
+
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
 }
