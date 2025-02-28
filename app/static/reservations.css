@@ -78,16 +78,6 @@ th div button {
     background-color: red;
 }
 
-.non-commence button {
-    display: flex;
-    justify-content: space-evenly;
-    font-weight: bold;
-}
-
-.non-commence img {
-    margin-right: 6px;
-}
-
 .en-cours {
     background-color: orange;
 }
@@ -96,10 +86,32 @@ th div button {
     background-color: green;
 }
 
+.non-commence button, .en-cours button{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.non-commence img, .en-cours img{
+    margin-right: 6px;
+}
+
 .Etat {
     font-weight: bold;
 }
 
 .delete_reservation {
+    margin-right: 0.5em;
+}
+
+.modif_reserv{
+    background-color: #6a6a6a;
+    font-weight: bold;
+    margin-right: 0.5em;
+    display: flex;
+    align-items: center;
+}
+
+.modif_reserv img{
     margin-right: 0.5em;
 }
