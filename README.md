@@ -147,7 +147,10 @@ La liste des réservations présente les détails des produits réservés, trié
         Cliquez sur le bouton Supprimer à côté de la réservation.
         La réservation sera immédiatement supprimée de la liste.
 
-#### 4.3. Recherche et Navigation
+### 4.3. Modifier la quantité d'une réservation
+    Appuyez sur la touche "modifier réservation", une pop-up s'ouvre et la quantité que vous avez réservé est affiché dans le champ "Quantite réservée". Pour modifier cette quantité changez la valeur de ce champ et appuyez sur "Modifier".
+
+### 4.4. Recherche et Navigation
 
     Barre de recherche :
         Filtrez la liste en recherchant un produit par son nom.
@@ -200,6 +203,11 @@ La page de gestion des stocks permet de naviguer entre plusieurs sections telles
         Actions :
             "Sauvegarder" pour ajouter le produit.
             "Annuler" pour annuler l’action.
+        Alternative :
+
+            Ajouter un fichier CSV en appuyant sur le bouton "Ajouter un csv"
+            Ce fichier devra respecter cette organisation :
+            Produits,Fournisseur,Quantité,Fonction,Lieu de stockage,Seuil
 
 #### 3.2. Ajouter un Fournisseur
 
