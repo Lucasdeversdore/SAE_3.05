@@ -33,14 +33,6 @@ header button {
     justify-content: space-between;
 }
 
-header button:hover {
-    transform: scale(1.05);
-}
-
-header button:active {
-    transform: scale(0.9);
-}
-
 header div {
     display: flex;
     flex-wrap: wrap;

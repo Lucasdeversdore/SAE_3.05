@@ -1,18 +1,8 @@
-body{
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-}
-
 h1 {
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 1.5em;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0%;
 }
 
 main {
@@ -118,7 +108,6 @@ legend {
 }
 
 a{
-    text-decoration: none;
     font-size: larger;
     color:#666877;
 }
@@ -168,7 +157,6 @@ a:hover{
     gap: 0.5em;
     color: white;
     background: linear-gradient(to right, #ff4fa4, #ff8cc4);
-    transition: transform 0.2s ease;
 }
 
 #button button:active {
