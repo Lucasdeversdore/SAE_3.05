@@ -2,7 +2,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='loggin.css') }}">
-    <script defer src="static/app.js"></script>
+    <script defer src="/static/app.js"></script>
     {% block css %}
     {% endblock %}
 {% endblock %}
@@ -10,15 +10,11 @@
     {% block header %}
     {% endblock %}
     <main>
-        <section>
-            <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
-        </section>
-        <section>
+        <img src="{{ url_for('static', filename='images/chimie1.png') }}" alt="Image 1">
+        <section class="content">
             {% block main %}
             {% endblock %}
         </section>
-        <section>
-            <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
-        </section>
+        <img src="{{ url_for('static', filename='images/chimie2.png') }}" alt="Image 2">
     </main>
 {% endblock %}
