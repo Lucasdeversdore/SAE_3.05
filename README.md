@@ -5,7 +5,6 @@
 [Manuel utilisateur préparateur](#manuel-utilisateur-préparateur)
 
 
-'''
 
 Un étudiant doit pouvoir rechercher un produit et savoir s' il est disponible ou non.
 Si il est disponible il doit pouvoir voir la quantité restante, le ou les lieux de stockage du produit et il doit pouvoir réserver une certaine quantité.
@@ -15,7 +14,7 @@ La préparatrice doit pouvoir gérer les stocks, c'est-à-dire  ajouter/supprime
 Quand un étudiant réserve un produit la quantité réservée est déduite de la base de donnée.
 Faire une interface conviviale.
 
-'''
+
 
 Vous retrouverez le projet sur ce dépôt distant
 
@@ -29,16 +28,6 @@ https://github.com/Lucasdeversdore/SAE_3.05
 -  Mignan Baptiste
 -  Gangneux Pierre
 
-## Avancé du développement des fonctionnalités
-
-- [ ] Fonctionnalité 1
-- [ ] Fonctionnalité 2
-- [ ] Fonctionnalité 3
-- [ ] Fonctionnalité 4
-- [ ] Fonctionnalité 5
-- [ ] Fonctionnalité 6
-- [ ] Fonctionnalité 7
-- [ ] Fonctionnalité 8
 
 # Manuel utilisateur étudiant
 
