@@ -449,28 +449,24 @@ def sauvegarder_ajout_fournisseur():
         return jsonify(success=False, message="Le fournisseur existe déjà ou une erreur est survenue."), 400
 
 
-
-@app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
+@app.route('/etat/commande/<int:idCommande>', methods=['GET', 'POST'])
 @login_required
-def etat_commande(idCommande, idChimiste):
-    update_etat(idCommande, idChimiste)
-    commande = Commande.query.get(idCommande)
-    chimiste = Chimiste.query.get(commande.idChimiste)
-    send_mail_etat(chimiste, commande)
+def etat_commande(idCommande):
+    if current_user.estPreparateur:
+        update_etat(idCommande, current_user.idChimiste)
+        commande = Commande.query.get(idCommande)
+        chimiste = Chimiste.query.get(commande.idChimiste)
+        send_mail_etat(chimiste, commande)
     return redirect(url_for("preparation_reservation"))
 
 
-
-
-@app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
+@app.route('/supprimer/reservation/<int:idCommande>')
 @login_required
-def suppr_reservation(idCommande, idChimiste):
-    chimiste = Chimiste.query.get(idChimiste)
-    if chimiste.estPreparateur:
+def suppr_reservation(idCommande):
+    if current_user.estPreparateur:
         commande = Commande.query.get(idCommande)
-        chimiste = Chimiste.query.get(commande.idChimiste)
-        send_mail_supp(chimiste, commande)
-    delete_reservation(idCommande, idChimiste)
+        send_mail_supp(current_user, commande)
+    delete_reservation(idCommande, current_user.idChimiste)
     return redirect(url_for("preparation_reservation"))
 
 

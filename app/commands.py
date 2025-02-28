@@ -7,7 +7,7 @@ from .csv_to_db import csv_to_db
 
 @app.cli.command()
 @click.argument('filename')
-def loaddb(filename):
+def loaddb(filename): # pragma: no cover
     '''Creates the tables and populates them with data.'''
     with app.app_context():
         csv_to_db(filename)
@@ -15,13 +15,13 @@ def loaddb(filename):
 @app.cli.command()
 @click.argument('id_commande')
 @click.argument('new_qte')
-def edit_commande(id_commande, new_qte):
+def edit_commande(id_commande, new_qte): # pragma: no cover
     from .models import edit_qte_commande
     edit_qte_commande(id_commande, new_qte)
 
 @app.cli.command()
 @click.argument('id_commande')
-def cancel_commande(id_commande):
+def cancel_commande(id_commande): # pragma: no cover
     from .models import cancel_commande
     cancel_commande(id_commande)
 
@@ -31,7 +31,7 @@ def cancel_commande(id_commande):
 @click.argument('prenom')
 @click.argument('nom')
 @click.argument('est_preparateur')
-def newuser(email, password, nom, prenom, est_preparateur):
+def newuser(email, password, nom, prenom, est_preparateur): # pragma: no cover
     '''Adds a new user.'''
     if check_mdp(password):
         m = sha256()
