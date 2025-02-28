@@ -1,0 +1,371 @@
+/* Top main */
+.top_main{
+    margin-top: 2em;
+    padding-left: 9%;
+    padding-right: 9%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    vertical-align: middle;
+}
+
+.top_main h1{
+    margin: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.barre_recherche{
+    border-radius: 20px;
+    border-style: solid;
+    border-color: #f0f0f0;
+    height: 3em;
+    width: 23em;
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
+}
+
+.barre_recherche:focus-within {
+    outline: 2px solid #ff4fa4;
+}
+
+.barre_recherche input{
+    border: none;
+    font-size: 16px;
+    margin-bottom: 0em;
+    margin-left: 1em;
+    width: 100%;
+}
+
+.barre_recherche button{
+    height: 2em;
+    margin: 1em;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+.barre_recherche input::placeholder{
+  color: #ff8fc5;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.barre_recherche input:focus{
+    outline: none;
+}
+
+#search{
+    background: none;
+    border: none;
+    border-radius: 15px;
+}
+/*  */
+
+/* Content */
+.content > div{
+    justify-content:center;
+    align-items: center;
+    display: flex;
+    flex-flow: nowrap;
+}
+
+.content > div > form > button{
+    width: 10em;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 15px;
+}
+
+.content {
+    min-height: 45vh;
+    margin-top: 3em;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+/*  */
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.pagination form {
+    display: inline;
+}
+
+.pagination button {
+    background-color: #ff8fc5;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.pagination button:hover {
+    background-color: #ff4fa4;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.pagination button:disabled:hover {
+    transform: none;
+}
+
+.pagination button:disabled:active {
+    transform: none;
+}
+/*  */
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+}
+
+.footer-section h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.footer-section p{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin: 5px 0;
+}
+
+.footer-section ul li a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #ff8cc4;
+}
+
+.social-icons img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin: 5px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.social-icons img:hover {
+    transform: scale(1.1);
+}
+
+.footer-bottom {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #444;
+}
+/*  */
+
+/* Popup */
+#popup-overlay-info{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#popup-overlay-info > div{
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+}
+
+#popup-overlay-modif, 
+#popup-overlay-ajout, 
+#popup-overlay-info, 
+#popup-overlay-lieu, 
+#popup-overlay-fournisseur,
+#popup-overlay-resrev,
+#popup-overlay-cacher,
+#popup-overlay-montrer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    width: 45%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.popup-content > div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.popup-content > div > *{
+    width: 40%;
+    box-sizing: border-box;
+}
+
+.popup-content > #div_csv > *{
+    width: 70%;
+}
+
+.popup-content > div > #ajouter_csv{
+    min-width: 2em;
+    width: 13em;
+}
+
+.popup-content > div > button{
+    width: auto;
+    box-sizing: border-box;
+}
+
+#bouton_modif {
+    justify-content: end;
+}
+
+.popup-content {
+    background-color: #fff5f5;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cssbuttons-io {
+    position: relative;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    border-radius: 0.8em;
+    border: none;
+    background: linear-gradient(to right, #ff4fa4, #ff8cc4);
+    color: ghostwhite;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    margin-right: 5%;
+}
+
+.cssbuttons-io span {
+    position: relative;
+    z-index: 10;
+    transition: color 0.4s;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8em 1.2em 0.8em 1.05em;
+}
+
+.cssbuttons-io::before,
+.cssbuttons-io::after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.cssbuttons-io::before {
+    content: "";
+    background: rgb(0, 0, 0);
+    transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.cssbuttons-io:hover::before {
+    transform: translate3d(0, -100%, 0);
+}
+
+.inputGroup, .selectGroup {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 1em 0 1em 0;
+    position: relative;
+}
+
+.inputGroup input, .selectGroup select {
+    font-size: 100%;
+    padding: 0.8em;
+    outline: none;
+    border: 2px solid #ff8cc4;
+    background-color: transparent;
+    border-radius: 20px;
+}
+
+
+.hover-text {
+    position: absolute;
+    bottom: 80%;
+    left: 25%;
+    transform: translateX(-50%);
+    background-color: #555;
+    color: #ff8cc4;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.containerObligatoire:hover .hover-text {
+    visibility: visible;
+    opacity: 1;
+}
+/*  */

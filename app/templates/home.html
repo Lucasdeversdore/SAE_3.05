@@ -1,5 +1,9 @@
 {% extends "base/base-produit-reservation.html" %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for ('static', filename='home.css') }}">
+{% endblock %}
+
     {% block top_main %}
         {% if current_user.estPreparateur %}
             <button class="bouton-ajouter ajouter" id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
@@ -26,24 +30,6 @@
                     {% if current_user.estPreparateur %}
                         <li class="objet_produit">
                             <div class="produit">
-                                <section class="popup">
-
-
-
-                                    <!-- popup supprimer un produit mot de passe -->
-                                    <div id="popup-overlay" style="display: none;">
-                                        <div id="popup-content">
-
-                                        </div>
-                                    </div>
-
-                                    <!-- popup supprimer un produit confirmation -->
-                                    <div id="popup-overlay" style="display: none;">
-                                        <div id="popup-content">
-
-                                        </div>
-                                    </div>
-                                </section>
 
                                 {% if current_user.estPreparateur and produit.afficher == 1 %}
                                     <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
@@ -103,24 +89,6 @@
                         {% if current_user.estPreparateur == False and produit.afficher == 1 %}
                         <li class="objet_produit">
                             <div class="produit">
-                                <section class="popup">
-
-
-
-                                    <!-- popup supprimer un produit mot de passe -->
-                                    <div id="popup-overlay" style="display: none;">
-                                        <div id="popup-content">
-
-                                        </div>
-                                    </div>
-
-                                    <!-- popup supprimer un produit confirmation -->
-                                    <div id="popup-overlay" style="display: none;">
-                                        <div id="popup-content">
-
-                                        </div>
-                                    </div>
-                                </section>
 
                                 {% if current_user.estPreparateur and produit.afficher == 1 %}
                                     <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
