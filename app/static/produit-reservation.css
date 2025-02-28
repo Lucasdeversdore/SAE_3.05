@@ -97,6 +97,7 @@
 
 .pagination form {
     display: inline;
+    width: 9vw;
 }
 
 .pagination button {
@@ -109,6 +110,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    width: 100%;
 }
 
 .pagination button:hover {
