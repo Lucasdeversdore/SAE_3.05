@@ -517,6 +517,25 @@ class Testing(unittest.TestCase):
             self.assertEqual(response.status_code, 302)  
             self.assertIn(b'/', response.headers["Location"].encode())
             self.logout()
+
+
+    def test_ajout_csv(self):
+        with app.test_request_context():
+            response = self.client.get('/ajout_csv')
+            self.assertEqual(response.status_code, 302)  # Redirection
+            self.assertIn(b'/', response.headers["Location"].encode())
+
+            self.login_laborentain()
+            response = self.client.get('/ajout_csv')
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(b'/', response.headers["Location"].encode())  
+            self.logout()
+
+            self.login_eleve()
+            response = self.client.get('/ajout_csv')
+            self.assertEqual(response.status_code, 302)  
+            self.assertIn(b'/', response.headers["Location"].encode())
+            self.logout()
             
 
     

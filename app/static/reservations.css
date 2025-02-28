@@ -1,0 +1,105 @@
+table {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+tbody {
+    display: flex;
+    flex-direction: column;
+    min-width: fit-content;
+    width: 100%;
+}
+
+tr {
+    background-color: #f4f4f4;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d9d9d9;
+}
+
+th {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+
+th p {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+th form {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+th button, th div {
+    padding: 0.5em;
+    margin-left: auto;
+}
+
+th > div > div {
+    border-radius: 15px;
+    user-select: none;
+}
+
+th > div > div:hover {
+    outline: 2px solid #007BFF;
+}
+
+th div {
+    display: flex;
+    align-items: center;
+    height: 1.5em;
+    width: fit-content;
+}
+
+th div div button {
+    background: none;
+    border: none;
+}
+
+th div div button:hover {
+    outline: none;
+}
+
+th div button {
+    width: fit-content;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+}
+
+.non-commence {
+    background-color: red;
+}
+
+.non-commence button {
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: bold;
+}
+
+.non-commence img {
+    margin-right: 6px;
+}
+
+.en-cours {
+    background-color: orange;
+}
+
+.termine {
+    background-color: green;
+}
+
+.Etat {
+    font-weight: bold;
+}
+
+.delete_reservation {
+    margin-right: 0.5em;
+}

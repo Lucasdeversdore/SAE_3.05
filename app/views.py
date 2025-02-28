@@ -28,6 +28,10 @@ from .models import (
     get_nb_page_max_produits,
     get_pagination_reservations,
     get_nb_page_max_reservations,
+    send_mail_activation,
+    send_mail_etat,
+    send_mail_mdp,
+    send_mail_supp,
     update_etat,
     delete_reservation,
     ajout_fournisseur_sauvegarde,
@@ -167,35 +171,6 @@ def cgu():
     return render_template("inscription-cgu.html")
 
 
-def send_mail_activation(user:Chimiste):
-    token=user.get_token()
-    time_in_link = time.time()
-
-    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
-
-    reset_url = url_for('activation_token', token=token, time_in_link=encoded_time, _external=True)
-    
-    msg = Message(
-        'Activation de votre compte Stockage Chimie',
-        recipients=[user.email],
-        sender='noreply@codejana.com'
-    )
-
-    # Contenu de l'e-mail en HTML
-    msg.html = f'''
-                <!doctype html>
-                <html>
-                    <body>
-                        <p>Pour activez votre compte Stockage Chimie, cliquez sur le lien ci-dessous :</p>
-                        <p><a href="{reset_url}">Activez votre compte</a></p>
-                        <p>Si vous n'avez pas demandé cette activation, ignorez simplement cet e-mail.</p>
-                    </body>
-                </html>
-                '''
-    mail.send(msg)
-    print(msg)
-
-
 @app.route('/activation/<token>/<time_in_link>', methods=['GET', 'POST'])
 def activation_token(token, time_in_link):
 
@@ -225,38 +200,6 @@ def connection():
             return redirect(next)
     
     return render_template("connection.html", form=f)
-
-
-def send_mail_mdp(user: Chimiste):
-    token = user.get_token()
-    time_in_link = time.time()
-
-    encoded_time = base64.urlsafe_b64encode(str(time_in_link).encode()).decode()
-
-    print("envoie mail " + str(time_in_link))
-    reset_url = url_for('reset_token', token=token, time_in_link=encoded_time, _external=True)
-
-    msg = Message(
-        'Demande de réinitialisation de mot de passe',
-        recipients=[user.email],
-        sender='noreply@codejana.com'
-    )
-
-    # Contenu de l'e-mail en HTML
-    msg.html = f'''
-                <!doctype html>
-                <html>
-                    <body>
-                        <p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous :</p>
-                        <p><a href="{reset_url}">Réinitialiser votre mot de passe</a></p>
-                        <p>Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet e-mail.</p>
-                    </body>
-                </html>
-                '''
-
-    mail.send(msg)
-    print(msg)
-
 
 
 @app.route("/reset_pwd", methods=('GET', 'POST'))
@@ -507,28 +450,6 @@ def sauvegarder_ajout_fournisseur():
 
 
 
-
-def send_mail_etat(user: Chimiste, commande: Commande):
-    if user.info:
-        produit = Produit.query.get(commande.idProduit)
-        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
-
-        msg = Message(
-            'Avancement de votre commande de ' + produit.nomProduit,
-            recipients=[user.email],
-            sender='noreply@codejana.com'
-        )
-
-        # Vérifier le statut de la commande et construire le contenu du message
-        if faire.statutCommande == 'en-cours':
-            # Contenu de l'e-mail en texte brut
-            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est en cours de préparation.'''
-        else:
-            msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} est terminée.'''
-
-        mail.send(msg)
-
-
 @app.route('/etat/commande/<int:idCommande>/<int:idChimiste>', methods=['GET', 'POST'])
 @login_required
 def etat_commande(idCommande, idChimiste):
@@ -539,22 +460,7 @@ def etat_commande(idCommande, idChimiste):
     return redirect(url_for("preparation_reservation"))
 
 
-def send_mail_supp(user: Chimiste, commande:Commande):
-    if user.info:
-        produit = Produit.query.get(commande.idProduit)
-        faire = Faire.query.filter(Faire.idCommande == commande.idCommande).first()
 
-        msg = Message(
-            'Avancement de votre commande de ' + produit.nomProduit,
-            recipients=[user.email],
-            sender='noreply@codejana.com'
-        )
-
-        # Vérifier le statut de la commande et construire le contenu du message
-            # Contenu de l'e-mail en texte brut
-        msg.body = f'''Votre commande de {produit.nomProduit} du {commande.dateCommande} a été supprimé par un laborentain.'''
-
-        mail.send(msg)
 
 @app.route('/supprimer/reservation/<int:idCommande>/<int:idChimiste>')
 @login_required

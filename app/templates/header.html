@@ -1,20 +1,8 @@
-<link rel=" stylesheet " href="{{ url_for ('static', filename='header.css') }}">
 <header>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
-    <div><span class="dot"></span></div>
+    <link rel="stylesheet" href="{{ url_for ('static', filename='header.css') }}">
+    {% for _ in range(15) %}
+        <div><span class="dot"></span></div>
+    {% endfor %}
     <nav>
         <div>
             {% if current_user.estPreparateur %}

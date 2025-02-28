@@ -1,20 +1,20 @@
-header {
-  height: 7em;
-  top: 0;
-  position: sticky;
-  padding-left: 9%;
-  padding-right: 9%;
-  min-height: fit-content;
-  background: linear-gradient(to right, #ff4fa4, #ff8cc4);
-  overflow: hidden;
-  z-index: 1000;
-}
-
 header h1 {
   font-size: 2.5em;
   color: white;
   margin: 0;
   padding: 0;
+
+header{
+    min-height: fit-content;
+    top: 0;
+    position: sticky;
+    padding-left: 9%;
+    padding-right: 9%;
+    padding-top : 1em;
+    padding-bottom: 1em;
+    background: linear-gradient(to right, #ff4fa4, #ff8cc4);
+    overflow: hidden;
+    z-index: 1000;
 }
 
 nav {
