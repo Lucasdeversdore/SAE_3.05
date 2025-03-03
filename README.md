@@ -222,7 +222,12 @@ La page de gestion des stocks permet de naviguer entre plusieurs sections telles
             "Sauvegarder" pour ajouter le lieu.
             "Annuler" pour annuler l’action.
 
-#### 3.4. Gestion des Produits
+#### 3.4 À commander
+
+    Fonctionnalités principales :
+        Cliquez sur "À commander" pour télécharger un fichier contenant la liste des produits ayant une quantité inférieure au seuil d'alerte.
+
+#### 3.5. Gestion des Produits
 
     Barre de Recherche :
         Utilisez la barre de recherche pour trier la liste des produits par famille ou par nom de produit.
