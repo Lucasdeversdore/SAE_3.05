@@ -1,0 +1,68 @@
+{% extends "base/base-inscription-connection-settings.html" %}
+
+{% block main %}
+    <form role="form" method="POST" action = "{{ url_for ('connection') }}">
+        {{ form.hidden_tag() }}
+        <ul>
+            <li><h1>Connectez-vous</h1></li>
+
+            <!-- message informatif -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    {% if category == "info" %}
+                        <li><p>{{ message }}</p></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Champ email -->
+            <li id="email" class="text">
+                <fieldset>
+                    <legend>Email</legend>
+                    {{ form.email(placeholder="Entrez votre email") }}
+                </fieldset>
+                {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+
+            <!-- Champ mot de passe -->
+            <li id="pwd" class="password">
+                <fieldset>
+                    <legend>Mot de passe</legend>
+                    <div class="password-container">
+                        {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                        <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                    </div>
+                </fieldset>
+                {% if form.mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+            
+            <li id="button">
+                <a id="reset_pwd" href="{{url_for('reset_pwd')}}">mot de passe oublié</a>
+                <div>
+                    <div class="row">
+                        <input type="checkbox">
+                        <label>Rester connecté</laber>
+                    </div>
+                    <button type="submit"> Se connecter <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
+                </div>
+                <a href="/inscription">Créer un compte</a>
+            </li>
+        </ul>     
+    </form>
+{% endblock %}

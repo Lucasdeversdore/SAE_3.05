@@ -1,0 +1,45 @@
+{% extends "base/base-inscription-connection-settings.html" %}
+
+{% block main %}
+<form role="form" method="POST" action = "{{ url_for ('reset_pwd') }}">
+    {{ form.hidden_tag() }}
+    <ul>
+        <li><h1>Réinitilisez votre mot de passe</h1></li>
+
+        <!-- message informatif -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+          <ul>
+            {% for category, message in messages %}
+                {% if category == "info" %}
+                    <li><p>{{ message }}</p></li>
+                {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Champ email -->
+        <li id="email" class="text">
+            <fieldset>
+                <legend>Email</legend>
+                {{ form.email(placeholder="Entrez votre email") }}
+            </fieldset>
+            {% if form.email.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+        
+        <li id="button">
+            <div class="row">
+                <a href="/connection">retour</a>
+                <button type="submit">Envoyer <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
+            </div>
+        </li>
+    </ul>
+</form>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base/base-inscription-connection-settings.html" %}
+
+{% block main %}
+    <form role="form" method="POST" action="{{ url_for('inscrire') }}">
+        {{ form.hidden_tag() }}
+        <ul>
+            <li><h1>Inscrivez-vous</h1></li>
+
+            <!-- message informatif -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    {% if category == "info" %}
+                        <li><p>{{ message }}</p></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Champ email -->
+            <li id="email" class="text">
+                <fieldset>
+                    <legend>Email</legend>
+                    {{ form.email(placeholder="Entrez votre email") }}
+                </fieldset>
+                {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+
+            <!-- Champs prénom et nom -->
+            <li id="prenom-nom" class="text">
+                <div>
+                    <fieldset>
+                        <legend>Prénom</legend>
+                        {{ form.prenom(placeholder="Prénom") }}
+                    </fieldset>
+                    {% if form.prenom.errors %}
+                    <ul class="errors">
+                        {% for error in form.prenom.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div>
+                    <fieldset>
+                        <legend>Nom</legend>
+                        {{ form.nom(placeholder="Nom") }}
+                    </fieldset>
+                    {% if form.nom.errors %}
+                    <ul class="errors">
+                        {% for error in form.nom.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </li>
+
+            <!-- Champ mot de passe -->
+            <p>Le mot de passe doit contenir au minimum 8 caractères, 1 majuscule, 1 chiffre et 1 carractère spécial</p>
+            <li id="pwd" class="password">
+                <fieldset>
+                    <legend>Mot de passe</legend>
+                    <div class="password-container">
+                        {{ form.mdp(placeholder="Entrez votre mot de passe") }}
+                        <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                    </div>
+                </fieldset>
+                {% if form.mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+
+            <!-- Champ confirmation mot de passe -->
+            <li id="pwdConf" class="password">
+                <fieldset>
+                    <legend>Confirmation mot de passe</legend>
+                    <div class="password-container">
+                        {{ form.confirm_mdp(placeholder="Confirmez votre mot de passe") }}
+                        <img class="toggle" src="{{ url_for('static', filename='images/cacher.png') }}">
+                    </div>
+                </fieldset>
+                {% if form.confirm_mdp.errors %}
+                    <ul class="errors">
+                        {% for error in form.confirm_mdp.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+
+            <!-- Champ CGU -->
+            <li id="button">
+                <div>
+                    <div class="row">
+                        {{ form.cgu }} <label> J'accepte les <a href="/inscription-cgu">conditions générales d'utilisation</a></label>
+                        {% if form.cgu.errors %}
+                            <ul class="errors">
+                                {% for error in form.cgu.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <!-- Bouton submit -->
+                    <button type="submit">M'inscrire <img src="{{ url_for('static', filename='images/fleche_gauche.png')}}" ></button>
+                </div>
+                <!-- Lien vers connexion -->
+                <a href="/connection">J'ai déjà un compte</a>
+            </li>
+        </ul>
+    </form>
+{% endblock %}
