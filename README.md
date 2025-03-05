@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SAE_3.05 Sujet 9 - Chimie
 ## Présentation
 
