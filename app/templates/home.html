@@ -1,0 +1,207 @@
+{% extends "base/base-produit-reservation.html" %}
+
+{% block css_js %}
+    <link rel="stylesheet" href="{{ url_for ('static', filename='css/home.css') }}">
+    <script defer src="{{ url_for('static', filename='javascript/home.js')}}"></script>
+{% endblock %}
+
+    {% block top_main %}
+        {% if current_user.estPreparateur %}
+            <button class="bouton-ajouter ajouter" id="ajouter_prod" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un produit </button>
+            <button class="bouton-ajouter" id="ajouter_fournisseur" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un fournisseur </button>
+            <button class="bouton-ajouter" id="ajouter_lieu" type="submit"><img src="{{url_for('static', filename='images/ajouter_prod.png')}}" alt ="i"> Ajouter un lieu </button>
+            
+            <button class="bouton-ajouter" id="search_seuil" type="submit"><img src="{{url_for('static', filename='images/caddie.png')}}" alt ="i"> À commander </button>
+            <input type="file" id="fileInput" style="display: none;">
+        {% else %}
+            <h1>Liste des produits</h1>
+        {% endif %}
+        <form  action="{{ url_for('search') }}" method="GET" class="barre_recherche">
+            <input class="barre_recherche" type="search" placeholder="  Nom produit / famille " aria-label="Search" name="search" id="search">
+            <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="search"></button>
+        </form>
+    {% endblock %}
+
+    {% block content %}
+        <ul class="produits">
+            {% if liste_produit_qte.__len__() > 0 %}
+                {% for produit_qte in liste_produit_qte %}
+                    {% set produit = produit_qte[0] %}
+                    {% set qte = produit_qte[1] %}
+                    {% if current_user.estPreparateur %}
+                        <li class="objet_produit">
+                            <div class="produit">
+
+                                {% if current_user.estPreparateur and produit.afficher == 1 %}
+                                    <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
+                                {% elif current_user.estPreparateur and produit.afficher == False %}
+                                    <button class="remettre_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/valider.png')}}" alt ="X"></button>
+                                {% endif %}
+                                {% if produit.nomProduit | length <= 15 %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit }}   
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% else %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit | truncate(15, True) }}
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% endif %}
+                                {% if qte > 0 %}
+                                    <p class="dispo">Disponible</p>
+                                {% else %}
+                                    <p class="dispo">Indisponible</p>
+                                {% endif %}
+
+                                <div class="bouton">
+                                    {% if current_user.estPreparateur %}
+                                        <button class="Modifier" data-produit="{{ produit.idProduit }}">
+                                            Modifier 
+                                            <img src="{{ url_for('static', filename='images/modifier.png') }}" alt="">
+                                        </button>
+                                    {% else %}
+                                        {% if qte > 0 %}
+                                            <button class="Reserver" data-produit="{{ produit.idProduit }}">
+                                                Reserver 
+                                                <img src="{{ url_for('static', filename='images/reserver.png') }}" alt="">
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if produit.fonctionProduit is none %}
+                                        <button class="famille bdisabled" disabled>
+                                            Produits de la même famille
+                                        </button>
+                                    {% else %}
+                                        <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                            Produits de la même famille
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </li>
+                    {% else %}
+                        {% if current_user.estPreparateur == False and produit.afficher == 1 %}
+                        <li class="objet_produit">
+                            <div class="produit">
+
+                                {% if current_user.estPreparateur and produit.afficher == 1 %}
+                                    <button class="supp_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/supp_produit.png')}}" alt ="X"></button>
+                                {% elif current_user.estPreparateur and produit.afficher == False %}
+                                    <button class="remettre_produit" data-produit="{{ produit.idProduit }}"><img src="{{url_for('static', filename='images/valider.png')}}" alt ="X"></button>
+                                {% endif %}
+                                {% if produit.nomProduit | length <= 15 %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit }}   
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% else %}
+                                    <p class="nomProduit" title="{{ produit.nomProduit }}">
+                                        {{ produit.nomProduit | truncate(15, True) }}
+                                        <button class="info_prod" data-produit="{{ produit.idProduit }}">
+                                            <img src="{{url_for('static', filename='images/info_produit.png')}}" alt="i">
+                                        </button>
+                                    </p>
+                                {% endif %}
+                                {% if qte > 0 %}
+                                    <p class="dispo">Disponible</p>
+                                {% else %}
+                                    <p class="dispo">Indisponible</p>
+                                {% endif %}
+
+                                <div class="bouton">
+                                    {% if current_user.estPreparateur %}
+                                        <button class="Modifier" data-produit="{{ produit.idProduit }}">
+                                            Modifier 
+                                            <img src="{{ url_for('static', filename='images/modifier.png') }}" alt="">
+                                        </button>
+                                    {% else %}
+                                        {% if qte > 0 %}
+                                            <button class="Reserver" data-produit="{{ produit.idProduit }}">
+                                                Reserver 
+                                                <img src="{{ url_for('static', filename='images/reserver.png') }}" alt="">
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if produit.fonctionProduit is none %}
+                                        <button class="famille bdisabled" disabled>
+                                            Produits de la même famille
+                                        </button>
+                                    {% else %}
+                                        <button class="famille" onclick="window.location.href='{{ url_for('searchByButton', id_produit=produit.idProduit) }}'">
+                                            Produits de la même famille
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if current_user.estPreparateur %}
+                <li class="objet_produit">
+                    <div class="produit">
+                        <section class="popup">
+
+
+
+                            <!-- popup supprimer un produit mot de passe -->
+                            <div id="popup-overlay" style="display: none;">
+                                <div id="popup-content">
+
+                                </div>
+                            </div>
+
+                            <!-- popup supprimer un produit confirmation -->
+                            <div id="popup-overlay" style="display: none;">
+                                <div id="popup-content">
+
+                                </div>
+                            </div>
+                        </section>
+                {% endif %}
+                <section>
+                    <h3>Aucun produit ne correspond à votre recherche</h3>
+                </section>
+            {% endif %}
+        </ul>
+        {% if actu_id_page != None %}
+        <div class="pagination">
+
+            <!-- Page 1 -->
+            <form action="{{ url_for('home_page', id_page=1) }}" method="get" style="display: inline;">
+                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> << </button>
+            </form>
+            
+            <!-- Bouton Précédent -->
+            <form action="{{ url_for('home_page', id_page=actu_id_page - 1) }}" method="get">
+                <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
+            </form>
+        
+            <p>{{ actu_id_page }}</p>
+        
+            <!-- Bouton Suivant -->
+            <form action="{{ url_for('home_page', id_page=actu_id_page + 1) }}" method="get">
+                <button type="submit" {% if actu_id_page >= total_pages %}disabled{% endif %}> > </button>
+            </form>
+    
+            <!-- Dernière page -->
+            <form action="{{ url_for('home_page', id_page=total_pages) }}" method="get" style="display: inline;">
+                <button type="submit" {% if actu_id_page == total_pages %}disabled{% endif %}> >> </button>
+            </form>
+        </div>
+        {% endif %}
+    {% endblock %}
+    
+    

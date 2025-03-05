@@ -1,0 +1,98 @@
+{% extends "base/base-produit-reservation.html" %}
+
+{% block css_js %}
+    <link rel="stylesheet" href="{{ url_for ('static', filename='css/reservations.css') }}">
+    <script defer src="{{ url_for('static', filename='javascript/reservation.js')}}"></script>
+{% endblock %}
+
+{% block top_main %}
+    <h1>Liste des réservations</h1>
+    <form action="{{ url_for('search_preparation') }}" method="GET" class="barre_recherche">
+        {% if current_user.estPreparateur %}
+            <input class="barre_recherche" type="search" placeholder="  Nom produit / étudiant" aria-label="Search" name="search" id="search">
+        {% else %}
+            <input class="barre_recherche" type="search" placeholder="  Nom produit" aria-label="Search" name="search" id="search">
+        {% endif %}
+        <button id="search" type="submit"><img src="{{url_for('static', filename='images/search.png')}}" alt ="search"></button>
+    </form>
+{% endblock %}
+
+{% block content %}
+{% if reservations_etats|length == 0 %}
+    <p id="aucune-reserv">Aucune réservation</p>
+{% else %}
+    <table>
+        {% for reservation_etat in reservations_etats[:5] %}
+            {% set reservation = reservation_etat[0] %}
+            {% set etat = reservation_etat[1] %}
+            {% set chimiste = reservation_etat[2] %}
+            {% set produit = reservation_etat[3] %}
+            {% if etat == "non-commence": %}
+                {% set texte_etat = "non commencé" %}
+            {% elif etat == "en-cours": %}
+                {% set texte_etat = "en cours" %}
+            {% elif etat == "termine": %}
+                {% set texte_etat = "terminé" %}
+            {% endif %}
+            <tr>
+                <th scope="row">
+                    <p>{{ reservation.qteCommande }}{{ produit.nomUnite }} {{ produit.nomProduit }} réservé par {{ chimiste.prenom }} {{ chimiste.nom }} le {{ reservation.dateCommande }}</p>
+                    
+                    <div>
+                        {% if not current_user.estPreparateur and etat == "non-commence" %}
+                            <div class="modif_reserv">
+                                <button class="modif_reserv" data-commande="{{reservation.idCommande}}"> <img src="/static/images/modifier.png" alt="">modifier réservations</button>
+                            </div>
+                        {% endif %}
+                        <div class="{{ etat }}">
+                            {% if current_user.estPreparateur %}
+                                {% if etat == "non-commence" or etat == "en-cours" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                    </button>
+                                    <button class="Etat" idCommande="{{ reservation.idCommande }}" idChimiste="{{ current_user.idChimiste }}" etat="{{ etat }}">{{ texte_etat }}</button>
+                                {% else %}
+                                    {{ texte_etat }}
+                                {% endif %}
+                            {% else %}
+                                {% if etat == "non-commence" %}
+                                    <button class="delete_reservation" idCommande="{{ reservation.idCommande }}">
+                                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="Bouton de suppression">
+                                        {{ texte_etat }}
+                                    </button>
+                                {% else%}
+                                    {{ texte_etat }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+
+        <!-- Page 1 -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=1) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> << </button>
+        </form>
+        
+        <!-- Bouton Précédent -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page - 1) }}" method="get">
+            <button type="submit" {% if actu_id_page <= 1 %}disabled{% endif %}> < </button>
+        </form>
+    
+        <p>{{ actu_id_page }}</p>
+    
+        <!-- Bouton Suivant -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=actu_id_page + 1) }}" method="get">
+            <button type="submit" {% if actu_id_page >= total_pages %}disabled{% endif %}> > </button>
+        </form>
+
+        <!-- Dernière page -->
+        <form action="{{ url_for('preparation_reservation_page', id_page=total_pages) }}" method="get" style="display: inline;">
+            <button type="submit" {% if actu_id_page == total_pages %}disabled{% endif %}> >> </button>
+        </form>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,142 @@
+.produits {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.objet_produit {
+    background-color: #f0f0f0;
+    list-style: none;
+    border-radius: 15px;
+    width: fit-content;
+    margin: 1em 2em;
+    min-width: 14em;
+}
+
+.produit {
+    position: relative;
+    padding: 0.5em;
+    align-items: center;
+}
+
+.nomProduit, .dispo {
+    text-align: center;
+}
+
+.nomProduit {
+    margin: 24px 0 0 0;
+}
+
+.dispo {
+    font-size: 0.8em;
+    color: grey;
+    user-select: none;
+    margin: 0 0 1em 0;
+}
+
+.bouton-ajouter {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    background: linear-gradient(to right, #ff4fa4, #ff8cc4);
+    border-radius: 18px;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+    min-width: 15em;
+    height: 5em;
+    padding: 1em;
+    margin-top: auto;
+    margin-bottom: 1em;
+}
+
+.bouton-ajouter img {
+    height: 3em;
+    margin-right: 1em;
+}
+
+.bouton {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 6em;
+    margin: 0.2em;
+}
+
+.bouton > button {
+    width: 100%;
+    padding: 3%;
+    margin: 0.5em;
+}
+
+.bouton > button img {
+    height: 1em;
+}
+
+.Modifier, .Reserver, .famille {
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+}
+
+.supp_produit, .remettre_produit, .info_prod {
+    width: 1.5em;
+    height: 1.5em;
+    background: none;
+    border: none;
+    border-radius: 15px;
+    padding: 0;
+}
+
+.supp_produit, .remettre_produit {
+    position: absolute;
+    top: 0.3em;
+    right: 0.3em;
+}
+
+.info_prod {
+    margin-left: 0.5em;
+}
+
+.modif_reserv {
+    display: flex;
+    background-color: #6a6a6a;
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.modif_reserv img {
+    margin-right: 0.5em;
+}
+
+.bdisabled {
+    background-color: grey;
+    cursor: not-allowed;
+    border: grey;
+}
+
+.bdisabled:active {
+    transform: none;
+}
+
+.bdisabled:hover {
+    outline: none;
+    cursor: not-allowed;
+    border: grey;
+}
+  
+.bdisabled:hover {
+    transform: none;
+}
+
+.bdisabled:active {
+    transform: none;
+}
+
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
